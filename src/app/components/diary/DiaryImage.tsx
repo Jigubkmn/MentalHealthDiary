@@ -7,14 +7,16 @@ import handleImageSelect from '../../actions/handleImageSelect';
 
 type Props = {
   handleImageDelete: () => void;
-  setSelectedImage: (image: string) => void;
   selectedImage: string | null;
+  setSelectedImage: (image: string) => void;
 }
 
-export default function DiaryImage({ handleImageDelete, setSelectedImage, selectedImage }: Props) {
+export default function DiaryImage({ handleImageDelete, selectedImage, setSelectedImage }: Props) {
 
   const ImageSelect = async () => {
-    await handleImageSelect(setSelectedImage);
+    const newUserImage = await handleImageSelect();
+    if (!newUserImage) return;
+    setSelectedImage(newUserImage);
   };
 
   return (

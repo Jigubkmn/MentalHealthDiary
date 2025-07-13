@@ -44,7 +44,7 @@ export default function DiaryCreation() {
           {/* 今日の出来事 */}
           <DiaryText diaryText={diaryText} setDiaryText={setDiaryText} />
           {/* 今日の出来事の画像 */}
-          <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
+          <DiaryImage handleImageDelete={handleImageDelete} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
         </ScrollView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
