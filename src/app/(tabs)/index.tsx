@@ -8,10 +8,16 @@ import PlusIcon from '../components/Icon/PlusIcon';
 import { useRouter } from 'expo-router';
 import dayjs from 'dayjs';
 import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
+import { UserInfoType } from '../../../type/userInfo';
+import fetchUserInfo from '../actions/fetchUserInfo';
 
 export default function home() {
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
+  const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
+  const [userInfoId, setUserInfoId] = useState<string>('')
+  const userId = auth.currentUser?.uid
   const router = useRouter();
+  console.log("userInfoId", userInfoId)
 
   // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
@@ -22,9 +28,20 @@ export default function home() {
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
+  useEffect(() => {
+    // ユーザー情報取得
+    if (userId === null) return;
+
+    const unsubscribe = fetchUserInfo({
+      userId,
+      setUserInfos,
+      setUserInfoId
+    });
+
+    return unsubscribe;
+  }, [userId])
 
   useEffect(() => {
-    const userId = auth.currentUser?.uid;
     if (userId === null) return;
     // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
     const startOfMonth = displayDate.startOf('month').toDate();
@@ -61,7 +78,12 @@ export default function home() {
       <ScrollView style={styles.diaryListContainer}>
         {diaryLists.length > 0 ? diaryLists.map((diaryList) => {
           return (
-            <DiaryList key={diaryList.id} diaryList={diaryList} />
+            <DiaryList
+              key={diaryList.id}
+              diaryList={diaryList}
+              userName={userInfos?.userName}
+              userImage={userInfos?.userImage}
+            />
           )
         }):
         <Text style={styles.noDiaryText}>日記がありません</Text>
