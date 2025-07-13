@@ -13,7 +13,8 @@ export default function HandleButton({ buttonText, handleButton, isFormValid, ba
     <TouchableOpacity
       onPress={() => {handleButton()}}
       style={[isFormValid() ? styles.handleButton : styles.disabledButton, { backgroundColor}]}
-      disabled={!isFormValid()}>
+      disabled={!isFormValid()}
+    >
       <Text style={styles.buttonText}>{buttonText}</Text>
     </TouchableOpacity>
   )
