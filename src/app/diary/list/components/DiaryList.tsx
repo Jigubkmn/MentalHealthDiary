@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-na
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
-import { noUserImage, noImage } from '../../../constants/userImage';
+import { noImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
 import formatTimestampToTime from '../../../actions/formatTimestampToTime';
 import formatDate from '../../../actions/formatData';
@@ -11,9 +11,11 @@ import dayjs from 'dayjs';
 
 type Props = {
   diaryList: DiaryType
+  userName?: string
+  userImage?: string
 }
 
-export default function DiaryList({ diaryList } :Props) {
+export default function DiaryList({ diaryList, userName, userImage } :Props) {
   const [diaryDate, setDiaryDate] = useState("");
   const router = useRouter();
 
@@ -53,19 +55,22 @@ export default function DiaryList({ diaryList } :Props) {
           {/* 日記作成者のアイコン画像 */}
           <View style={styles.diaryUserIconContainer}>
             <Image
-              source={noUserImage}
+              source={userImage}
               style={styles.diaryUserIcon}
-              contentFit="contain"
+              contentFit="cover"
               cachePolicy="memory-disk"
             />
           </View>
           <View style={styles.diaryContent}>
             <View style={styles.diaryTimeContainer}>
-              <Text style={styles.diaryTime}>{formattedTime}</Text>
+              <Text style={styles.diaryUserName}>{userName}</Text>
               <Image
                 source={feelingImage}
                 style={styles.feelingImage}
+                contentFit="contain"
+                cachePolicy="memory-disk"
               />
+              <Text style={styles.diaryTime}>{formattedTime}</Text>
             </View>
             {/* 日記内容 */}
             <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
@@ -113,6 +118,7 @@ const styles = StyleSheet.create({
   diaryUserIcon: {
     width: 50,
     height: 50,
+    borderRadius: 25,
   },
   diaryContent: {
     flex: 1,
@@ -122,10 +128,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  diaryUserName: {
+    fontSize: 12,
+    lineHeight: 20,
+    marginRight: 8,
+    fontWeight: 'bold',
+  },
   diaryTime: {
     fontSize: 12,
     lineHeight: 20,
-    marginRight: 8
+    marginRight: 8,
+    marginLeft: 'auto',
   },
   feelingImage: {
     width: 30,
