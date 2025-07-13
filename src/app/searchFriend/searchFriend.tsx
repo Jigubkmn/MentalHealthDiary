@@ -3,10 +3,9 @@ import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableWithoutFeedba
 import { noUserImage } from '../constants/userImage';
 import { Image } from 'expo-image'
 import Header from './components/Header';
-import { db, auth } from '../../config';
-import { collectionGroup, query, where, getDocs } from 'firebase/firestore';
 import { UserInfoType } from '../../../type/userInfo';
 import HandleButton from '../components/button/HandleButton';
+import fetchFriend from './actions/fetchFriend';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
@@ -23,49 +22,10 @@ export default function searchFriend() {
     return !!(accountId);
   };
 
-  const searchButton = async () => {
-    if (!accountId.trim()) return;
-
-    setIsSearching(true);
-    try {
-      // ログインユーザーのIDを取得
-      const currentUserId = auth.currentUser?.uid;
-      if (!currentUserId) {
-        console.log('ログインユーザーが見つかりません');
-        return;
-      }
-
-      // userInfoコレクションから指定されたaccountIdで完全一致検索
-      const usersRef = collectionGroup(db, 'userInfo');
-      const q = query(usersRef, where('accountId', '==', accountId.trim()));
-      const querySnapshot = await getDocs(q);
-
-      // ユーザーが見つかった場合
-      if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const userData = doc.data() as UserInfoType;
-
-        // ログインユーザー以外のデータのみ取得
-        if (doc.ref.parent.parent?.id !== currentUserId) {
-          setSearchResult(userData);
-          setUserImage(userData.userImage ? userData.userImage : noUserImage);
-        } else {
-          setSearchResult(null);
-          setUserImage(noUserImage);
-          console.log('自分自身のアカウントIDです');
-        }
-      } else {
-        // ユーザーが見つからない場合
-        setSearchResult(null);
-        setUserImage(noUserImage);
-        console.log('ユーザーが見つかりません');
-      }
-    } catch (error) {
-      console.log('検索エラー:', error);
-      setSearchResult(null);
-      setUserImage(noUserImage);
-    }
-  }
+  // 友人を検索する関数
+  const searchFriend = () => {
+    fetchFriend({accountId, setSearchResult, setUserImage, setIsSearching});
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -87,7 +47,7 @@ export default function searchFriend() {
           {/* 検索ボタン */}
           <HandleButton
             buttonText="検索"
-            handleButton={searchButton}
+            handleButton={searchFriend}
             isFormValid={isFormValid}
           />
 
@@ -109,7 +69,7 @@ export default function searchFriend() {
                 />
                 <Text style={styles.userName}>{searchResult.userName}</Text>
                 <TouchableOpacity
-                  onPress={() => {searchButton()}}
+                  onPress={() => {}}
                   style={styles.addFriendButton}
                 >
                   <Text style={styles.buttonText}>登録する</Text>
