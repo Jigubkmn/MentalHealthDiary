@@ -3,14 +3,14 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 type Props = {
   buttonText: string
-  handleAuthButton: () => void
+  handleButton: () => void
   isFormValid: () => boolean
 }
 
-export default function AuthButton({ buttonText, handleAuthButton, isFormValid }: Props) {
+export default function HandleButton({ buttonText, handleButton, isFormValid }: Props) {
   return (
     <TouchableOpacity
-      onPress={() => {handleAuthButton()}}
+      onPress={() => {handleButton()}}
       style={[isFormValid() ? styles.authButton : styles.disabledButton]}
       disabled={!isFormValid()}>
       <Text style={styles.buttonText}>{buttonText}</Text>
