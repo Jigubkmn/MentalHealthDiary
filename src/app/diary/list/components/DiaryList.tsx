@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-na
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
-import { userImage, noImage } from '../../../constants/userImage';
+import { noUserImage, noImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
 import formatTimestampToTime from '../../../actions/formatTimestampToTime';
 import formatDate from '../../../actions/formatData';
@@ -53,8 +53,10 @@ export default function DiaryList({ diaryList } :Props) {
           {/* 日記作成者のアイコン画像 */}
           <View style={styles.diaryUserIconContainer}>
             <Image
-              source={userImage}
+              source={noUserImage}
               style={styles.diaryUserIcon}
+              contentFit="contain"
+              cachePolicy="memory-disk"
             />
           </View>
           <View style={styles.diaryContent}>

@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native'
 import { Image } from 'expo-image'
-
+import { noUserImage } from '../../constants/userImage';
 
 export default function DiaryShareInfo() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const userImage = require('../../../../assets/images/user.png');
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
 
 
@@ -17,7 +15,7 @@ export default function DiaryShareInfo() {
     <View style={styles.diaryShareInfo}>
       <View style={styles.diaryShareMainInfo}>
         <Image
-          source={userImage}
+          source={noUserImage}
           style={styles.diaryShareUserImage}
           contentFit="contain"
           cachePolicy="memory-disk"

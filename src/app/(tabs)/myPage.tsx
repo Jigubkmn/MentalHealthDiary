@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 import Header from '../myPage/components/Header'
 import DiaryShareInfo from '../myPage/components/DiaryShareInfo'
-import { auth, db } from '../../config';
+import { auth } from '../../config';
 import { UserInfoType } from '../../../type/userInfo'
-import { collection, onSnapshot, query } from 'firebase/firestore'
 import UserInfo from '../myPage/components/UserInfo';
+import fetchUserInfo from '../actions/fetchUserInfo';
 
 export default function myPage() {
   const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
@@ -15,19 +15,15 @@ export default function myPage() {
   useEffect(() => {
     // ユーザー情報取得
     if (userId === null) return;
-      const ref = collection(db, `users/${userId}/userInfo`)
-      const q = query(ref) // ユーザー情報の参照を取得。
-      // snapshot：userInfoのデータを取得。
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        // データ1つずつの処理
-        snapshot.docs.forEach((doc) => {
-          const { accountId, userName, userImage } = doc.data();
-          setUserInfos({ accountId, userName, userImage })
-          setUserInfoId(doc.id) // userInfoのIDを保存
-        })
-      })
+
+    const unsubscribe = fetchUserInfo({
+      userId,
+      setUserInfos,
+      setUserInfoId
+    });
+
     return unsubscribe;
-  }, [])
+  }, [userId])
 
   return (
     <SafeAreaView style={styles.container}>

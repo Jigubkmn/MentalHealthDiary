@@ -14,6 +14,7 @@ import {
 } from '../../../utils/validation'
 import AuthNavigationLink from './components/Link'
 import AuthButton from './components/AuthButton'
+import { NO_USER_IMAGE_PATH } from '../constants/userImage'
 
 export default function SignUp() {
   const [userName, setUserName] = useState('')
@@ -73,6 +74,7 @@ export default function SignUp() {
         await addDoc(ref, {
           userName,
           accountId: accountId,
+          userImage: NO_USER_IMAGE_PATH,
           createdAt: Timestamp.fromDate(new Date())
         })
         // 全て成功した場合

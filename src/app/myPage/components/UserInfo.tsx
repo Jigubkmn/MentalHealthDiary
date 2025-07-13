@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { Image } from 'expo-image'
+import { noUserImage } from '../../constants/userImage';
 import EditIcon from '../../components/Icon/EditIcon';
 import { UserInfoType } from '../../../../type/userInfo';
 import UserLogout from '../../actions/handleLogout';
+import handleImageSelect from '../../actions/handleImageSelect';
 import UserEditContents from './UserEditContents';
 import { db } from '../../../config';
 import { doc, updateDoc } from 'firebase/firestore'
 import { validateAccountId, validateUserName } from '../../../../utils/validation';
-import handleImageSelect from '../../actions/handleImageSelect';
 
 type UserInfoProps = {
   userInfos: UserInfoType | null
   userId?: string
-  userInfoId?: string
+  userInfoId: string
 }
 
 export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProps) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const noUserImage = require('../../../../assets/images/user.png')
   const [isAccountIdEdit, setIsAccountIdEdit] = useState(false);
   const [accountId, setAccountId] = useState('');
   const [isUserNameEdit, setIsUserNameEdit] = useState(false);
   const [userName, setUserName] = useState('');
-  const [userImage, setUserImage] = useState<string | null>(noUserImage);
+  const [userImage, setUserImage] = useState<string | null>(userInfos?.userImage || noUserImage);
   const [errors, setErrors] = useState({ accountId: '', userName: '' })
 
   useEffect(() => {
@@ -35,13 +34,14 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
   }, [userInfos?.userName]);
 
   useEffect(() => {
-    setUserImage(userInfos?.userImage || '')
+    if (userInfos?.userImage) {
+      setUserImage(userInfos.userImage)
+    }
   }, [userInfos?.userImage]);
 
   useEffect(() => {
     setIsAccountIdEdit(false)
     setIsUserNameEdit(false)
-    setUserImage(noUserImage)
   }, []);
 
   // ログアウト
@@ -96,15 +96,17 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     setErrors({ ...errors, userName: errorMessage })
   }
 
+  // ユーザー画像を更新
   const ImageSelect = async () => {
-    await handleImageSelect(setUserImage);
-    // ユーザー画像を更新
+    const newUserImage = await handleImageSelect();
+    if (!newUserImage) return;
     try {
       const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
       await updateDoc(userRef, {
-        userImage: userImage,
+        userImage: newUserImage,
       });
       Alert.alert("ユーザー画像を更新しました");
+      setUserImage(newUserImage);
     } catch (error) {
       console.log("error", error);
       Alert.alert("ユーザー画像の更新に失敗しました");
@@ -183,12 +185,11 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginBottom: 16,
     alignSelf: 'center',
-    // borderRadius: 50, // コンテナも円形にする
   },
   userImage: {
     width: 100,
     height: 100,
-    borderRadius: 50, // 円形にする
+    borderRadius: 50,
   },
   editIconOverlay: {
     position: 'absolute',

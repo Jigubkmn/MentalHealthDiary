@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { noUserImage } from '../constants/userImage';
 import { Image } from 'expo-image'
 import Header from './components/Header';
 
 export default function searchFriend() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const noUserImage = require('../../../assets/images/user.png')
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
   const [accountId, setAccountId] = useState('')
 
