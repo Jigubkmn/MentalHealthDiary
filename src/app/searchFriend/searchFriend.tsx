@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Keyboard } from 'react-native'
 import { noUserImage } from '../constants/userImage';
 import { Image } from 'expo-image'
 import Header from './components/Header';
@@ -108,6 +108,12 @@ export default function searchFriend() {
                   cachePolicy="memory-disk"
                 />
                 <Text style={styles.userName}>{searchResult.userName}</Text>
+                <TouchableOpacity
+                  onPress={() => {searchButton()}}
+                  style={styles.addFriendButton}
+                >
+                  <Text style={styles.buttonText}>登録する</Text>
+                </TouchableOpacity>
               </>
             ) : (
               <Text style={styles.noResultText}>
@@ -166,6 +172,16 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 16,
     opacity: 0.5,
+  },
+  addFriendButton: {
+    width: '100%',
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFA500',
+    borderRadius: 10,
+    marginTop: 24,
+    marginBottom: 16,
   },
   buttonText: {
     fontSize: 16,
