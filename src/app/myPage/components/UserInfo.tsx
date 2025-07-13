@@ -22,7 +22,7 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
   const [accountId, setAccountId] = useState('');
   const [isUserNameEdit, setIsUserNameEdit] = useState(false);
   const [userName, setUserName] = useState('');
-  const [userImage, setUserImage] = useState<string | null>('');
+  const [userImage, setUserImage] = useState<string | null>(userInfos?.userImage || noUserImage);
   const [errors, setErrors] = useState({ accountId: '', userName: '' })
 
   useEffect(() => {
@@ -34,13 +34,14 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
   }, [userInfos?.userName]);
 
   useEffect(() => {
-    setUserImage(userInfos?.userImage || '')
+    if (userInfos?.userImage) {
+      setUserImage(userInfos.userImage)
+    }
   }, [userInfos?.userImage]);
 
   useEffect(() => {
     setIsAccountIdEdit(false)
     setIsUserNameEdit(false)
-    setUserImage('')
   }, []);
 
   // ログアウト
@@ -95,15 +96,17 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     setErrors({ ...errors, userName: errorMessage })
   }
 
+  // ユーザー画像を更新
   const ImageSelect = async () => {
-    await handleImageSelect(setUserImage);
-    // ユーザー画像を更新
+    const newUserImage = await handleImageSelect();
+    if (!newUserImage) return;
     try {
       const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
       await updateDoc(userRef, {
-        userImage: userImage,
+        userImage: newUserImage,
       });
       Alert.alert("ユーザー画像を更新しました");
+      setUserImage(newUserImage);
     } catch (error) {
       console.log("error", error);
       Alert.alert("ユーザー画像の更新に失敗しました");
@@ -116,7 +119,7 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
         {/* ユーザー画像 */}
         <View style={styles.userImageContainer}>
           <Image
-            source={userInfos?.userImage || noUserImage}
+            source={userImage}
             style={styles.userImage}
             contentFit="cover"
             cachePolicy="memory-disk"
