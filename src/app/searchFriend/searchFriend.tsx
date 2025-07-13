@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { noUserImage } from '../constants/userImage';
 import { Image } from 'expo-image'
 import Header from './components/Header';
+import { db, auth } from '../../config';
+import { collectionGroup, query, where, getDocs } from 'firebase/firestore';
+import { UserInfoType } from '../../../type/userInfo';
+import HandleButton from '../components/button/HandleButton';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
   const [accountId, setAccountId] = useState('')
+  const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
+  const [isSearching, setIsSearching] = useState(false)
 
   useEffect(() => {
     setUserImage(noUserImage)
@@ -17,50 +23,101 @@ export default function searchFriend() {
     return !!(accountId);
   };
 
-  const searchButton = () => {
-    console.log(accountId)
+  const searchButton = async () => {
+    if (!accountId.trim()) return;
+
+    setIsSearching(true);
+    try {
+      // ログインユーザーのIDを取得
+      const currentUserId = auth.currentUser?.uid;
+      if (!currentUserId) {
+        console.log('ログインユーザーが見つかりません');
+        return;
+      }
+
+      // userInfoコレクションから指定されたaccountIdで完全一致検索
+      const usersRef = collectionGroup(db, 'userInfo');
+      const q = query(usersRef, where('accountId', '==', accountId.trim()));
+      const querySnapshot = await getDocs(q);
+
+      // ユーザーが見つかった場合
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const userData = doc.data() as UserInfoType;
+
+        // ログインユーザー以外のデータのみ取得
+        if (doc.ref.parent.parent?.id !== currentUserId) {
+          setSearchResult(userData);
+          setUserImage(userData.userImage ? userData.userImage : noUserImage);
+        } else {
+          setSearchResult(null);
+          setUserImage(noUserImage);
+          console.log('自分自身のアカウントIDです');
+        }
+      } else {
+        // ユーザーが見つからない場合
+        setSearchResult(null);
+        setUserImage(noUserImage);
+        console.log('ユーザーが見つかりません');
+      }
+    } catch (error) {
+      console.log('検索エラー:', error);
+      setSearchResult(null);
+      setUserImage(noUserImage);
+    }
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header />
-      <View style={styles.wrapper}>
-        {/* ユーザーID検索 */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>ユーザーID</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="友人のユーザーIDを入力してください"
-            value={accountId}
-            onChangeText={(text) => setAccountId(text)}
-            autoCapitalize="none"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <View style={styles.wrapper}>
+          {/* ユーザーID検索 */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>ユーザーID</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="友人のユーザーIDを入力してください"
+              value={accountId}
+              onChangeText={(text) => setAccountId(text)}
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* 検索ボタン */}
+          <HandleButton
+            buttonText="検索"
+            handleButton={searchButton}
+            isFormValid={isFormValid}
           />
+
+          {/* 区切り線 */}
+          <View style={styles.divider} />
+
+          {/* 検索結果 */}
+          <View style={styles.searchResultContainer}>
+            {isSearching &&
+              <Text style={styles.searchResultTitle}>検索結果</Text>
+            }
+            {searchResult ? (
+              <>
+                <Image
+                  source={userImage}
+                  style={styles.userImage}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+                <Text style={styles.userName}>{searchResult.userName}</Text>
+              </>
+            ) : (
+              <Text style={styles.noResultText}>
+                {isSearching && 'ユーザーが見つかりません'}
+              </Text>
+            )}
+          </View>
         </View>
-
-        {/* 検索ボタン */}
-        <TouchableOpacity
-          onPress={() => {searchButton()}}
-          style={[isFormValid() ? styles.searchButton : styles.disabledButton]}
-          disabled={!isFormValid()}>
-          <Text style={styles.buttonText}>検索</Text>
-        </TouchableOpacity>
-
-        {/* 区切り線 */}
-        <View style={styles.divider} />
-
-        {/* 検索結果 */}
-        <View style={styles.searchResultContainer}>
-          <Text style={styles.searchResultTitle}>検索結果</Text>
-          <Image
-            source={userImage}
-            style={styles.userImage}
-            contentFit="cover"
-            cachePolicy="memory-disk"
-          />
-          <Text style={styles.userName}>ユーザー名</Text>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -145,5 +202,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     color: '#000000',
+  },
+  accountId: {
+    fontSize: 12,
+    lineHeight: 20,
+    color: '#666666',
+  },
+  noResultText: {
+    fontSize: 14,
+    lineHeight: 24,
+    color: '#666666',
+    textAlign: 'center',
   }
 });
