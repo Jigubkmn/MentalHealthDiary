@@ -6,12 +6,16 @@ import Header from './components/Header';
 import { UserInfoType } from '../../../type/userInfo';
 import HandleButton from '../components/button/HandleButton';
 import fetchFriend from './actions/fetchFriend';
+import addFriend from './actions/addFriend';
+import { auth } from '../../config';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
   const [accountId, setAccountId] = useState('')
   const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
   const [isSearching, setIsSearching] = useState(false)
+  // ログインユーザーのIDを取得
+  const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     setUserImage(noUserImage)
@@ -24,7 +28,12 @@ export default function searchFriend() {
 
   // 友人を検索する関数
   const searchFriend = () => {
-    fetchFriend({accountId, setSearchResult, setUserImage, setIsSearching});
+    fetchFriend({accountId, currentUserId, setSearchResult, setUserImage, setIsSearching});
+  };
+
+  // 友人を登録する関数
+  const addFriendButton = () => {
+    addFriend({ currentUserId, searchResult});
   };
 
   return (
@@ -69,7 +78,7 @@ export default function searchFriend() {
                 />
                 <Text style={styles.userName}>{searchResult.userName}</Text>
                 <TouchableOpacity
-                  onPress={() => {}}
+                  onPress={() => {addFriendButton()}}
                   style={styles.addFriendButton}
                 >
                   <Text style={styles.buttonText}>登録する</Text>
