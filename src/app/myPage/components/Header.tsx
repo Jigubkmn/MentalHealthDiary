@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   headerLeft: {
-    width: 80, // 右側のアイコン2つ分の幅（24px + 24px + 8px margin + 余裕）
+    width: 60, // 右側のアイコン2つ分の幅（24px + 24px + 8px margin + 余裕）
   },
   headerCenter: {
     flex: 1,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   headerRight: {
-    width: 80, // 左側と同じ幅を確保
+    width: 60, // 左側と同じ幅を確保
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',

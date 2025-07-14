@@ -4,7 +4,7 @@ import { auth } from '../../config'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { router } from 'expo-router'
 import AuthNavigationLink from './components/Link'
-import AuthButton from './components/AuthButton'
+import HandleButton from '../components/button/HandleButton'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -66,9 +66,9 @@ export default function Login() {
             />
           </View>
           {/* ログインボタン */}
-          <AuthButton
+          <HandleButton
             buttonText="ログインする"
-            handleAuthButton={handleLogin}
+            handleButton={handleLogin}
             isFormValid={isFormValid}
           />
           {/* リンク */}

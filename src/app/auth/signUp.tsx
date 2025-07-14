@@ -13,7 +13,7 @@ import {
   validateConfirmPassword
 } from '../../../utils/validation'
 import AuthNavigationLink from './components/Link'
-import AuthButton from './components/AuthButton'
+import HandleButton from '../components/button/HandleButton'
 import { NO_USER_IMAGE_PATH } from '../constants/userImage'
 
 export default function SignUp() {
@@ -182,9 +182,9 @@ export default function SignUp() {
               {errors.confirmPassword ? <Text style={styles.errorText}>{errors.confirmPassword}</Text> : null}
             </View>
             {/* 登録ボタン */}
-            <AuthButton
+            <HandleButton
               buttonText="登録する"
-              handleAuthButton={handleSignUp}
+              handleButton={handleSignUp}
               isFormValid={isFormValid}
             />
             {/* リンク */}

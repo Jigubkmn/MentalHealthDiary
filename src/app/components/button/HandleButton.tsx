@@ -3,16 +3,18 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 type Props = {
   buttonText: string
-  handleAuthButton: () => void
+  handleButton: () => void
   isFormValid: () => boolean
+  backgroundColor?: string
 }
 
-export default function AuthButton({ buttonText, handleAuthButton, isFormValid }: Props) {
+export default function HandleButton({ buttonText, handleButton, isFormValid, backgroundColor = '#27CBFF' }: Props) {
   return (
     <TouchableOpacity
-      onPress={() => {handleAuthButton()}}
-      style={[isFormValid() ? styles.authButton : styles.disabledButton]}
-      disabled={!isFormValid()}>
+      onPress={() => {handleButton()}}
+      style={[isFormValid() ? styles.handleButton : styles.disabledButton, { backgroundColor}]}
+      disabled={!isFormValid()}
+    >
       <Text style={styles.buttonText}>{buttonText}</Text>
     </TouchableOpacity>
   )
@@ -22,7 +24,6 @@ const styles = StyleSheet.create({
   disabledButton: {
     width: '100%',
     height: 48,
-    backgroundColor: '#27CBFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
@@ -30,10 +31,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     opacity: 0.5,
   },
-  authButton: {
+  handleButton: {
     width: '100%',
     height: 48,
-    backgroundColor: '#27CBFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,

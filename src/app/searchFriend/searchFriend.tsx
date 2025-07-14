@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Keyboard } from 'react-native'
 import { noUserImage } from '../constants/userImage';
 import { Image } from 'expo-image'
 import Header from './components/Header';
+import { UserInfoType } from '../../../type/userInfo';
+import HandleButton from '../components/button/HandleButton';
+import fetchFriend from './actions/fetchFriend';
+import addFriend from './actions/addFriend';
+import { auth } from '../../config';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
   const [accountId, setAccountId] = useState('')
+  const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
+  const [isSearching, setIsSearching] = useState(false)
+  // ログインユーザーのIDを取得
+  const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     setUserImage(noUserImage)
@@ -17,50 +26,73 @@ export default function searchFriend() {
     return !!(accountId);
   };
 
-  const searchButton = () => {
-    console.log(accountId)
-  }
+  // 友人を検索する関数
+  const searchFriend = () => {
+    fetchFriend({accountId, currentUserId, setSearchResult, setUserImage, setIsSearching});
+  };
+
+  // 友人を登録する関数
+  const addFriendButton = () => {
+    addFriend({ currentUserId, searchResult});
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header />
-      <View style={styles.wrapper}>
-        {/* ユーザーID検索 */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>ユーザーID</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="友人のユーザーIDを入力してください"
-            value={accountId}
-            onChangeText={(text) => setAccountId(text)}
-            autoCapitalize="none"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <View style={styles.wrapper}>
+          {/* ユーザーID検索 */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>ユーザーID</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="友人のユーザーIDを入力してください"
+              value={accountId}
+              onChangeText={(text) => setAccountId(text)}
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* 検索ボタン */}
+          <HandleButton
+            buttonText="検索"
+            handleButton={searchFriend}
+            isFormValid={isFormValid}
           />
+
+          {/* 区切り線 */}
+          <View style={styles.divider} />
+
+          {/* 検索結果 */}
+          <View style={styles.searchResultContainer}>
+            {isSearching &&
+              <Text style={styles.searchResultTitle}>検索結果</Text>
+            }
+            {searchResult ? (
+              <>
+                <Image
+                  source={userImage}
+                  style={styles.userImage}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+                <Text style={styles.userName}>{searchResult.userName}</Text>
+                <TouchableOpacity
+                  onPress={() => {addFriendButton()}}
+                  style={styles.addFriendButton}
+                >
+                  <Text style={styles.buttonText}>登録する</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <Text style={styles.noResultText}>
+                {isSearching && 'ユーザーが見つかりません'}
+              </Text>
+            )}
+          </View>
         </View>
-
-        {/* 検索ボタン */}
-        <TouchableOpacity
-          onPress={() => {searchButton()}}
-          style={[isFormValid() ? styles.searchButton : styles.disabledButton]}
-          disabled={!isFormValid()}>
-          <Text style={styles.buttonText}>検索</Text>
-        </TouchableOpacity>
-
-        {/* 区切り線 */}
-        <View style={styles.divider} />
-
-        {/* 検索結果 */}
-        <View style={styles.searchResultContainer}>
-          <Text style={styles.searchResultTitle}>検索結果</Text>
-          <Image
-            source={userImage}
-            style={styles.userImage}
-            contentFit="cover"
-            cachePolicy="memory-disk"
-          />
-          <Text style={styles.userName}>ユーザー名</Text>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -110,6 +142,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     opacity: 0.5,
   },
+  addFriendButton: {
+    width: '100%',
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFA500',
+    borderRadius: 10,
+    marginTop: 24,
+    marginBottom: 16,
+  },
   buttonText: {
     fontSize: 16,
     lineHeight: 30,
@@ -145,5 +187,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     color: '#000000',
+  },
+  accountId: {
+    fontSize: 12,
+    lineHeight: 20,
+    color: '#666666',
+  },
+  noResultText: {
+    fontSize: 14,
+    lineHeight: 24,
+    color: '#666666',
+    textAlign: 'center',
   }
 });
