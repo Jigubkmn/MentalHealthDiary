@@ -1,22 +1,21 @@
-import { db, auth } from '../../../config';
+import { db } from '../../../config';
 import { collectionGroup, query, where, getDocs } from 'firebase/firestore';
 import { UserInfoType } from '../../../../type/userInfo';
 import { noUserImage } from '../../constants/userImage';
 
 type Props = {
   accountId: string;
+  currentUserId?: string;
   setSearchResult: (searchResult: UserInfoType | null) => void;
   setUserImage: (userImage: string | null) => void;
   setIsSearching: (isSearching: boolean) => void;
 }
 
-export default async function fetchFriend({ accountId, setSearchResult, setUserImage, setIsSearching }: Props) {
+export default async function fetchFriend({ accountId, currentUserId, setSearchResult, setUserImage, setIsSearching }: Props) {
   if (!accountId.trim()) return;
 
   setIsSearching(true);
   try {
-    // ログインユーザーのIDを取得
-    const currentUserId = auth.currentUser?.uid;
     if (!currentUserId) {
       console.log('ログインユーザーが見つかりません');
       return;
