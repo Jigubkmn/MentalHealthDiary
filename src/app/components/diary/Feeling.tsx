@@ -1,14 +1,16 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { feelings } from '../../constants/feelings';
+import FeelingView from '../Feeling/FeelingView';
+import SelectedFeelingButton from '../Feeling/SelectedFeelingButton';
 
 type Props = {
   selectedFeeling: string | null;
   setSelectedFeeling: (feeling: string | null) => void;
+  isTouchFeelingButton: boolean;
 }
 
-export default function Feeling({ selectedFeeling, setSelectedFeeling }: Props) {
-
+export default function Feeling({ selectedFeeling, setSelectedFeeling, isTouchFeelingButton }: Props) {
   const handleFeelingSelect = (feelingName: string) => {
     setSelectedFeeling(feelingName);
   };
@@ -18,18 +20,11 @@ export default function Feeling({ selectedFeeling, setSelectedFeeling }: Props) 
       <Text style={styles.question}>どのような1日でしたか？</Text>
       <View style={styles.feelingsContainer}>
         {feelings.map((feeling) => (
-          <TouchableOpacity
-            key={feeling.name}
-            style={styles.feelingItem}
-            onPress={() => handleFeelingSelect(feeling.name)}
-          >
-            <Image
-              source={feeling.image}
-              style={[
-                styles.feelingImage,{ opacity: selectedFeeling === feeling.name ? 1 : 0.4 }]}
-            />
-            <Text style={[styles.feelingText, { opacity: selectedFeeling === feeling.name ? 1 : 0.4 }]}>{feeling.name}</Text>
-          </TouchableOpacity>
+          isTouchFeelingButton ? (
+            <SelectedFeelingButton key={feeling.name} selectedFeeling={selectedFeeling} handleFeelingSelect={handleFeelingSelect} name={feeling.name} image={feeling.image} />
+          ) : (
+          <FeelingView key={feeling.name} selectedFeeling={selectedFeeling} name={feeling.name} image={feeling.image} />
+          )
         ))}
       </View>
     </View>

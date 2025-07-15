@@ -14,15 +14,15 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#FFA500', // アクティブなタブの色（オレンジ）
         tabBarInactiveTintColor: '#8E8E93', // 非アクティブなタブの色
         tabBarStyle: {
-          backgroundColor: '#FFFFFF', // タブバーの背景色
-          borderTopWidth: 1, // タブバーの境界線の幅
-          borderTopColor: '#E5E5EA', // タブバーの境界線の色
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#E5E5EA',
         },
         headerStyle: {
-          backgroundColor: '#FFFFFF', // ヘッダーの背景色
+          backgroundColor: '#FFFFFF',
         },
         headerTitleStyle: {
-          fontWeight: 'bold', // ヘッダーのタイトルのフォントの太さ
+          fontWeight: 'bold',
         },
       }}
     >
@@ -51,7 +51,10 @@ export default function TabLayout() {
             // パラメータを付けて自分で画面遷移を命令する
             router.push({
               pathname: '/diaryCreation',
-              params: { isShowBackButton: 'false' }
+              params: {
+                isShowBackButton: 'false',
+                isTouchFeelingButton: 'true'
+              }
             });
           },
         }}

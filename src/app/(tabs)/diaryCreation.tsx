@@ -1,41 +1,53 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, SafeAreaView } from 'react-native';
+import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, ScrollView } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import Feeling from '../diaryCreation/components/Feeling';
-import Header from '../diaryCreation/components/Header';
+import Feeling from '../components/diary/Feeling';
+import Header from '../diary/creation/components/Header';
+import DiaryText from '../components/diary/DiaryText';
+import DiaryImage from '../components/diary/DiaryImage';
 
 export default function DiaryCreation() {
   const { isShowBackButton } = useLocalSearchParams<{ isShowBackButton?: string }>();
   const [diaryText, setDiaryText] = useState('');
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
 
-  // 画面がフォーカスされた時に状態をリセット
   useFocusEffect(
     React.useCallback(() => {
       setDiaryText('');
       setSelectedFeeling(null);
+      setSelectedImage(null);
     }, [])
   );
 
+  const handleImageDelete = () => {
+    setSelectedImage(null);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Header
-        diaryText={diaryText}
-        selectedFeeling={selectedFeeling}
-        setDiaryText={setDiaryText}
-        setSelectedFeeling={setSelectedFeeling}
-        isShowBackButton={isShowBackButton === 'true'}
-      />
-      <Feeling selectedFeeling={selectedFeeling} setSelectedFeeling={setSelectedFeeling} />
-      <TextInput
-        style={styles.textInput}
-        multiline
-        placeholder="今日の出来事を入力してください"
-        value={diaryText}
-        onChangeText={setDiaryText}
-        textAlignVertical="top"
-      />
-    </SafeAreaView>
+    <TouchableWithoutFeedback>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerArea}>
+          <Header
+            diaryText={diaryText}
+            selectedFeeling={selectedFeeling}
+            setDiaryText={setDiaryText}
+            setSelectedFeeling={setSelectedFeeling}
+            setSelectedImage={setSelectedImage}
+            isShowBackButton={isShowBackButton === 'true'}
+            selectedImage={selectedImage}
+          />
+          <Feeling selectedFeeling={selectedFeeling} setSelectedFeeling={setSelectedFeeling} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
+        </View>
+        <ScrollView style={styles.contentArea}>
+          {/* 今日の出来事 */}
+          <DiaryText diaryText={diaryText} setDiaryText={setDiaryText} />
+          {/* 今日の出来事の画像 */}
+          <DiaryImage handleImageDelete={handleImageDelete} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
+        </ScrollView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -44,12 +56,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  textInput: {
-    flex: 1,
-    marginHorizontal: 16,
-    padding: 16,
-    fontSize: 16,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
+  headerArea: {
+    backgroundColor: '#FFFFFF',
   },
+  contentArea: {
+    flex: 1,
+    backgroundColor: '#F0F0F0',
+    padding: 16,
+  }
 });
