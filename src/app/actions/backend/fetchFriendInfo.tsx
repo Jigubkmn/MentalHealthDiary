@@ -26,6 +26,7 @@ export default async function fetchFriendInfo(userId?: string): Promise<FriendIn
 
         // データをまとめてオブジェクトに
         const friendInfo: FriendInfoType = {
+          friendId: friendDoc.id,
           accountId: friendData.accountId,
           notifyOnDiary: friendData.notifyOnDiary,
           showDiary: friendData.showDiary,

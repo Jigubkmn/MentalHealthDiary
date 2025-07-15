@@ -1,4 +1,5 @@
 export type FriendInfoType = {
+  friendId?: string;
   accountId: string;
   notifyOnDiary: boolean;
   showDiary: boolean;

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Header from '../myPage/components/Header'
-import DiaryShareInfo from '../myPage/components/DiaryShareInfo'
 import { auth } from '../../config';
 import { router } from 'expo-router';
 import { UserInfoType } from '../../../type/userInfo'
+import { FriendInfoType } from '../../../type/friend'
+import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchFriendInfo from '../actions/backend/fetchFriendInfo';
+import Divider from '../components/Divider';
 
 export default function myPage() {
   const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
   const [userInfoId, setUserInfoId] = useState<string>('')
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const userId = auth.currentUser?.uid
 
   useEffect(() => {
@@ -26,6 +30,22 @@ export default function myPage() {
     return unsubscribe;
   }, [userId])
 
+  useEffect(() => {
+    if (userId === null) return;
+
+    const fetchFriends = async () => {
+      try {
+        const data = await fetchFriendInfo(userId);
+        // ここでfriendsDataをstateに保存する処理を追加
+        setFriendsData(data);
+      } catch (error) {
+        console.error('友人一覧の取得に失敗しました。', error);
+      }
+    };
+
+    fetchFriends();
+  }, [])
+
   return (
     <SafeAreaView style={styles.container}>
       <Header />
@@ -38,9 +58,19 @@ export default function myPage() {
           <View style={styles.friendListWrapper}>
             {/* 友人一覧 */}
             <View style={styles.friendListInfoContainer}>
-              <DiaryShareInfo />
-              <DiaryShareInfo />
-              <DiaryShareInfo />
+              {friendsData.length > 0 ? (
+                friendsData.map((friendData) => (
+                  <FriendInfo key={friendData.accountId} friendData={friendData} userId={userId || ''} />
+                ))
+              ) : (
+                <>
+                <View style={styles.noFriendContainer}>
+                  <Text style={styles.noFriendText}>友人がいません。</Text>
+                  <Text style={styles.noFriendText}>友人を登録して下さい。</Text>
+                </View>
+                <Divider />
+                </>
+              )}
             </View>
             {/* 友人を登録 */}
             <TouchableOpacity
@@ -98,7 +128,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   addFriendButton: {
-    width: '100%',
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
@@ -112,5 +141,15 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+  noFriendContainer: {
+    padding: 16,
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  noFriendText: {
+    fontSize: 14,
+    lineHeight: 24,
+    textAlign: 'center',
   },
 })

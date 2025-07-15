@@ -7,21 +7,28 @@ import Divider from '../../components/Divider';
 import DeleteIcon from '../../components/Icon/DeleteIcon';
 import BlockIcon from '../../components/Icon/Block';
 import getStatusStyle from '../action/getStatusStyle';
+import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
+import saveShowDiary from '../action/backend/saveShowDiary';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
+  userId: string
 }
 
-export default function FriendInfo({ friendData }: FriendInfoProps) {
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
-  const [isViewEnabled, setIsViewEnabled] = useState(false);
+export default function FriendInfo({ friendData, userId }: FriendInfoProps) {
+  const [isNotificationEnabled, setIsNotificationEnabled] = useState(friendData.notifyOnDiary);
+  const [isViewEnabled, setIsViewEnabled] = useState(friendData.showDiary);
 
-  const toggleNotification = () => {
-    setIsNotificationEnabled(previousState => !previousState);
+  const toggleNotification = async () => {
+    const newValue = !isNotificationEnabled;
+    setIsNotificationEnabled(newValue);
+    saveNotifyOnDiary(userId, friendData.friendId, newValue, setIsNotificationEnabled, isNotificationEnabled);
   };
 
-  const toggleView = () => {
-    setIsViewEnabled(previousState => !previousState);
+  const toggleView = async () => {
+    const newValue = !isViewEnabled;
+    setIsViewEnabled(newValue);
+    saveShowDiary(userId, friendData.friendId, newValue, setIsViewEnabled, isViewEnabled);
   };
 
   const handleDelete = () => {
