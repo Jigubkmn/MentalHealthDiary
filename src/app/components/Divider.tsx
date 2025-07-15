@@ -1,9 +1,13 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 
-export default function Divider() {
+type Props = {
+  marginHorizontal?: number
+}
+
+export default function Divider({ marginHorizontal = 16 }: Props) {
   return (
-    <View style={styles.divider} />
+    <View style={[styles.divider, { marginHorizontal }]} />
   )
 }
 
@@ -12,7 +16,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.25)',
     marginVertical: 8,
-    marginHorizontal: 16,
     alignSelf: 'stretch',
   },
 })
