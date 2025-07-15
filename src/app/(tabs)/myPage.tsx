@@ -1,51 +1,54 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Header from '../myPage/components/Header'
 import DiaryShareInfo from '../myPage/components/DiaryShareInfo'
-import { auth, db } from '../../config';
+import { auth } from '../../config';
+import { router } from 'expo-router';
 import { UserInfoType } from '../../../type/userInfo'
-import { collection, onSnapshot, query } from 'firebase/firestore'
 import UserInfo from '../myPage/components/UserInfo';
+import fetchUserInfo from '../actions/fetchUserInfo';
 
 export default function myPage() {
-  const [userInfos, setUserInfos] = useState<UserInfoType[]>([])
+  const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
+  const [userInfoId, setUserInfoId] = useState<string>('')
+  const userId = auth.currentUser?.uid
 
   useEffect(() => {
     // ユーザー情報取得
-    const userId = auth.currentUser?.uid
     if (userId === null) return;
-      const ref = collection(db, `users/${userId}/userInfo`)
-      const q = query(ref) // ユーザー情報の参照を取得。
-      // snapshot：userInfoのデータを取得。
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const remoteUserInfo: UserInfoType[] = []
-        // データ1つずつの処理
-        snapshot.docs.forEach((doc) => {
-          console.log("ユーザー情報", doc.data())
-          const { accountId, userName } = doc.data();
-          remoteUserInfo.push({ accountId, userName })
-        })
-        setUserInfos(remoteUserInfo)
-      })
+
+    const unsubscribe = fetchUserInfo({
+      userId,
+      setUserInfos,
+      setUserInfoId
+    });
+
     return unsubscribe;
-  }, [])
+  }, [userId])
 
   return (
     <SafeAreaView style={styles.container}>
       <Header />
       <ScrollView style={styles.bodyContainer}>
-        {userInfos.map((userInfo) => {
-          return (
-            <UserInfo key={userInfo.accountId} userInfo={userInfo} />
-          )
-        })}
-        {/* <UserInfo /> */}
-        <View style={styles.diaryShareContainer}>
-          <Text style={styles.diaryShareTitle}>日記共通相手</Text>
-          <View style={styles.diaryShareInfoContainer}>
-            <DiaryShareInfo />
-            <DiaryShareInfo />
-            <DiaryShareInfo />
+        {/* ログインユーザー情報 */}
+        <UserInfo userInfos={userInfos} userId={userId} userInfoId={userInfoId} />
+        {/* 友人一覧 */}
+        <View style={styles.friendListContainer}>
+          <Text style={styles.friendListTitle}>友人一覧</Text>
+          <View style={styles.friendListWrapper}>
+            {/* 友人一覧 */}
+            <View style={styles.friendListInfoContainer}>
+              <DiaryShareInfo />
+              <DiaryShareInfo />
+              <DiaryShareInfo />
+            </View>
+            {/* 友人を登録 */}
+            <TouchableOpacity
+              onPress={() => {router.push('/searchFriend/searchFriend')}}
+              style={styles.addFriendButton}
+            >
+              <Text style={styles.buttonText}>友人を登録</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -61,20 +64,53 @@ const styles = StyleSheet.create({
   bodyContainer: {
     flex: 1,
     backgroundColor: '#F0F0F0',
-    paddingHorizontal: 48,
+    paddingHorizontal: 16,
   },
-  diaryShareContainer: {
+  friendListContainer: {
     flex: 1,
-    marginTop: 16,
+    marginVertical: 16,
   },
-  diaryShareTitle: {
+  friendListTitle: {
     fontSize: 14,
     lineHeight: 24,
     fontWeight: 'bold',
     marginLeft: 8
   },
-  diaryShareInfoContainer: {
+  friendListWrapper: {
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    backgroundColor: '#ffffff',
+  },
+  friendListHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  friendAddComment: {
+    fontSize: 14,
+    lineHeight: 24,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
+  },
+  friendListInfoContainer: {
+    borderRadius: 10,
+  },
+  addFriendButton: {
+    width: '100%',
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFA500',
+    borderRadius: 10,
+    marginVertical: 16,
+    marginHorizontal: 16,
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 30,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
 })
