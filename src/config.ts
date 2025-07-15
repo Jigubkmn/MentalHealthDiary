@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { initializeAuth, getAuth, Auth } from "firebase/auth";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import Constants from "expo-constants";
 
 // Firebaseの設定
 const firebaseConfig = {
@@ -16,19 +15,9 @@ const firebaseConfig = {
 
 // Firebaseの初期化
 const app = initializeApp(firebaseConfig);
-
-let auth: Auth;
-
-if (Constants.executionEnvironment === "bare") {
-  // Expo GoやWebはgetAuthのみで利用（永続化は効かない）
-  auth = getAuth(app);
-} else {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { getReactNativePersistence } = require('firebase/auth');
-auth = initializeAuth(app, {
+const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-})
-}
+});
 
 // Firebaseのデータベースの初期化
 const db = getFirestore(app);
