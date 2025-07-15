@@ -5,6 +5,7 @@ import { Image } from 'expo-image'
 import Header from './components/Header';
 import { UserInfoType } from '../../../type/userInfo';
 import HandleButton from '../components/button/HandleButton';
+import Divider from '../components/Divider';
 import fetchFriend from './actions/fetchFriend';
 import addFriend from './actions/addFriend';
 import { auth } from '../../config';
@@ -61,7 +62,7 @@ export default function searchFriend() {
           />
 
           {/* 区切り線 */}
-          <View style={styles.divider} />
+          <Divider />
 
           {/* 検索結果 */}
           <View style={styles.searchResultContainer}>
@@ -157,12 +158,6 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     color: '#FFFFFF',
     fontWeight: 'bold',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    marginVertical: 8,
-    width: '100%',
   },
   searchResultContainer: {
     flexDirection: 'column',
