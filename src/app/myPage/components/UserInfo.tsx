@@ -10,6 +10,7 @@ import UserEditContents from './UserEditContents';
 import { db } from '../../../config';
 import { doc, updateDoc } from 'firebase/firestore'
 import { validateAccountId, validateUserName } from '../../../../utils/validation';
+import Divider from '../../components/Divider';
 
 type UserInfoProps = {
   userInfos: UserInfoType | null
@@ -154,7 +155,7 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
         />
       </View>
       {/* 区切り線 */}
-      <View style={styles.divider} />
+      <Divider />
       {/* ログアウトボタン */}
       <TouchableOpacity style={styles.logoutButton} onPress={() => {handleLogout()}}>
         <Text style={styles.logoutButtonText}>ログアウト</Text>
@@ -214,11 +215,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     color: '#ffffff',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    marginVertical: 8,
-    width: '100%',
   },
 })
