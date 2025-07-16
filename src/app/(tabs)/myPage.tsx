@@ -46,6 +46,13 @@ export default function myPage() {
     fetchFriends();
   }, [])
 
+  // 友人削除後にstateを更新するコールバック関数
+  const handleFriendDeleted = (deletedFriendId: string) => {
+    setFriendsData(currentFriends =>
+      currentFriends.filter(friend => friend.friendId !== deletedFriendId)
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header />
@@ -60,7 +67,12 @@ export default function myPage() {
             <View style={styles.friendListInfoContainer}>
               {friendsData.length > 0 ? (
                 friendsData.map((friendData) => (
-                  <FriendInfo key={friendData.accountId} friendData={friendData} userId={userId || ''} />
+                  <FriendInfo
+                    key={friendData.accountId}
+                    friendData={friendData}
+                    userId={userId || ''}
+                    onFriendDeleted={handleFriendDeleted}
+                  />
                 ))
               ) : (
                 <>
