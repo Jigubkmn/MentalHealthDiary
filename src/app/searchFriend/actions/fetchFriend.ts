@@ -11,11 +11,20 @@ type Props = {
   setUserImage: (userImage: string | null) => void;
   setIsSearching: (isSearching: boolean) => void;
   setErrorMessage: (message: string | null) => void;
+  setFriendId: (friendId: string) => void;
 }
 
-export default async function fetchFriend({ accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching, setErrorMessage }: Props) {
+export default async function fetchFriend({
+  accountId,
+  currentUserId,
+  friendsAccountId,
+  setSearchResult,
+  setUserImage,
+  setIsSearching,
+  setErrorMessage,
+  setFriendId
+}: Props) {
   if (!accountId.trim()) return;
-  console.log("backend", friendsAccountId)
 
   setIsSearching(true);
   setErrorMessage(null);
@@ -42,6 +51,7 @@ export default async function fetchFriend({ accountId, currentUserId, friendsAcc
         if (!friendsAccountId.includes(accountId)) {
           setSearchResult(userData);
           setUserImage(userData.userImage ? userData.userImage : noUserImage);
+          setFriendId(doc.id); // userInfoのドキュメントIDを設定
         } else {
           console.log('既に登録されているアカウントIDです');
           setErrorMessage('既に登録されているアカウントIDです');

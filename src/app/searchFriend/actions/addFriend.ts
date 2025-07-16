@@ -1,21 +1,21 @@
 import { db } from '../../../config';
 import { Alert } from 'react-native';
-import {  collection, addDoc, Timestamp } from 'firebase/firestore';
-import { UserInfoType } from '../../../../type/userInfo';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { router } from 'expo-router';
 
 type Props = {
   currentUserId?: string;
-  searchResult: UserInfoType | null;
+  friendId: string;
+  accountId: string;
 }
 
-export default async function addFriend({ currentUserId, searchResult }: Props) {
-  if (!searchResult) return;
+export default async function addFriend({ currentUserId, friendId, accountId }: Props) {
 
   try {
     const ref = collection(db, `users/${currentUserId}/friends`);
     await addDoc(ref, {
-      accountId: searchResult.accountId,
+      friendId: friendId,
+      accountId: accountId,
       notifyOnDiary: true,
       showDiary: true,
       status: 'pending',

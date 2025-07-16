@@ -17,6 +17,7 @@ export default function searchFriend() {
   const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [friendsAccountId, setFriendsAccountId] = useState<string[]>([])
+  const [friendId, setFriendId] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const currentUserId = auth.currentUser?.uid;
@@ -44,12 +45,12 @@ export default function searchFriend() {
 
   // 友人を検索する関数
   const searchFriend = () => {
-    fetchFriend({accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching, setErrorMessage});
+    fetchFriend({accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching, setErrorMessage, setFriendId});
   };
 
   // 友人を登録する関数
   const addFriendButton = () => {
-    addFriend({ currentUserId, searchResult});
+    addFriend({ currentUserId, friendId, accountId });
   };
 
   return (

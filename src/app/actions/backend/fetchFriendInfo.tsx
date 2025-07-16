@@ -1,4 +1,4 @@
-import { collection, collectionGroup, query, getDocs, where } from 'firebase/firestore';
+import { collection, collectionGroup, query, getDocs } from 'firebase/firestore';
 import { db } from '../../../config';
 import { FriendInfoType } from '../../../../type/friend';
 
@@ -13,21 +13,26 @@ export default async function fetchFriendInfo(userId?: string): Promise<FriendIn
     // 各friendのデータを処理
     for (const friendDoc of friendsSnapshot.docs) {
       const friendData = friendDoc.data();
-      const accountId = friendData.accountId;
+      const friendId = friendData.friendId;
 
-      // accountIdに対応するユーザーのuserInfoを取得
+      // friendIdに対応するユーザーのuserInfoを取得
       const usersRef = collectionGroup(db, 'userInfo');
-      const q = query(usersRef, where('accountId', '==', accountId.trim()));
+      const q = query(usersRef);
       const querySnapshot = await getDocs(q);
 
-      if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const userInfoData = doc.data();
+      // friendIdと一致するuserInfoドキュメントを検索
+      let userInfoData = null;
+      for (const doc of querySnapshot.docs) {
+        if (doc.id === friendId) {
+          userInfoData = doc.data();
+          break;
+        }
+      }
 
+      if (userInfoData) {
         // データをまとめてオブジェクトに
         const friendInfo: FriendInfoType = {
           friendId: friendDoc.id,
-          accountId: friendData.accountId,
           notifyOnDiary: friendData.notifyOnDiary,
           showDiary: friendData.showDiary,
           status: friendData.status,
@@ -40,7 +45,7 @@ export default async function fetchFriendInfo(userId?: string): Promise<FriendIn
     }
     return friendsData;
   } catch (error) {
-    console.error('Error fetching friend info:', error);
+    console.error('フレンド情報の取得に失敗しました:', error);
     throw error;
   }
 }
