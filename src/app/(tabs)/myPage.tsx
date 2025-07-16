@@ -68,7 +68,7 @@ export default function myPage() {
               {friendsData.length > 0 ? (
                 friendsData.map((friendData) => (
                   <FriendInfo
-                    key={friendData.accountId}
+                    key={friendData.friendId}
                     friendData={friendData}
                     userId={userId || ''}
                     onFriendDeleted={handleFriendDeleted}
