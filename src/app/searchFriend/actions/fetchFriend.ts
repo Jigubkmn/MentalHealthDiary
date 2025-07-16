@@ -6,13 +6,15 @@ import { noUserImage } from '../../constants/userImage';
 type Props = {
   accountId: string;
   currentUserId?: string;
+  friendsAccountId: string[];
   setSearchResult: (searchResult: UserInfoType | null) => void;
   setUserImage: (userImage: string | null) => void;
   setIsSearching: (isSearching: boolean) => void;
 }
 
-export default async function fetchFriend({ accountId, currentUserId, setSearchResult, setUserImage, setIsSearching }: Props) {
+export default async function fetchFriend({ accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching }: Props) {
   if (!accountId.trim()) return;
+  console.log("backend", friendsAccountId)
 
   setIsSearching(true);
   try {
@@ -33,8 +35,12 @@ export default async function fetchFriend({ accountId, currentUserId, setSearchR
 
       // ログインユーザー以外のデータのみ取得
       if (doc.ref.parent.parent?.id !== currentUserId) {
+        if ( !friendsAccountId.includes(accountId) ) {
         setSearchResult(userData);
         setUserImage(userData.userImage ? userData.userImage : noUserImage);
+        } else {
+          console.log('既に登録されているアカウントIDです');
+        }
       } else {
         setSearchResult(null);
         setUserImage(noUserImage);

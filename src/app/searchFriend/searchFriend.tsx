@@ -9,17 +9,36 @@ import Divider from '../components/Divider';
 import fetchFriend from './actions/fetchFriend';
 import addFriend from './actions/addFriend';
 import { auth } from '../../config';
+import fetchFriendAccountId from '../actions/backend/fetchFriendAccountId';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
   const [accountId, setAccountId] = useState('')
   const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
   const [isSearching, setIsSearching] = useState(false)
+  const [friendsAccountId, setFriendsAccountId] = useState<string[]>([])
+
   // ログインユーザーのIDを取得
   const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     setUserImage(noUserImage)
+  }, [currentUserId]);
+
+  useEffect(() => {
+    // 友人アカウントIDを取得
+    const fetchAccountIds = async () => {
+      if (currentUserId) {
+        try {
+          const accountIds = await fetchFriendAccountId(currentUserId);
+          setFriendsAccountId(accountIds);
+        } catch (error) {
+          console.error('友人アカウントIDの取得に失敗しました:', error);
+        }
+      }
+    };
+
+    fetchAccountIds();
   }, []);
 
   // 必須項目が全て入力されているかチェック
@@ -29,7 +48,7 @@ export default function searchFriend() {
 
   // 友人を検索する関数
   const searchFriend = () => {
-    fetchFriend({accountId, currentUserId, setSearchResult, setUserImage, setIsSearching});
+    fetchFriend({accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching});
   };
 
   // 友人を登録する関数
