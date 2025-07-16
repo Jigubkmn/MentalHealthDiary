@@ -9,6 +9,7 @@ import BlockIcon from '../../components/Icon/Block';
 import getStatusStyle from '../action/getStatusStyle';
 import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
+import deleteFriend from '../action/backend/deleteFriend';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -30,11 +31,6 @@ export default function FriendInfo({ friendData, userId }: FriendInfoProps) {
     setIsViewEnabled(newValue);
     saveShowDiary(userId, friendData.friendId, newValue, setIsViewEnabled, isViewEnabled);
   };
-
-  const handleDelete = () => {
-    // onDelete();
-    console.log('delete');
-  }
 
   // statusのスタイルを取得
   const statusStyle = getStatusStyle(friendData.status);
@@ -82,12 +78,12 @@ export default function FriendInfo({ friendData, userId }: FriendInfoProps) {
       <Divider marginHorizontal={0} />
       <View style={styles.actionContainer}>
         {/* ブロックボタン */}
-        <TouchableOpacity onPress={handleDelete} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => {}} style={styles.actionButton}>
           <BlockIcon size={24} color="#000000" />
           <Text style={styles.blockButtonText}>ブロックする</Text>
         </TouchableOpacity>
         {/* 削除ボタン */}
-        <TouchableOpacity onPress={handleDelete} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => deleteFriend(userId, friendData)} style={styles.actionButton}>
           <DeleteIcon size={24} color="#FF0000" />
           <Text style={styles.deleteButtonText}>削除</Text>
         </TouchableOpacity>
