@@ -14,9 +14,10 @@ import deleteFriend from '../action/backend/deleteFriend';
 type FriendInfoProps = {
   friendData: FriendInfoType
   userId: string
+  onFriendDeleted: (friendId: string) => void
 }
 
-export default function FriendInfo({ friendData, userId }: FriendInfoProps) {
+export default function FriendInfo({ friendData, userId, onFriendDeleted }: FriendInfoProps) {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(friendData.notifyOnDiary);
   const [isViewEnabled, setIsViewEnabled] = useState(friendData.showDiary);
 
@@ -83,7 +84,7 @@ export default function FriendInfo({ friendData, userId }: FriendInfoProps) {
           <Text style={styles.blockButtonText}>ブロックする</Text>
         </TouchableOpacity>
         {/* 削除ボタン */}
-        <TouchableOpacity onPress={() => deleteFriend(userId, friendData)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => deleteFriend(userId, friendData, onFriendDeleted)} style={styles.actionButton}>
           <DeleteIcon size={24} color="#FF0000" />
           <Text style={styles.deleteButtonText}>削除</Text>
         </TouchableOpacity>
