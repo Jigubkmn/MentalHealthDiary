@@ -17,15 +17,12 @@ export default function searchFriend() {
   const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [friendsAccountId, setFriendsAccountId] = useState<string[]>([])
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  // ログインユーザーのIDを取得
   const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     setUserImage(noUserImage)
-  }, [currentUserId]);
-
-  useEffect(() => {
     // 友人アカウントIDを取得
     const fetchAccountIds = async () => {
       if (currentUserId) {
@@ -37,9 +34,8 @@ export default function searchFriend() {
         }
       }
     };
-
     fetchAccountIds();
-  }, []);
+  }, [currentUserId]);
 
   // 必須項目が全て入力されているかチェック
   const isFormValid = (): boolean => {
@@ -48,7 +44,7 @@ export default function searchFriend() {
 
   // 友人を検索する関数
   const searchFriend = () => {
-    fetchFriend({accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching});
+    fetchFriend({accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching, setErrorMessage});
   };
 
   // 友人を登録する関数
@@ -106,7 +102,7 @@ export default function searchFriend() {
               </>
             ) : (
               <Text style={styles.noResultText}>
-                {isSearching && 'ユーザーが見つかりません'}
+                {isSearching && errorMessage}
               </Text>
             )}
           </View>
@@ -212,5 +208,12 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#666666',
     textAlign: 'center',
-  }
+  },
+  errorMessage: {
+    fontSize: 14,
+    lineHeight: 24,
+    color: '#FF0000',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
 });
