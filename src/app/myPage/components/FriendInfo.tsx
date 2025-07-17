@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { noUserImage } from '../../constants/userImage';
@@ -10,6 +10,7 @@ import getStatusStyle from '../action/getStatusStyle';
 import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
 import deleteFriend from '../action/backend/deleteFriend';
+import updateStatus from '../action/backend/updateStatus';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -20,6 +21,9 @@ type FriendInfoProps = {
 export default function FriendInfo({ friendData, userId, onFriendDeleted }: FriendInfoProps) {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(friendData.notifyOnDiary);
   const [isViewEnabled, setIsViewEnabled] = useState(friendData.showDiary);
+  const [status, setStatus] = useState(friendData.status);
+  const [statusStyle, setStatusStyle] = useState(getStatusStyle(friendData.status));
+  const [isBlocked, setIsBlocked] = useState(false);
 
   const toggleNotification = async () => {
     const newValue = !isNotificationEnabled;
@@ -33,8 +37,17 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     saveShowDiary(userId, friendData.friendId, newValue, setIsViewEnabled, isViewEnabled);
   };
 
-  // statusのスタイルを取得
-  const statusStyle = getStatusStyle(friendData.status);
+  useEffect(() => {
+    const isStatusBlocked = status === 'block';
+    setIsBlocked(isStatusBlocked);
+  }, []);
+
+  useEffect(() => {
+    const statusStyle = getStatusStyle(status);
+    // statusのスタイルを取得
+    setStatusStyle(statusStyle);
+  }, [status]);
+
 
   return (
     <View style={styles.friendInfo}>
@@ -79,9 +92,9 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
       <Divider marginHorizontal={0} />
       <View style={styles.actionContainer}>
         {/* ブロックボタン */}
-        <TouchableOpacity onPress={() => {}} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => updateStatus(userId, friendData.friendId, status, isBlocked, setStatus, setIsBlocked)} style={styles.actionButton}>
           <BlockIcon size={24} color="#000000" />
-          <Text style={styles.blockButtonText}>ブロックする</Text>
+          <Text style={styles.blockButtonText}>{isBlocked ? 'ブロック解除' : 'ブロック'}</Text>
         </TouchableOpacity>
         {/* 削除ボタン */}
         <TouchableOpacity onPress={() => deleteFriend(userId, friendData, onFriendDeleted)} style={styles.actionButton}>

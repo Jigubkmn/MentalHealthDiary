@@ -2,9 +2,9 @@ import { StatusStyle } from "../../../../type/statusStyle";
 
 export default function getStatusStyle(status: string): StatusStyle {
   switch (status) {
-    case 'rejection':
+    case 'block':
       return {
-        text: '拒否',
+        text: 'ブロック',
         backgroundColor: '#8D8D8D',
         textColor: '#FFFFFF'
       };
