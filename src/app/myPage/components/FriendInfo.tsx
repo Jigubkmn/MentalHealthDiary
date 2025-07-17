@@ -104,7 +104,16 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
       <Divider marginHorizontal={0} />
       <View style={styles.actionContainer}>
         {/* ブロックボタン */}
-        <TouchableOpacity onPress={() => updateStatus(userId, friendData.friendId, status, isBlocked, setStatus, setIsBlocked)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => updateStatus(
+          userId,
+          friendData.friendId,
+          isBlocked,
+          setStatus,
+          setIsBlocked,
+          setIsNotificationEnabled,
+          setIsViewEnabled
+          )}
+          style={styles.actionButton}>
           <BlockIcon size={24} color="#000000" />
           <Text style={styles.blockButtonText}>{isBlocked ? 'ブロック解除' : 'ブロック'}</Text>
         </TouchableOpacity>
