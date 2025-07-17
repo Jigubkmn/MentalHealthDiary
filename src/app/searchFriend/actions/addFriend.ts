@@ -24,6 +24,7 @@ export default async function addFriend({ currentUserId, friendUsersId, accountI
     await addDoc(currentUserRef, {
       friendId: friendUserInfosId,
       accountId: accountId,
+      blocked: false,
       notifyOnDiary: true,
       showDiary: true,
       status: 'pending',
@@ -33,6 +34,7 @@ export default async function addFriend({ currentUserId, friendUsersId, accountI
     await addDoc(friendRef, {
       friendId: currentUserInfosId,
       accountId: currentAccountId,
+      blocked: false,
       notifyOnDiary: true,
       showDiary: true,
       status: 'pending',

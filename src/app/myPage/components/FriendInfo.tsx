@@ -107,6 +107,8 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
         <TouchableOpacity onPress={() => updateStatus(
           userId,
           friendData.friendId,
+          friendData.friendUsersId,
+          friendDocumentId,
           isBlocked,
           setStatus,
           setIsBlocked,
