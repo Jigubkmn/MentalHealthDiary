@@ -56,7 +56,11 @@ export default function myPage() {
       <Header currentAccountId={userInfos?.accountId} currentUserInfosId={userInfos?.id} />
       <ScrollView style={styles.bodyContainer}>
         {/* ログインユーザー情報 */}
-        <UserInfo userInfos={userInfos} userId={userId} userInfoId={userInfos?.id} />
+        <UserInfo
+          userInfos={userInfos}
+          userId={userId}
+          userInfoId={userInfos?.id}
+        />
         {/* 友人一覧 */}
         <View style={styles.friendListContainer}>
           <Text style={styles.friendListTitle}>友人一覧</Text>

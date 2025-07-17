@@ -13,7 +13,7 @@ export default async function fetchFriendList(userId?: string): Promise<FriendIn
     // 各friendのデータを処理
     for (const friendDoc of friendsSnapshot.docs) {
       const friendData = friendDoc.data();
-      const friendUsersId = friendData.friendId;
+      const friendUserInfoId = friendData.friendId; // userInfoドキュメントのID
 
       // friendIdに対応するユーザーのuserInfoを取得
       const usersRef = collectionGroup(db, 'userInfo');
@@ -22,9 +22,11 @@ export default async function fetchFriendList(userId?: string): Promise<FriendIn
 
       // friendIdと一致するuserInfoドキュメントを検索
       let userInfoData = null;
+      let friendUsersId = null;
       for (const doc of querySnapshot.docs) {
-        if (doc.id === friendUsersId) {
+        if (doc.id === friendUserInfoId) {
           userInfoData = doc.data();
+          friendUsersId = doc.ref.parent.parent?.id; // usersコレクションのドキュメントID
           break;
         }
       }
@@ -32,7 +34,7 @@ export default async function fetchFriendList(userId?: string): Promise<FriendIn
       if (userInfoData) {
         // データをまとめてオブジェクトに
         const friendInfo: FriendInfoType = {
-          friendUsersId,
+          friendUsersId: friendUsersId || '',
           friendId: friendDoc.id,
           notifyOnDiary: friendData.notifyOnDiary,
           showDiary: friendData.showDiary,

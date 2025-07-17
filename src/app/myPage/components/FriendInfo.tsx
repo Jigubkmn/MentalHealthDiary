@@ -11,6 +11,7 @@ import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
 import deleteFriend from '../action/backend/deleteFriend';
 import updateStatus from '../action/backend/updateStatus';
+import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -24,6 +25,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
   const [status, setStatus] = useState(friendData.status);
   const [statusStyle, setStatusStyle] = useState(getStatusStyle(friendData.status));
   const [isBlocked, setIsBlocked] = useState(false);
+  const [friendDocumentId, setFriendDocumentId] = useState('');
 
   const toggleNotification = async () => {
     const newValue = !isNotificationEnabled;
@@ -40,6 +42,17 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
   useEffect(() => {
     const isStatusBlocked = status === 'block';
     setIsBlocked(isStatusBlocked);
+
+    const fetchFriendDocument = async () => {
+      try {
+        const data = await fetchFriendDocumentId(friendData.friendUsersId);
+        setFriendDocumentId(data || '');
+      } catch (error) {
+        console.error('フレンドドキュメントIDの取得に失敗しました', error);
+      }
+    };
+
+    fetchFriendDocument();
   }, []);
 
   useEffect(() => {
@@ -47,7 +60,6 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     // statusのスタイルを取得
     setStatusStyle(statusStyle);
   }, [status]);
-
 
   return (
     <View style={styles.friendInfo}>
@@ -97,7 +109,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
           <Text style={styles.blockButtonText}>{isBlocked ? 'ブロック解除' : 'ブロック'}</Text>
         </TouchableOpacity>
         {/* 削除ボタン */}
-        <TouchableOpacity onPress={() => deleteFriend(userId, friendData, onFriendDeleted)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => deleteFriend(userId, friendData, friendDocumentId,  onFriendDeleted)} style={styles.actionButton}>
           <DeleteIcon size={24} color="#FF0000" />
           <Text style={styles.deleteButtonText}>削除</Text>
         </TouchableOpacity>

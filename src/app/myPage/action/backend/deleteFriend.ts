@@ -7,6 +7,7 @@ import { FriendInfoType } from '../../../../../type/friend';
 export default async function deleteFriend(
   userId: string,
   friendData: FriendInfoType,
+  friendDocumentId: string,
   onFriendDeleted: (friendId: string) => void
 ) {
   Alert.alert(
@@ -23,7 +24,9 @@ export default async function deleteFriend(
         onPress: async () => {
           try {
             const friendRef = doc(db, `users/${userId}/friends/${friendData.friendId}`);
+            const currentUserRef = doc(db, `users/${friendData.friendUsersId}/friends/${friendDocumentId}`);
             await deleteDoc(friendRef);
+            await deleteDoc(currentUserRef);
             console.log('友人を削除しました');
             Alert.alert('削除完了', '友人を削除しました');
             onFriendDeleted(friendData.friendId);
