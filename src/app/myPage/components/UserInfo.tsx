@@ -15,7 +15,7 @@ import Divider from '../../components/Divider';
 type UserInfoProps = {
   userInfos: UserInfoType | null
   userId?: string
-  userInfoId: string
+  userInfoId?: string
 }
 
 export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProps) {

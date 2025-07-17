@@ -5,22 +5,39 @@ import { router } from 'expo-router';
 
 type Props = {
   currentUserId?: string;
-  friendId: string;
+  friendUsersId: string;
   accountId: string;
+  currentUserInfosId?: string;
+  currentAccountId?: string;
+  friendUserInfosId: string | null;
 }
 
-export default async function addFriend({ currentUserId, friendId, accountId }: Props) {
+export default async function addFriend({ currentUserId, friendUsersId, accountId, currentUserInfosId, currentAccountId, friendUserInfosId }: Props) {
+  if (!currentUserId || !friendUsersId || !accountId || !currentUserInfosId || !currentAccountId || !friendUserInfosId) {
+    return;
+  }
 
   try {
-    const ref = collection(db, `users/${currentUserId}/friends`);
-    await addDoc(ref, {
-      friendId: friendId,
+    const currentUserRef = collection(db, `users/${currentUserId}/friends`);
+    const friendRef = collection(db, `users/${friendUsersId}/friends`);
+    // ログインユーザーのfriendsコレクションに友人を追加
+    await addDoc(currentUserRef, {
+      friendId: friendUserInfosId,
       accountId: accountId,
       notifyOnDiary: true,
       showDiary: true,
       status: 'pending',
       createdAt: Timestamp.fromDate(new Date()),
-    })
+    });
+    // 友人のfriendsコレクションにログインユーザーを追加
+    await addDoc(friendRef, {
+      friendId: currentUserInfosId,
+      accountId: currentAccountId,
+      notifyOnDiary: true,
+      showDiary: true,
+      status: 'pending',
+      createdAt: Timestamp.fromDate(new Date()),
+    });
     Alert.alert('友人を追加しました');
     router.push('/(tabs)/myPage');
 

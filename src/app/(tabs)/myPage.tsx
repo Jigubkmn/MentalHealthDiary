@@ -13,7 +13,6 @@ import Divider from '../components/Divider';
 
 export default function myPage() {
   const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
-  const [userInfoId, setUserInfoId] = useState<string>('')
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const userId = auth.currentUser?.uid
 
@@ -24,7 +23,6 @@ export default function myPage() {
     const unsubscribe = fetchUserInfo({
       userId,
       setUserInfos,
-      setUserInfoId
     });
 
     return unsubscribe;
@@ -55,10 +53,10 @@ export default function myPage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header currentAccountId={userInfos?.accountId} currentUserInfosId={userInfos?.id} />
       <ScrollView style={styles.bodyContainer}>
         {/* ログインユーザー情報 */}
-        <UserInfo userInfos={userInfos} userId={userId} userInfoId={userInfoId} />
+        <UserInfo userInfos={userInfos} userId={userId} userInfoId={userInfos?.id} />
         {/* 友人一覧 */}
         <View style={styles.friendListContainer}>
           <Text style={styles.friendListTitle}>友人一覧</Text>
@@ -86,7 +84,12 @@ export default function myPage() {
             </View>
             {/* 友人を登録 */}
             <TouchableOpacity
-              onPress={() => {router.push('/searchFriend/searchFriend')}}
+              onPress={() => {router.push({
+                pathname: '/searchFriend/searchFriend',
+                params: {
+                  currentAccountId: userInfos?.accountId,
+                  currentUserInfosId: userInfos?.id,
+                }})}}
               style={styles.addFriendButton}
             >
               <Text style={styles.buttonText}>友人を登録</Text>

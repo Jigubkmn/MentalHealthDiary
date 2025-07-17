@@ -9,6 +9,7 @@ import Divider from '../components/Divider';
 import fetchFriend from './actions/fetchFriend';
 import addFriend from './actions/addFriend';
 import { auth } from '../../config';
+import { useLocalSearchParams } from 'expo-router';
 import fetchFriendAccountId from '../actions/backend/fetchFriendAccountId';
 
 export default function searchFriend() {
@@ -17,8 +18,10 @@ export default function searchFriend() {
   const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [friendsAccountId, setFriendsAccountId] = useState<string[]>([])
-  const [friendId, setFriendId] = useState<string>('')
+  const [friendUsersId, setFriendUsersId] = useState<string>('') // friendのusersのid
+  const [friendUserInfosId, setFriendUserInfosId] = useState<string>('') // friendのuserInfosのid
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { currentAccountId, currentUserInfosId } = useLocalSearchParams<{ currentAccountId?: string, currentUserInfosId?: string }>();
 
   const currentUserId = auth.currentUser?.uid;
 
@@ -45,12 +48,29 @@ export default function searchFriend() {
 
   // 友人を検索する関数
   const searchFriend = () => {
-    fetchFriend({accountId, currentUserId, friendsAccountId, setSearchResult, setUserImage, setIsSearching, setErrorMessage, setFriendId});
+    fetchFriend({
+      accountId,
+      currentUserId,
+      friendsAccountId,
+      setSearchResult,
+      setUserImage,
+      setIsSearching,
+      setErrorMessage,
+      setFriendUsersId,
+      setFriendUserInfosId
+    });
   };
 
   // 友人を登録する関数
   const addFriendButton = () => {
-    addFriend({ currentUserId, friendId, accountId });
+    addFriend({
+      currentUserId,
+      friendUsersId,
+      accountId,
+      currentAccountId,
+      currentUserInfosId: currentUserInfosId || undefined,
+      friendUserInfosId: friendUserInfosId
+    });
   };
 
   return (
