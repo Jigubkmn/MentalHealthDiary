@@ -8,7 +8,7 @@ import { FriendInfoType } from '../../../type/friend'
 import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
-import fetchFriendInfo from '../actions/backend/fetchFriendInfo';
+import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 import Divider from '../components/Divider';
 
 export default function myPage() {
@@ -33,7 +33,7 @@ export default function myPage() {
 
     const fetchFriends = async () => {
       try {
-        const data = await fetchFriendInfo(userId);
+        const data = await fetchFriendList(userId);
         // ここでfriendsDataをstateに保存する処理を追加
         setFriendsData(data);
       } catch (error) {
