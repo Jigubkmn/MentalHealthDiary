@@ -5,7 +5,7 @@ import deleteFriend from './backend/deleteFriend';
 export default async function ConfirmationDeleteFriendModal(
   userId: string,
   friendData: FriendInfoType,
-  friendDocumentId: string,
+  friendDocumentId: string | null,
   onFriendDeleted: (friendId: string) => void
 ) {
   Alert.alert(

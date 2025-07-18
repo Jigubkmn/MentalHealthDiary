@@ -26,7 +26,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
   const [status, setStatus] = useState(friendData.status);
   const [statusStyle, setStatusStyle] = useState(getStatusStyle(friendData.status));
   const [isBlocked, setIsBlocked] = useState(false);
-  const [friendDocumentId, setFriendDocumentId] = useState('');
+  const [friendDocumentId, setFriendDocumentId] = useState<string | null>(null);
 
   const toggleNotification = async () => {
     const newValue = !isNotificationEnabled;
@@ -69,14 +69,14 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     const fetchFriendDocument = async () => {
       try {
         const data = await fetchFriendDocumentId(friendData.friendUsersId);
-        setFriendDocumentId(data || '');
+        setFriendDocumentId(data || null);
+        // 承認確認モーダル表示
+        ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, handleApproveFriend);
       } catch (error) {
         console.error('フレンドドキュメントIDの取得に失敗しました', error);
       }
     };
 
-    // 承認確認モーダル表示
-    ApprovalConfirmationModal(userId, friendData, friendDocumentId, onFriendDeleted, handleApproveFriend);
     fetchFriendDocument();
   }, []);
 

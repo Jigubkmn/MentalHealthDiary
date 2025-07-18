@@ -1,20 +1,27 @@
 import { Alert } from 'react-native'
 import { FriendInfoType } from '../../../../type/friend'
+import deleteFriend from './backend/deleteFriend'
 
 
-export default function ApprovalConfirmationModal(friendData: FriendInfoType, handleApproveFriend: () => void) {
-  if (friendData.status === 'awaitingApproval') {
+export default function ApprovalConfirmationModal(
+  userId: string,
+  friendData: FriendInfoType,
+  friendDocumentId: string | null,
+  onFriendDeleted: (friendId: string) => void,
+  handleApproveFriend: () => void
+) {
+  if (friendData.status === 'awaitingApproval' ) {
     // 承認確認モーダルを表示
     Alert.alert(
       '友人承認',
       `${friendData.userName}さんからの友達申請を承認しますか？`,
       [
         {
-          text: 'キャンセル',
-          style: 'cancel',
+          text: '承認しない',
+          onPress: async () => deleteFriend(userId, friendData, friendDocumentId, onFriendDeleted),
         },
         {
-          text: '承認',
+          text: '承認する',
           onPress: () => handleApproveFriend(),
         },
       ]

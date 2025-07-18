@@ -1,4 +1,4 @@
-import { Alert } from 'react-native'
+import { Alert } from 'react-native';
 import { db } from '../../../../config';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { FriendInfoType } from '../../../../../type/friend';
@@ -6,9 +6,10 @@ import { FriendInfoType } from '../../../../../type/friend';
 export default async function deleteFriend(
   userId: string,
   friendData: FriendInfoType,
-  friendDocumentId: string,
+  friendDocumentId: string | null,
   onFriendDeleted: (friendId: string) => void
 ) {
+  if (userId === null || friendData.friendId === null || friendData.friendUsersId === null) return;
   try {
     const friendRef = doc(db, `users/${userId}/friends/${friendData.friendId}`);
     const currentUserRef = doc(db, `users/${friendData.friendUsersId}/friends/${friendDocumentId}`);
