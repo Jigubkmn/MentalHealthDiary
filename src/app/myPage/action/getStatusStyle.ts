@@ -14,6 +14,12 @@ export default function getStatusStyle(status: string): StatusStyle {
         backgroundColor: '#28C228',
         textColor: '#FFFFFF'
       };
+    case 'pendingApproval':
+      return {
+        text: '承認待ち',
+        backgroundColor: '#28C228',
+        textColor: '#FFFFFF'
+      };
     case 'unApproved':
       return {
         text: '未承認',
