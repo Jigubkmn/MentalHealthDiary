@@ -20,12 +20,6 @@ export default function getStatusStyle(status: string): StatusStyle {
         backgroundColor: '#28C228',
         textColor: '#FFFFFF'
       };
-    case 'unApproved':
-      return {
-        text: '未承認',
-        backgroundColor: '#8D8D8D',
-        textColor: '#FFFFFF'
-      };
     case 'approval':
       return {
         text: '承認済み',
