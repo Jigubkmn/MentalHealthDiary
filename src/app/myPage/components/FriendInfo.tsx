@@ -9,10 +9,10 @@ import BlockIcon from '../../components/Icon/Block';
 import getStatusStyle from '../action/getStatusStyle';
 import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
-import deleteFriend from '../action/backend/deleteFriend';
 import updateStatus from '../action/backend/updateStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
 import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
+import ConfirmationDeleteFriendModal from '../action/ConfirmationDeleteFriendModal';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -76,7 +76,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     };
 
     // 承認確認モーダル表示
-    ApprovalConfirmationModal(friendData, handleApproveFriend);
+    ApprovalConfirmationModal(userId, friendData, friendDocumentId, onFriendDeleted, handleApproveFriend);
     fetchFriendDocument();
   }, []);
 
@@ -143,7 +143,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
           <Text style={styles.blockButtonText}>{isBlocked ? 'ブロック解除' : 'ブロック'}</Text>
         </TouchableOpacity>
         {/* 削除ボタン */}
-        <TouchableOpacity onPress={() => deleteFriend(userId, friendData, friendDocumentId,  onFriendDeleted)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => ConfirmationDeleteFriendModal(userId, friendData, friendDocumentId,  onFriendDeleted)} style={styles.actionButton}>
           <DeleteIcon size={24} color="#FF0000" />
           <Text style={styles.deleteButtonText}>削除</Text>
         </TouchableOpacity>
