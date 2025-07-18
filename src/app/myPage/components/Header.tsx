@@ -4,8 +4,12 @@ import { router } from 'expo-router';
 import UserAddIcon from '../../components/Icon/UserAddIcon';
 import SettingIcon from '../../components/Icon/SettingIcon';
 
+type Props = {
+  currentAccountId?: string;
+  currentUserInfosId?: string;
+}
 
-export default function Header() {
+export default function Header({ currentAccountId, currentUserInfosId }: Props) {
 
   return (
     <View style={styles.header}>
@@ -16,7 +20,14 @@ export default function Header() {
         <Text style={styles.headerTitle}>マイページ</Text>
       </View>
       <View style={styles.headerRight}>
-        <TouchableOpacity onPress={() => {router.push('/searchFriend/searchFriend')}} style={styles.userAddIcon}>
+        <TouchableOpacity
+          onPress={() => {router.push({
+            pathname: '/searchFriend/searchFriend',
+            params: {
+              currentAccountId: currentAccountId,
+              currentUserInfosId: currentUserInfosId,
+            }})}}
+          style={styles.userAddIcon}>
           <UserAddIcon size={24} color="#FFA500" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {}}>

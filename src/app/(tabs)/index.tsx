@@ -14,10 +14,8 @@ import fetchUserInfo from '../actions/fetchUserInfo';
 export default function home() {
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
   const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
-  const [userInfoId, setUserInfoId] = useState<string>('')
   const userId = auth.currentUser?.uid
   const router = useRouter();
-  console.log("userInfoId", userInfoId)
 
   // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
@@ -35,7 +33,6 @@ export default function home() {
     const unsubscribe = fetchUserInfo({
       userId,
       setUserInfos,
-      setUserInfoId
     });
 
     return unsubscribe;

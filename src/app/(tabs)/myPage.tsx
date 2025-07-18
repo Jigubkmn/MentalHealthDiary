@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Header from '../myPage/components/Header'
-import DiaryShareInfo from '../myPage/components/DiaryShareInfo'
 import { auth } from '../../config';
 import { router } from 'expo-router';
 import { UserInfoType } from '../../../type/userInfo'
+import { FriendInfoType } from '../../../type/friend'
+import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchFriendList from '../myPage/action/backend/fetchFriendList';
+import Divider from '../components/Divider';
 
 export default function myPage() {
   const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
-  const [userInfoId, setUserInfoId] = useState<string>('')
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const userId = auth.currentUser?.uid
 
   useEffect(() => {
@@ -20,31 +23,77 @@ export default function myPage() {
     const unsubscribe = fetchUserInfo({
       userId,
       setUserInfos,
-      setUserInfoId
     });
 
     return unsubscribe;
   }, [userId])
 
+  useEffect(() => {
+    if (userId === null) return;
+
+    const fetchFriends = async () => {
+      try {
+        const data = await fetchFriendList(userId);
+        // ここでfriendsDataをstateに保存する処理を追加
+        setFriendsData(data);
+      } catch (error) {
+        console.error('友人一覧の取得に失敗しました。', error);
+      }
+    };
+
+    fetchFriends();
+  }, [])
+
+  // 友人削除後にstateを更新するコールバック関数
+  const handleFriendDeleted = (deletedFriendId: string) => {
+    setFriendsData(currentFriends =>
+      currentFriends.filter(friend => friend.friendId !== deletedFriendId)
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header currentAccountId={userInfos?.accountId} currentUserInfosId={userInfos?.id} />
       <ScrollView style={styles.bodyContainer}>
         {/* ログインユーザー情報 */}
-        <UserInfo userInfos={userInfos} userId={userId} userInfoId={userInfoId} />
+        <UserInfo
+          userInfos={userInfos}
+          userId={userId}
+          userInfoId={userInfos?.id}
+        />
         {/* 友人一覧 */}
         <View style={styles.friendListContainer}>
           <Text style={styles.friendListTitle}>友人一覧</Text>
           <View style={styles.friendListWrapper}>
             {/* 友人一覧 */}
             <View style={styles.friendListInfoContainer}>
-              <DiaryShareInfo />
-              <DiaryShareInfo />
-              <DiaryShareInfo />
+              {friendsData.length > 0 ? (
+                friendsData.map((friendData) => (
+                  <FriendInfo
+                    key={friendData.friendId}
+                    friendData={friendData}
+                    userId={userId || ''}
+                    onFriendDeleted={handleFriendDeleted}
+                  />
+                ))
+              ) : (
+                <>
+                <View style={styles.noFriendContainer}>
+                  <Text style={styles.noFriendText}>友人がいません。</Text>
+                  <Text style={styles.noFriendText}>友人を登録して下さい。</Text>
+                </View>
+                <Divider />
+                </>
+              )}
             </View>
             {/* 友人を登録 */}
             <TouchableOpacity
-              onPress={() => {router.push('/searchFriend/searchFriend')}}
+              onPress={() => {router.push({
+                pathname: '/searchFriend/searchFriend',
+                params: {
+                  currentAccountId: userInfos?.accountId,
+                  currentUserInfosId: userInfos?.id,
+                }})}}
               style={styles.addFriendButton}
             >
               <Text style={styles.buttonText}>友人を登録</Text>
@@ -98,7 +147,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   addFriendButton: {
-    width: '100%',
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
@@ -112,5 +160,15 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+  noFriendContainer: {
+    padding: 16,
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  noFriendText: {
+    fontSize: 14,
+    lineHeight: 24,
+    textAlign: 'center',
   },
 })
