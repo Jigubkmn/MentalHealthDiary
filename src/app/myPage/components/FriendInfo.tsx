@@ -12,6 +12,7 @@ import saveShowDiary from '../action/backend/saveShowDiary';
 import deleteFriend from '../action/backend/deleteFriend';
 import updateStatus from '../action/backend/updateStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
+import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -39,6 +40,28 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     saveShowDiary(userId, friendData.friendId, newValue, setIsViewEnabled, isViewEnabled);
   };
 
+  // 友人承認処理
+  const handleApproveFriend = async () => {
+    // try {
+    //   // ステータスを'approved'に更新
+    //   await updateStatus(
+    //     userId,
+    //     friendData.friendId,
+    //     friendData.friendUsersId,
+    //     friendDocumentId,
+    //     false, // isBlocked
+    //     setStatus,
+    //     setIsBlocked,
+    //     setIsNotificationEnabled,
+    //     setIsViewEnabled
+    //   );
+    //   Alert.alert('承認しました', `${friendData.userName}さんを友達として承認しました`);
+    // } catch (error) {
+    //   console.error('友人承認に失敗しました:', error);
+    //   Alert.alert('エラー', '友人承認に失敗しました');
+    // }
+  };
+
   useEffect(() => {
     const isStatusBlocked = status === 'block';
     setIsBlocked(isStatusBlocked);
@@ -52,6 +75,8 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
       }
     };
 
+    // 承認確認モーダル表示
+    ApprovalConfirmationModal(friendData, handleApproveFriend);
     fetchFriendDocument();
   }, []);
 
