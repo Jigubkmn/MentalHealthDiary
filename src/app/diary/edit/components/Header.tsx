@@ -67,13 +67,7 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
       setDiaryText("");
       setSelectedFeeling(null);
       setSelectedImage(null);
-      router.push({
-        pathname: `/diary/show/diaryShow`,
-        params: {
-          diaryId: diaryId,
-          isTouchFeelingButton: 'false'
-        }
-      });
+      router.push("/(tabs)");
     } catch (error) {
       console.log("error", error);
       Alert.alert("日記の更新に失敗しました");
