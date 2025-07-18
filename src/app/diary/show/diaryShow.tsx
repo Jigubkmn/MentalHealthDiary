@@ -85,8 +85,6 @@ export default function diaryShow() {
                 <Image
                   source={{ uri: selectedDiaryInfo.selectedImage }}
                   style={styles.selectedImage}
-                  contentFit="contain"
-                  cachePolicy="memory-disk"
                 />
               ) : (
                 <Text style={styles.ImageText}>写真を選択していません</Text>

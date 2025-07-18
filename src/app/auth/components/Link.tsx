@@ -11,7 +11,7 @@ type Props = {
 export default function AuthNavigationLink({ text, href, color = '#26B441' }: Props) {
   return (
     <Link href={href} asChild>
-      <TouchableOpacity>
+      <TouchableOpacity style={styles.touchable}>
         <Text style={[styles.loginLinkText, { color }]}>{text}</Text>
       </TouchableOpacity>
     </Link>
@@ -19,6 +19,9 @@ export default function AuthNavigationLink({ text, href, color = '#26B441' }: Pr
 }
 
 const styles = StyleSheet.create({
+  touchable: {
+    alignSelf: 'center',
+  },
   loginLinkText: {
     fontSize: 14,
     lineHeight : 24,
