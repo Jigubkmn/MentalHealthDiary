@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { db } from '../../../../config';
 import { doc, updateDoc } from 'firebase/firestore'
 
-export default async function updateStatus(
+export default async function updateBlockStatus(
   userId: string,
   friendId: string,
   isBlocked: boolean,

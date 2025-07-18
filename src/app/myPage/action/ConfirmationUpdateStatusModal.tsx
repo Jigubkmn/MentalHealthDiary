@@ -1,5 +1,5 @@
 import { Alert } from 'react-native'
-import updateStatus from './backend/updateStatus';
+import updateBlockStatus from './backend/updateBlockStatus';
 
 export default function ConfirmationUpdateStatusModal(
   userId: string,
@@ -21,7 +21,7 @@ export default function ConfirmationUpdateStatusModal(
       {
         text: isBlocked ? 'ブロック解除' : 'ブロック',
         style: 'destructive',
-        onPress: async () => updateStatus(
+        onPress: async () => updateBlockStatus(
           userId,
           friendId,
           isBlocked,
