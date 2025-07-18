@@ -9,7 +9,7 @@ import BlockIcon from '../../components/Icon/Block';
 import getStatusStyle from '../action/getStatusStyle';
 import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
-import updateStatus from '../action/backend/updateStatus';
+import updateStatus from '../action/backend/updateBlockStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
 import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
 import ConfirmationDeleteFriendModal from '../action/ConfirmationDeleteFriendModal';
@@ -40,28 +40,6 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     saveShowDiary(userId, friendData.friendId, newValue, setIsViewEnabled, isViewEnabled);
   };
 
-  // 友人承認処理
-  const handleApproveFriend = async () => {
-    // try {
-    //   // ステータスを'approved'に更新
-    //   await updateStatus(
-    //     userId,
-    //     friendData.friendId,
-    //     friendData.friendUsersId,
-    //     friendDocumentId,
-    //     false, // isBlocked
-    //     setStatus,
-    //     setIsBlocked,
-    //     setIsNotificationEnabled,
-    //     setIsViewEnabled
-    //   );
-    //   Alert.alert('承認しました', `${friendData.userName}さんを友達として承認しました`);
-    // } catch (error) {
-    //   console.error('友人承認に失敗しました:', error);
-    //   Alert.alert('エラー', '友人承認に失敗しました');
-    // }
-  };
-
   useEffect(() => {
     const isStatusBlocked = status === 'block';
     setIsBlocked(isStatusBlocked);
@@ -71,7 +49,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
         const data = await fetchFriendDocumentId(friendData.friendUsersId);
         setFriendDocumentId(data || null);
         // 承認確認モーダル表示
-        ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, handleApproveFriend);
+        ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, setStatus);
       } catch (error) {
         console.error('フレンドドキュメントIDの取得に失敗しました', error);
       }

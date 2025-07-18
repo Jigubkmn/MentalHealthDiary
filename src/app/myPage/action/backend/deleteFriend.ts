@@ -9,7 +9,7 @@ export default async function deleteFriend(
   friendDocumentId: string | null,
   onFriendDeleted: (friendId: string) => void
 ) {
-  if (userId === null || friendData.friendId === null || friendData.friendUsersId === null) return;
+  if (userId === null || friendData.friendId === null || friendData.friendUsersId === null || friendDocumentId === null) return;
   try {
     const friendRef = doc(db, `users/${userId}/friends/${friendData.friendId}`);
     const currentUserRef = doc(db, `users/${friendData.friendUsersId}/friends/${friendDocumentId}`);

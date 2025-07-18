@@ -1,6 +1,7 @@
 import { Alert } from 'react-native'
 import { FriendInfoType } from '../../../../type/friend'
 import deleteFriend from './backend/deleteFriend'
+import updateApprovalStatus from './backend/updateApprovalStatus';
 
 
 export default function ApprovalConfirmationModal(
@@ -8,7 +9,7 @@ export default function ApprovalConfirmationModal(
   friendData: FriendInfoType,
   friendDocumentId: string | null,
   onFriendDeleted: (friendId: string) => void,
-  handleApproveFriend: () => void
+  setStatus: (status: string) => void,
 ) {
   if (friendData.status === 'awaitingApproval' ) {
     // 承認確認モーダルを表示
@@ -22,7 +23,7 @@ export default function ApprovalConfirmationModal(
         },
         {
           text: '承認する',
-          onPress: () => handleApproveFriend(),
+          onPress: () => updateApprovalStatus(userId, friendData, friendDocumentId, setStatus),
         },
       ]
     );
