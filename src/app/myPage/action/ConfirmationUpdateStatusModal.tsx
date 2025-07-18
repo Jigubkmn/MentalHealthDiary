@@ -4,8 +4,6 @@ import updateStatus from './backend/updateStatus';
 export default function ConfirmationUpdateStatusModal(
   userId: string,
   friendId: string,
-  friendUsersId: string,
-  friendDocumentId: string,
   isBlocked: boolean,
   setStatus: (status: string) => void,
   setIsBlocked: (isBlocked: boolean) => void,
@@ -26,8 +24,6 @@ export default function ConfirmationUpdateStatusModal(
         onPress: async () => updateStatus(
           userId,
           friendId,
-          friendUsersId,
-          friendDocumentId,
           isBlocked,
           setStatus,
           setIsBlocked,
