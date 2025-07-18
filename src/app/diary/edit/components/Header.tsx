@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import dayjs from 'dayjs';
-import { db } from '../../../../config';
-import { doc, updateDoc, Timestamp } from 'firebase/firestore'
 import BackButton from '../../../components/button/BackButton';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
 import formatDate from '../../../actions/formatData';
-import { router } from 'expo-router';
+import updateDiary from '../action/backend/updateDiary';
 
 type Props = {
   userId: string;
@@ -41,38 +39,19 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
   };
 
   // 日記を更新
-  const handleUpdate = async (diaryText: string, date: dayjs.Dayjs, selectedFeeling: string | null, selectedImage: string | null) => {
-    if (userId === null) return;
-    if (!selectedFeeling) {
-      Alert.alert("現在の感情を選択してください");
-      return;
-    }
-    if (!diaryText || diaryText.trim() === '') {
-      Alert.alert("日記内容を入力してください");
-      return;
-    }
-
-    try {
-      const diaryRef = doc(db, `users/${userId}/diary/${diaryId}`);
-      await updateDoc(diaryRef, {
-        diaryText: diaryText,
-        diaryDate: Timestamp.fromDate(date.toDate()),
-        feeling: selectedFeeling,
-        selectedImage: selectedImage,
-        updatedAt: Timestamp.fromDate(new Date())
-      });
-
-      Alert.alert("日記を更新しました");
-      // 状態をリセット
-      setDiaryText("");
-      setSelectedFeeling(null);
-      setSelectedImage(null);
-      router.push("/(tabs)");
-    } catch (error) {
-      console.log("error", error);
-      Alert.alert("日記の更新に失敗しました");
-    }
-  };
+  const handleUpdate = async () => {
+    updateDiary(
+      diaryText,
+      diaryId,
+      date,
+      selectedFeeling,
+      selectedImage,
+      setDiaryText,
+      setSelectedFeeling,
+      setSelectedImage,
+      userId,
+    );
+  }
 
   return (
     <View style={styles.header}>
@@ -82,7 +61,7 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
       <HeaderDiaryDateTitle selectedDate={selectedDate} date={date} setDate={setDate} isArrowIcon={false} />
       <View style={styles.headerRight}>
         <TouchableOpacity
-          onPress={() => {handleUpdate(diaryText, date, selectedFeeling, selectedImage)}}
+          onPress={() => {handleUpdate()}}
           style={[!isFormValid() ? styles.disabledButton : styles.headerUpdateButton]}
           disabled={!isFormValid()}
         >
