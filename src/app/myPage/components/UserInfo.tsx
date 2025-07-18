@@ -5,12 +5,12 @@ import { noUserImage } from '../../constants/userImage';
 import EditIcon from '../../components/Icon/EditIcon';
 import { UserInfoType } from '../../../../type/userInfo';
 import UserLogout from '../../actions/handleLogout';
-import handleImageSelect from '../../actions/handleImageSelect';
 import UserEditContents from './UserEditContents';
 import { db } from '../../../config';
 import { doc, updateDoc } from 'firebase/firestore'
 import { validateAccountId, validateUserName } from '../../../../utils/validation';
 import Divider from '../../components/Divider';
+import updateUserImage from '../action/backend/updateUserImage';
 
 type UserInfoProps = {
   userInfos: UserInfoType | null
@@ -50,14 +50,14 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     UserLogout();
   }
 
-  const handleAccountIdUpdate = async (userUpdateInfo: string | undefined) => {
-    if (!userUpdateInfo || !userId || !userInfoId) return;
-    handleValidateAccountId()
+  // アカウントID更新
+  const handleAccountIdUpdate = async (accountId: string | undefined) => {
+    if (!accountId || !userId || !userInfoId) return;
     if (errors.accountId) return;
     try {
       const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
       await updateDoc(userRef, {
-        accountId: userUpdateInfo,
+        accountId: accountId,
       });
       setIsAccountIdEdit(false)
       Alert.alert("ユーザーIDの更新に成功しました");
@@ -75,7 +75,6 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
 
   const handleUserNameUpdate = async (userUpdateInfo: string | undefined) => {
     if (!userUpdateInfo || !userId || !userInfoId) return;
-    handleValidateUserName()
     if (errors.userName) return;
     try {
       const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
@@ -97,23 +96,6 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     setErrors({ ...errors, userName: errorMessage })
   }
 
-  // ユーザー画像を更新
-  const ImageSelect = async () => {
-    const newUserImage = await handleImageSelect();
-    if (!newUserImage) return;
-    try {
-      const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
-      await updateDoc(userRef, {
-        userImage: newUserImage,
-      });
-      Alert.alert("ユーザー画像を更新しました");
-      setUserImage(newUserImage);
-    } catch (error) {
-      console.log("error", error);
-      Alert.alert("ユーザー画像の更新に失敗しました");
-    }
-  };
-
   return (
     <View style={styles.userInfoContainer}>
       <View style={styles.userInfoWrapper}>
@@ -125,7 +107,9 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
             contentFit="cover"
             cachePolicy="memory-disk"
           />
-          <TouchableOpacity style={styles.editIconOverlay} onPress={() => ImageSelect()}>
+          <TouchableOpacity
+            style={styles.editIconOverlay}
+            onPress={() => updateUserImage(userId || '', userInfoId || '', setUserImage)}>
             <EditIcon size={24} color="#FFA500" />
           </TouchableOpacity>
         </View>
