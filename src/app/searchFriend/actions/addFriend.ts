@@ -37,7 +37,7 @@ export default async function addFriend({ currentUserId, friendUsersId, accountI
       blocked: false,
       notifyOnDiary: true,
       showDiary: true,
-      status: 'pendingApproval',
+      status: 'awaitingApproval',
       createdAt: Timestamp.fromDate(new Date()),
     });
     Alert.alert('友人を追加しました');
