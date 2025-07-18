@@ -16,7 +16,7 @@ export default function getStatusStyle(status: string): StatusStyle {
       };
     case 'awaitingApproval':
       return {
-        text: '承認受付中',
+        text: '承認受付中 ',
         backgroundColor: '#28C228',
         textColor: '#FFFFFF'
       };

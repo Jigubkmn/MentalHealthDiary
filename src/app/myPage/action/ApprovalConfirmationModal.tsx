@@ -4,7 +4,6 @@ import { FriendInfoType } from '../../../../type/friend'
 
 export default function ApprovalConfirmationModal(friendData: FriendInfoType, handleApproveFriend: () => void) {
   if (friendData.status === 'awaitingApproval') {
-    console.log('承認待ち状態です')
     // 承認確認モーダルを表示
     Alert.alert(
       '友人承認',
