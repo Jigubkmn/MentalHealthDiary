@@ -3,22 +3,11 @@ import { auth } from '../../config';
 import { collection, collectionGroup, query, getDocs } from 'firebase/firestore';
 import { db } from '../../config';
 import { View, Text } from 'react-native';
-
-// Firestoreから取得する友人データの型
-type FriendData = {
-  friendUsersId: string;
-  friendUserInfoId: string;
-  friendId: string;
-  notifyOnDiary: boolean;
-  showDiary: boolean;
-  status: string;
-  userImage: string;
-  userName: string;
-}
+import { FriendInfoType } from '../../../type/friend';
 
 export default function test() {
   const userId = auth.currentUser?.uid;
-  const [friends, setFriends] = useState<FriendData[]>([]);
+  const [friends, setFriends] = useState<FriendInfoType[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -31,7 +20,7 @@ export default function test() {
           const friendsQuery = query(friendsRef);
           const friendsSnapshot = await getDocs(friendsQuery);
 
-          const friendsData: FriendData[] = [];
+          const friendsData: FriendInfoType[] = [];
           for (const friendDoc of friendsSnapshot.docs) {
             const friendData = friendDoc.data();
             const friendUserInfoId = friendData.friendId; // userInfoドキュメントのID
@@ -52,7 +41,7 @@ export default function test() {
 
             if (userInfoData) {
               // データをまとめてオブジェクトに
-              const friendInfo: FriendData = {
+              const friendInfo: FriendInfoType = {
                 friendUsersId: friendUsersId || '',
                 friendUserInfoId: friendUserInfoId,
                 friendId: friendDoc.id,
