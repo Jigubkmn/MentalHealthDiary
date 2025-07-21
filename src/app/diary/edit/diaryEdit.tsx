@@ -34,15 +34,14 @@ export default function DiaryEdit() {
   useEffect(() => {
     if (selectedDiaryInfo) {
       setDiaryText(selectedDiaryInfo?.diaryText);
-      setSelectedImage(selectedDiaryInfo.selectedImage);
     }
   }, [selectedDiaryInfo?.diaryText]);
 
   useEffect(() => {
     if (selectedDiaryInfo) {
-      setSelectedImage(selectedDiaryInfo?.selectedImage);
+      setSelectedImage(selectedDiaryInfo?.diaryImage);
     }
-  }, [selectedDiaryInfo?.selectedImage]);
+  }, [selectedDiaryInfo?.diaryImage]);
 
 
   // 画像削除
