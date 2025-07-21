@@ -1,5 +1,5 @@
 import checkAccountId from '../src/app/actions/backend/checkAccountId'
-import checkUserName from '../src/app/actions/checkUserName'
+import checkUserName from '../src/app/actions/backend/checkUserName'
 
 // ユーザー名のバリデーション
 export const validateUserName = async (userName: string): Promise<string> => {

@@ -1,4 +1,4 @@
-import { db } from '../../config'
+import { db } from '../../../config'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 
 // ユーザー名の重複チェック関数
