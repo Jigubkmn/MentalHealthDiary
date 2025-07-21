@@ -1,4 +1,4 @@
-import checkAccountId from '../src/app/actions/checkAccountId'
+import checkAccountId from '../src/app/actions/backend/checkAccountId'
 import checkUserName from '../src/app/actions/checkUserName'
 
 // ユーザー名のバリデーション
