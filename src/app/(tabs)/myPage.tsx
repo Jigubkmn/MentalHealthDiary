@@ -12,7 +12,7 @@ import Divider from '../components/Divider';
 import { useFriends } from '../../contexts/FriendContext';
 
 export default function myPage() {
-  const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const { friends } = useFriends();
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>(friends)
   const userId = auth.currentUser?.uid
@@ -23,7 +23,7 @@ export default function myPage() {
 
     const unsubscribe = fetchUserInfo({
       userId,
-      setUserInfos,
+      setUserInfo,
     });
 
     return unsubscribe;
@@ -38,13 +38,12 @@ export default function myPage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header currentAccountId={userInfos?.accountId} currentUserInfosId={userInfos?.id} />
+      <Header currentAccountId={userInfo?.accountId} userId={userId} />
       <ScrollView style={styles.bodyContainer}>
         {/* ログインユーザー情報 */}
         <UserInfo
-          userInfos={userInfos}
+          userInfo={userInfo}
           userId={userId}
-          userInfoId={userInfos?.id}
         />
         {/* 友人一覧 */}
         <View style={styles.friendListContainer}>
@@ -76,8 +75,8 @@ export default function myPage() {
               onPress={() => {router.push({
                 pathname: '/searchFriend/searchFriend',
                 params: {
-                  currentAccountId: userInfos?.accountId,
-                  currentUserInfosId: userInfos?.id,
+                  currentAccountId: userInfo?.accountId,
+                  userId: userId,
                 }})}}
               style={styles.addFriendButton}
             >

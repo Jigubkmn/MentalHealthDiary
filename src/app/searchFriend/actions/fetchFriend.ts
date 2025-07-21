@@ -5,7 +5,7 @@ import { noUserImage } from '../../constants/userImage';
 
 type Props = {
   accountId: string;
-  currentUserId?: string;
+  userId?: string;
   friendsAccountId: string[];
   setSearchResult: (searchResult: UserInfoType | null) => void;
   setUserImage: (userImage: string | null) => void;
@@ -17,7 +17,7 @@ type Props = {
 
 export default async function fetchFriend({
   accountId,
-  currentUserId,
+  userId,
   friendsAccountId,
   setSearchResult,
   setUserImage,
@@ -32,7 +32,7 @@ export default async function fetchFriend({
   setErrorMessage(null);
 
   try {
-    if (!currentUserId) {
+    if (!userId) {
       console.log('ログインユーザーが見つかりません');
       setErrorMessage('ログインユーザーが見つかりません');
       return;
@@ -49,7 +49,7 @@ export default async function fetchFriend({
       const userData = doc.data() as UserInfoType;
 
       // ログインユーザー以外のデータのみ取得
-      if (doc.ref.parent.parent?.id !== currentUserId) {
+      if (doc.ref.parent.parent?.id !== userId) {
         if (!friendsAccountId.includes(accountId)) {
           setSearchResult(userData);
           setUserImage(userData.userImage ? userData.userImage : noUserImage);
