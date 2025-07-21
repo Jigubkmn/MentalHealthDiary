@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { auth } from '../config';
+import { onAuthStateChanged } from 'firebase/auth';
 import fetchFriendList from '../app/myPage/action/backend/fetchFriendList';
 import { FriendInfoType } from '../../type/friend';
 
 type FriendContextType = {
   friends: FriendInfoType[];
-  refreshFriends: () => Promise<void>;
+  userId: string | undefined;
+  isLoading: boolean;
 };
 
 const FriendContext = createContext<FriendContextType | undefined>(undefined);
@@ -16,29 +18,42 @@ type FriendProviderProps = {
 
 export function FriendProvider({ children }: FriendProviderProps) {
   const [friends, setFriends] = useState<FriendInfoType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState<string | undefined>(auth.currentUser?.uid);
 
-  const fetchFriends = async () => {
-    const userId = auth.currentUser?.uid;
-
+  const fetchFriends = async (currentUserId: string | undefined) => {
+    if (!currentUserId) {
+      setFriends([]);
+      setIsLoading(false);
+      return;
+    }
+    setIsLoading(true);
     try {
-      const friendsData = await fetchFriendList(userId);
+      const friendsData = await fetchFriendList(currentUserId);
       setFriends(friendsData);
     } catch (error) {
       console.error('友人情報の取得に失敗しました:', error);
+      setFriends([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const refreshFriends = async () => {
-    await fetchFriends();
-  };
-
   useEffect(() => {
-    fetchFriends();
+    // 認証状態を監視
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const currentUserId = user?.uid;
+      setUserId(currentUserId);
+      fetchFriends(currentUserId);
+    });
+
+    return unsubscribe;
   }, []);
 
   const value: FriendContextType = {
     friends,
-    refreshFriends,
+    userId,
+    isLoading,
   };
 
   return (

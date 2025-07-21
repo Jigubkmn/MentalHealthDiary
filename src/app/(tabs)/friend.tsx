@@ -1,12 +1,19 @@
 import React from 'react'
-import { auth } from '../../config';
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { useFriends } from '../../contexts/FriendContext';
 
 export default function test() {
-  const userId = auth.currentUser?.uid;
-  const { friends } = useFriends();
+  const { friends, userId, isLoading } = useFriends();
 
+  // ローディング中の表示
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+        <Text>友達情報を読み込み中...</Text>
+      </View>
+    );
+  }
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>
