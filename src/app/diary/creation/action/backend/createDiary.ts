@@ -7,8 +7,8 @@ import { useRouter } from 'expo-router';
 import checkExistingDiary from '../checkExistingDiary';
 
 export default async function createDiary(
-  selectedImage: string | null,
   selectedFeeling: string | null,
+  selectedImage: string | null,
   date: dayjs.Dayjs,
   diaryText: string,
   setDiaryText: (text: string) => void,
