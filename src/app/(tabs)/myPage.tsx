@@ -8,12 +8,13 @@ import { FriendInfoType } from '../../../type/friend'
 import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
-import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 import Divider from '../components/Divider';
+import { useFriends } from '../../contexts/FriendContext';
 
 export default function myPage() {
   const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
-  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
+  const { friends } = useFriends();
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>(friends)
   const userId = auth.currentUser?.uid
 
   useEffect(() => {
@@ -27,22 +28,6 @@ export default function myPage() {
 
     return unsubscribe;
   }, [userId])
-
-  useEffect(() => {
-    if (userId === null) return;
-
-    const fetchFriends = async () => {
-      try {
-        const data = await fetchFriendList(userId);
-        // ここでfriendsDataをstateに保存する処理を追加
-        setFriendsData(data);
-      } catch (error) {
-        console.error('友人一覧の取得に失敗しました。', error);
-      }
-    };
-
-    fetchFriends();
-  }, [])
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {

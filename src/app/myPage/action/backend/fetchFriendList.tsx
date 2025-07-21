@@ -35,10 +35,11 @@ export default async function fetchFriendList(userId?: string): Promise<FriendIn
         // データをまとめてオブジェクトに
         const friendInfo: FriendInfoType = {
           friendUsersId: friendUsersId || '',
+          friendUserInfoId: friendUserInfoId,
           friendId: friendDoc.id,
+          status: friendData.status,
           notifyOnDiary: friendData.notifyOnDiary,
           showDiary: friendData.showDiary,
-          status: friendData.status,
           userImage: userInfoData.userImage || '',
           userName: userInfoData.userName || '',
         };
