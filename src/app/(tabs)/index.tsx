@@ -13,7 +13,7 @@ import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 
 export default function home() {
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
-  const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const userId = auth.currentUser?.uid
   const router = useRouter();
 
@@ -32,7 +32,7 @@ export default function home() {
 
     const unsubscribe = fetchUserInfo({
       userId,
-      setUserInfos,
+      setUserInfo,
     });
 
     return unsubscribe;
@@ -69,8 +69,8 @@ export default function home() {
             <DiaryList
               key={diaryList.id}
               diaryList={diaryList}
-              userName={userInfos?.userName}
-              userImage={userInfos?.userImage}
+              userName={userInfo?.userName}
+              userImage={userInfo?.userImage}
             />
           )
         }):

@@ -4,10 +4,10 @@ import { UserInfoType } from '../../../type/userInfo'
 
 type FetchUserInfoParams = {
   userId: string | undefined
-  setUserInfos: (userInfos: UserInfoType) => void
+  setUserInfo: (userInfo: UserInfoType) => void
 }
 
-export default function fetchUserInfo({ userId, setUserInfos }: FetchUserInfoParams) {
+export default function fetchUserInfo({ userId, setUserInfo }: FetchUserInfoParams) {
   const ref = collection(db, `users/${userId}/userInfo`)
   const q = query(ref) // ユーザー情報の参照を取得。
 
@@ -16,7 +16,7 @@ export default function fetchUserInfo({ userId, setUserInfos }: FetchUserInfoPar
     // データ1つずつの処理
     snapshot.docs.forEach((doc) => {
       const { accountId, userName, userImage } = doc.data();
-      setUserInfos({ id: doc.id, accountId, userName, userImage })
+      setUserInfo({ accountId, userName, userImage })
     })
   })
 
