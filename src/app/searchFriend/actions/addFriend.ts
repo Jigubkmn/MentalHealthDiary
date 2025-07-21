@@ -10,9 +10,10 @@ type Props = {
   currentUserInfosId?: string;
   currentAccountId?: string;
   friendUserInfosId: string | null;
+  refreshFriends?: () => Promise<void>;
 }
 
-export default async function addFriend({ userId, friendUsersId, accountId, currentAccountId, friendUserInfosId }: Props) {
+export default async function addFriend({ userId, friendUsersId, accountId, currentAccountId, friendUserInfosId, refreshFriends }: Props) {
   if (!userId || !friendUsersId || !accountId || !currentAccountId || !friendUserInfosId) {
     return;
   }
@@ -40,6 +41,12 @@ export default async function addFriend({ userId, friendUsersId, accountId, curr
       status: 'awaitingApproval',
       createdAt: Timestamp.fromDate(new Date()),
     });
+
+    // FriendContextを更新
+    if (refreshFriends) {
+      await refreshFriends();
+    }
+
     Alert.alert('友人を追加しました');
     router.push('/(tabs)/myPage');
 

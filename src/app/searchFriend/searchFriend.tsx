@@ -10,6 +10,7 @@ import fetchFriend from './actions/fetchFriend';
 import addFriend from './actions/addFriend';
 import { useLocalSearchParams } from 'expo-router';
 import fetchFriendAccountId from '../actions/backend/fetchFriendAccountId';
+import { useFriends } from '../../contexts/FriendContext';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
@@ -21,6 +22,7 @@ export default function searchFriend() {
   const [friendUserInfosId, setFriendUserInfosId] = useState<string>('') // friendのuserInfosのid
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { currentAccountId, userId } = useLocalSearchParams<{ currentAccountId?: string, userId?: string }>();
+  const { refreshFriends } = useFriends();
 
   useEffect(() => {
     setUserImage(noUserImage)
@@ -65,7 +67,8 @@ export default function searchFriend() {
       friendUsersId,
       accountId,
       currentAccountId,
-      friendUserInfosId: friendUserInfosId
+      friendUserInfosId: friendUserInfosId,
+      refreshFriends
     });
   };
 

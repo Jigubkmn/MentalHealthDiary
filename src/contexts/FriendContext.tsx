@@ -8,6 +8,7 @@ type FriendContextType = {
   friends: FriendInfoType[];
   userId: string | undefined;
   isLoading: boolean;
+  refreshFriends: () => Promise<void>;
 };
 
 const FriendContext = createContext<FriendContextType | undefined>(undefined);
@@ -23,6 +24,7 @@ export function FriendProvider({ children }: FriendProviderProps) {
 
   const fetchFriends = async (currentUserId: string | undefined) => {
     if (!currentUserId) {
+      console.log("ログインユーザーが見つかりません");
       setFriends([]);
       setIsLoading(false);
       return;
@@ -31,12 +33,17 @@ export function FriendProvider({ children }: FriendProviderProps) {
     try {
       const friendsData = await fetchFriendList(currentUserId);
       setFriends(friendsData);
+      console.log('友人情報の取得に成功しました');
     } catch (error) {
       console.error('友人情報の取得に失敗しました:', error);
       setFriends([]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const refreshFriends = async () => {
+    await fetchFriends(userId);
   };
 
   useEffect(() => {
@@ -54,6 +61,7 @@ export function FriendProvider({ children }: FriendProviderProps) {
     friends,
     userId,
     isLoading,
+    refreshFriends,
   };
 
   return (
