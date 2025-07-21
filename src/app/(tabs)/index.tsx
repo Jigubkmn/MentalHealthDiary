@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import DiaryList from '../diary/list/components/DiaryList'
-import { auth, db } from '../../config';
-import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
+import { auth } from '../../config';
 import { DiaryType } from '../../../type/diary';
 import PlusIcon from '../components/Icon/PlusIcon';
 import { useRouter } from 'expo-router';
@@ -10,6 +9,7 @@ import dayjs from 'dayjs';
 import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
 import { UserInfoType } from '../../../type/userInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 
 export default function home() {
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
@@ -41,19 +41,10 @@ export default function home() {
   useEffect(() => {
     if (userId === null) return;
     // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
-    const startOfMonth = displayDate.startOf('month').toDate();
-    const endOfMonth = displayDate.add(1, 'month').startOf('month').toDate();
-
-    const ref = collection(db, `users/${userId}/diaries`)
-    const q = query(ref, orderBy('diaryDate', 'desc'), where('diaryDate', '>=', startOfMonth), where('diaryDate', '<', endOfMonth))
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const remoteDiaryList: DiaryType[] = []
-      snapshot.docs.forEach((doc) => {
-        const { diaryText, diaryDate, feeling, updatedAt, diaryImage } = doc.data();
-        remoteDiaryList.push({ id: doc.id, diaryText, diaryDate, feeling, updatedAt, diaryImage })
-      })
-      setDiaryLists(remoteDiaryList)
-    })
+    const startOfMonth = displayDate.startOf('month');
+    const endOfMonth = displayDate.add(1, 'month').startOf('month');
+    // 日記一覧を取得
+    const unsubscribe = fetchDiaries(userId!, setDiaryLists, startOfMonth, endOfMonth);
     return unsubscribe;
   }, [displayDate])
 
