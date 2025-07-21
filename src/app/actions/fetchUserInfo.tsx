@@ -1,6 +1,7 @@
 import { collection, query, onSnapshot } from 'firebase/firestore'
 import { db } from '../../config'
 import { UserInfoType } from '../../../type/userInfo'
+import { noUserImage } from '../constants/userImage';
 
 type FetchUserInfoParams = {
   userId: string | undefined
@@ -16,7 +17,7 @@ export default function fetchUserInfo({ userId, setUserInfo }: FetchUserInfoPara
     // データ1つずつの処理
     snapshot.docs.forEach((doc) => {
       const { accountId, userName, userImage } = doc.data();
-      setUserInfo({ accountId, userName, userImage })
+      setUserInfo({ accountId, userName, userImage: userImage || noUserImage })
     })
   })
 
