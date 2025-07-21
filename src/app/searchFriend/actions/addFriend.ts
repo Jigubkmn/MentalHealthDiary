@@ -12,8 +12,8 @@ type Props = {
   friendUserInfosId: string | null;
 }
 
-export default async function addFriend({ userId, friendUsersId, accountId, currentUserInfosId, currentAccountId, friendUserInfosId }: Props) {
-  if (!userId || !friendUsersId || !accountId || !currentUserInfosId || !currentAccountId || !friendUserInfosId) {
+export default async function addFriend({ userId, friendUsersId, accountId, currentAccountId, friendUserInfosId }: Props) {
+  if (!userId || !friendUsersId || !accountId || !currentAccountId || !friendUserInfosId) {
     return;
   }
 
@@ -32,7 +32,7 @@ export default async function addFriend({ userId, friendUsersId, accountId, curr
     });
     // 友人のfriendsコレクションにログインユーザーを追加
     await addDoc(friendRef, {
-      friendId: currentUserInfosId,
+      friendId: userId,
       accountId: currentAccountId,
       blocked: false,
       notifyOnDiary: true,
