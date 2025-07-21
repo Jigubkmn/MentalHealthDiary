@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Text, StyleSheet, TextInput, Alert, TouchableWithoutFeedback, ScrollView } from 'react-native'
-import { auth } from '../../config'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { router } from 'expo-router'
+import { SafeAreaView, View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import AuthNavigationLink from './components/Link'
 import HandleButton from '../components/button/HandleButton'
+import login from './actions/backend/login'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -16,17 +14,6 @@ export default function Login() {
   };
 
   const handleLogin = () => {
-    const login = (email: string, password: string) => {
-      signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("userCredential", userCredential.user.uid);
-        router.push("/(tabs)")
-      })
-      .catch((error) => {
-        console.log("error", error)
-        Alert.alert("ログイン処理を失敗しました");
-      })
-    }
     login(email, password)
   }
 
