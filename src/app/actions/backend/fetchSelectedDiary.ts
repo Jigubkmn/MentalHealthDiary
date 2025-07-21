@@ -1,7 +1,7 @@
-import { db } from '../../config';
+import { db } from '../../../config';
 import { doc, getDoc } from 'firebase/firestore';
 import dayjs from 'dayjs';
-import { DiaryType } from '../../../type/diary';
+import { DiaryType } from '../../../../type/diary';
 
 type Props = {
   userId?: string;

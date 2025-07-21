@@ -7,7 +7,7 @@ import { auth } from '../../../config';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import Header from './components/Header';
 import dayjs from 'dayjs';
-import fetchSelectedDiary from '../../actions/fetchSelectedDiary';
+import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 
 
 export default function diaryShow() {

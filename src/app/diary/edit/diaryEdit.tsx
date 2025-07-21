@@ -6,7 +6,7 @@ import Header from '../edit/components/Header';
 import { DiaryType } from '../../../../type/diary';
 import { auth } from '../../../config';
 import { useLocalSearchParams } from 'expo-router';
-import fetchSelectedDiary from '../../actions/fetchSelectedDiary';
+import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 import dayjs from 'dayjs';
 import DiaryText from '../../components/diary/DiaryText';
 import DiaryImage from '../../components/diary/DiaryImage';
