@@ -44,13 +44,13 @@ export default function home() {
     const startOfMonth = displayDate.startOf('month').toDate();
     const endOfMonth = displayDate.add(1, 'month').startOf('month').toDate();
 
-    const ref = collection(db, `users/${userId}/diary`)
+    const ref = collection(db, `users/${userId}/diaries`)
     const q = query(ref, orderBy('diaryDate', 'desc'), where('diaryDate', '>=', startOfMonth), where('diaryDate', '<', endOfMonth))
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const remoteDiaryList: DiaryType[] = []
       snapshot.docs.forEach((doc) => {
-        const { diaryText, diaryDate, feeling, updatedAt, selectedImage } = doc.data();
-        remoteDiaryList.push({ id: doc.id, diaryText, diaryDate, feeling, updatedAt, selectedImage })
+        const { diaryText, diaryDate, feeling, updatedAt, diaryImage } = doc.data();
+        remoteDiaryList.push({ id: doc.id, diaryText, diaryDate, feeling, updatedAt, diaryImage })
       })
       setDiaryLists(remoteDiaryList)
     })
