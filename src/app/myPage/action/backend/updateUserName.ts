@@ -7,12 +7,11 @@ export default async function updateUserName(
   errorUserName: string,
   setIsUserNameEdit: (isUserNameEdit: boolean) => void,
   userId?: string,
-  userInfoId?: string
 ) {
-  if (!userName || !userId || !userInfoId) return;
+  if (!userName || !userId) return;
   if (errorUserName) return;
   try {
-    const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
+    const userRef = doc(db, `users/${userId}/userInfo/${userId}`);
     await updateDoc(userRef, {
       userName: userName,
     });

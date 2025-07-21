@@ -7,12 +7,11 @@ export default async function updateAccountId(
   errorAccountId: string,
   setIsAccountIdEdit: (isAccountIdEdit: boolean) => void,
   userId?: string,
-  userInfoId?: string
 ) {
-  if (!accountId || !userId || !userInfoId) return;
+  if (!accountId || !userId) return;
   if (errorAccountId) return;
   try {
-    const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
+    const userRef = doc(db, `users/${userId}/userInfo/${userId}`);
     await updateDoc(userRef, {
       accountId: accountId,
     });
