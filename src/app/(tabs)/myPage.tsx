@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Header from '../myPage/components/Header'
-import { auth } from '../../config';
 import { router } from 'expo-router';
+import { auth } from '../../config';
 import { UserInfoType } from '../../../type/userInfo'
 import { FriendInfoType } from '../../../type/friend'
 import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
 import Divider from '../components/Divider';
-import { useFriends } from '../../contexts/FriendContext';
+import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 
 export default function myPage() {
-  const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
-  const { friends } = useFriends();
-  const [friendsData, setFriendsData] = useState<FriendInfoType[]>(friends)
-  const userId = auth.currentUser?.uid
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
+  const userId = auth.currentUser?.uid;
 
   useEffect(() => {
     // ユーザー情報取得
@@ -23,11 +22,27 @@ export default function myPage() {
 
     const unsubscribe = fetchUserInfo({
       userId,
-      setUserInfos,
+      setUserInfo,
     });
 
     return unsubscribe;
   }, [userId])
+
+  // FriendContextのfriendsが更新された時にfriendsDataも更新
+  useEffect(() => {
+    fetchFriends();
+  }, [userId]);
+
+  const fetchFriends = async () => {
+    try {
+      const data = await fetchFriendList(userId);
+      setFriendsData(data);
+      console.log('友人情報の取得に成功しました');
+    } catch (error) {
+      console.error('友人情報の取得に失敗しました:', error);
+      setFriendsData([]);
+    }
+  }
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {
@@ -38,13 +53,12 @@ export default function myPage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header currentAccountId={userInfos?.accountId} currentUserInfosId={userInfos?.id} />
+      <Header currentAccountId={userInfo?.accountId} userId={userId} />
       <ScrollView style={styles.bodyContainer}>
         {/* ログインユーザー情報 */}
         <UserInfo
-          userInfos={userInfos}
+          userInfo={userInfo}
           userId={userId}
-          userInfoId={userInfos?.id}
         />
         {/* 友人一覧 */}
         <View style={styles.friendListContainer}>
@@ -76,8 +90,8 @@ export default function myPage() {
               onPress={() => {router.push({
                 pathname: '/searchFriend/searchFriend',
                 params: {
-                  currentAccountId: userInfos?.accountId,
-                  currentUserInfosId: userInfos?.id,
+                  currentAccountId: userInfo?.accountId,
+                  userId: userId,
                 }})}}
               style={styles.addFriendButton}
             >

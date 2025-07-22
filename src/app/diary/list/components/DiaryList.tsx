@@ -80,7 +80,7 @@ export default function DiaryList({ diaryList, userName, userImage } :Props) {
           {/* 日記投稿画像 */}
           <View style={styles.diaryImageContainer}>
             <Image
-              source={diaryList.selectedImage ? { uri: diaryList.selectedImage } : noImage}
+              source={diaryList.diaryImage ? { uri: diaryList.diaryImage } : noImage}
               style={styles.diaryImage}
             />
           </View>

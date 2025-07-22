@@ -11,8 +11,8 @@ import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
 import updateStatus from '../action/backend/updateBlockStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
-import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
 import ConfirmationDeleteFriendModal from '../action/ConfirmationDeleteFriendModal';
+import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -48,13 +48,14 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
       try {
         const data = await fetchFriendDocumentId(friendData.friendUsersId);
         setFriendDocumentId(data || null);
-        // 承認確認モーダル表示
-        ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, setStatus);
+        // myPage.tsxにいる時のみ承認確認モーダルを表示
+        if (friendData.status === 'awaitingApproval') {
+          ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, setStatus);
+        }
       } catch (error) {
         console.error('フレンドドキュメントIDの取得に失敗しました', error);
       }
     };
-
     fetchFriendDocument();
   }, []);
 

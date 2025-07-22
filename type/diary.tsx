@@ -6,5 +6,5 @@ export type DiaryType = {
   diaryDate: dayjs.Dayjs;
   feeling: string;
   updatedAt: Date;
-  selectedImage: string | null;
+  diaryImage: string | null;
 }

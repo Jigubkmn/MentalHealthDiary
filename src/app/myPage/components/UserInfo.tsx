@@ -13,32 +13,31 @@ import updateAccountId from '../action/backend/updateAccountId';
 import updateUserName from '../action/backend/updateUserName';
 
 type UserInfoProps = {
-  userInfos: UserInfoType | null
+  userInfo: UserInfoType | null
   userId?: string
-  userInfoId?: string
 }
 
-export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProps) {
+export default function UserInfo({ userInfo, userId }: UserInfoProps) {
   const [isAccountIdEdit, setIsAccountIdEdit] = useState(false);
   const [accountId, setAccountId] = useState('');
   const [isUserNameEdit, setIsUserNameEdit] = useState(false);
   const [userName, setUserName] = useState('');
-  const [userImage, setUserImage] = useState<string | null>(userInfos?.userImage || noUserImage);
+  const [userImage, setUserImage] = useState<string | null>(userInfo?.userImage || noUserImage);
   const [errors, setErrors] = useState({ accountId: '', userName: '' })
 
   useEffect(() => {
-    setAccountId(userInfos?.accountId || '')
-  }, [userInfos?.accountId]);
+    setAccountId(userInfo?.accountId || '')
+  }, [userInfo?.accountId]);
 
   useEffect(() => {
-    setUserName(userInfos?.userName || '')
-  }, [userInfos?.userName]);
+    setUserName(userInfo?.userName || '')
+  }, [userInfo?.userName]);
 
   useEffect(() => {
-    if (userInfos?.userImage) {
-      setUserImage(userInfos.userImage)
+    if (userInfo?.userImage) {
+      setUserImage(userInfo.userImage)
     }
-  }, [userInfos?.userImage]);
+  }, [userInfo?.userImage]);
 
   useEffect(() => {
     setIsAccountIdEdit(false)
@@ -52,7 +51,7 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
 
   // アカウントID更新
   const handleUpdateAccountId = async () => {
-    updateAccountId(accountId, errors.accountId, setIsAccountIdEdit, userId, userInfoId);
+    updateAccountId(accountId, errors.accountId, setIsAccountIdEdit, userId);
   }
 
   // ユーザーIDのバリデーション
@@ -63,7 +62,7 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
 
   // ユーザー名更新
   const handleUpdateUserName = async () => {
-    updateUserName(userName, errors.userName, setIsUserNameEdit, userId, userInfoId);
+    updateUserName(userName, errors.userName, setIsUserNameEdit, userId);
   }
 
   // ユーザー名のバリデーション
@@ -86,14 +85,14 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
           />
           <TouchableOpacity
             style={styles.editIconOverlay}
-            onPress={() => updateUserImage(userId || '', userInfoId || '', setUserImage)}>
+            onPress={() => updateUserImage(userId || '', setUserImage)}>
             <EditIcon size={24} color="#FFA500" />
           </TouchableOpacity>
         </View>
         {/* ユーザーID */}
         <UserEditContents
           userTitle="ユーザーID"
-          userContent={userInfos?.accountId}
+          userContent={userInfo?.accountId}
           isUserContentEdit={isAccountIdEdit}
           setIsContentEdit={setIsAccountIdEdit}
           userUpdateContent={accountId}
@@ -105,7 +104,7 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
         {/* ユーザー名 */}
         <UserEditContents
           userTitle="ユーザー名"
-          userContent={userInfos?.userName}
+          userContent={userInfo?.userName}
           isUserContentEdit={isUserNameEdit}
           setIsContentEdit={setIsUserNameEdit}
           userUpdateContent={userName}

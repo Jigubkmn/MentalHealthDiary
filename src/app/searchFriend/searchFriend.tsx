@@ -8,7 +8,6 @@ import HandleButton from '../components/button/HandleButton';
 import Divider from '../components/Divider';
 import fetchFriend from './actions/fetchFriend';
 import addFriend from './actions/addFriend';
-import { auth } from '../../config';
 import { useLocalSearchParams } from 'expo-router';
 import fetchFriendAccountId from '../actions/backend/fetchFriendAccountId';
 
@@ -21,17 +20,15 @@ export default function searchFriend() {
   const [friendUsersId, setFriendUsersId] = useState<string>('') // friendのusersのid
   const [friendUserInfosId, setFriendUserInfosId] = useState<string>('') // friendのuserInfosのid
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const { currentAccountId, currentUserInfosId } = useLocalSearchParams<{ currentAccountId?: string, currentUserInfosId?: string }>();
-
-  const currentUserId = auth.currentUser?.uid;
+  const { currentAccountId, userId } = useLocalSearchParams<{ currentAccountId?: string, userId?: string }>();
 
   useEffect(() => {
     setUserImage(noUserImage)
     // 友人アカウントIDを取得
     const fetchAccountIds = async () => {
-      if (currentUserId) {
+      if (userId) {
         try {
-          const accountIds = await fetchFriendAccountId(currentUserId);
+          const accountIds = await fetchFriendAccountId(userId);
           setFriendsAccountId(accountIds);
         } catch (error) {
           console.error('友人アカウントIDの取得に失敗しました:', error);
@@ -39,7 +36,7 @@ export default function searchFriend() {
       }
     };
     fetchAccountIds();
-  }, [currentUserId]);
+  }, [userId]);
 
   // 必須項目が全て入力されているかチェック
   const isFormValid = (): boolean => {
@@ -50,7 +47,7 @@ export default function searchFriend() {
   const searchFriend = () => {
     fetchFriend({
       accountId,
-      currentUserId,
+      userId,
       friendsAccountId,
       setSearchResult,
       setUserImage,
@@ -64,12 +61,11 @@ export default function searchFriend() {
   // 友人を登録する関数
   const addFriendButton = () => {
     addFriend({
-      currentUserId,
+      userId,
       friendUsersId,
       accountId,
       currentAccountId,
-      currentUserInfosId: currentUserInfosId || undefined,
-      friendUserInfosId: friendUserInfosId
+      friendUserInfosId: friendUserInfosId,
     });
   };
 

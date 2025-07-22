@@ -6,7 +6,7 @@ import Header from '../edit/components/Header';
 import { DiaryType } from '../../../../type/diary';
 import { auth } from '../../../config';
 import { useLocalSearchParams } from 'expo-router';
-import fetchSelectedDiary from '../../actions/fetchSelectedDiary';
+import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 import dayjs from 'dayjs';
 import DiaryText from '../../components/diary/DiaryText';
 import DiaryImage from '../../components/diary/DiaryImage';
@@ -34,15 +34,14 @@ export default function DiaryEdit() {
   useEffect(() => {
     if (selectedDiaryInfo) {
       setDiaryText(selectedDiaryInfo?.diaryText);
-      setSelectedImage(selectedDiaryInfo.selectedImage);
     }
   }, [selectedDiaryInfo?.diaryText]);
 
   useEffect(() => {
     if (selectedDiaryInfo) {
-      setSelectedImage(selectedDiaryInfo?.selectedImage);
+      setSelectedImage(selectedDiaryInfo?.diaryImage);
     }
-  }, [selectedDiaryInfo?.selectedImage]);
+  }, [selectedDiaryInfo?.diaryImage]);
 
 
   // 画像削除

@@ -7,8 +7,8 @@ import { useRouter } from 'expo-router';
 import checkExistingDiary from '../checkExistingDiary';
 
 export default async function createDiary(
-  selectedImage: string | null,
   selectedFeeling: string | null,
+  selectedImage: string | null,
   date: dayjs.Dayjs,
   diaryText: string,
   setDiaryText: (text: string) => void,
@@ -35,13 +35,14 @@ export default async function createDiary(
   }
 
   try {
-    const ref = collection(db, `users/${userId}/diary`);
+    const ref = collection(db, `users/${userId}/diaries`);
     await addDoc(ref, {
-      diaryText: diaryText,
+      diaryText,
       diaryDate: Timestamp.fromDate(date.toDate()),
       feeling: selectedFeeling,
+      diaryImage: selectedImage,
+      userId,
       updatedAt: Timestamp.fromDate(new Date()),
-      selectedImage: selectedImage
     });
 
     Alert.alert("日記を保存しました");

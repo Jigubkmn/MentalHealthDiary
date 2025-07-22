@@ -27,12 +27,12 @@ export default async function updateDiary(
   }
 
   try {
-    const diaryRef = doc(db, `users/${userId}/diary/${diaryId}`);
+    const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
     await updateDoc(diaryRef, {
       diaryText: diaryText,
       diaryDate: Timestamp.fromDate(date.toDate()),
       feeling: selectedFeeling,
-      selectedImage: selectedImage,
+      diaryImage: selectedImage,
       updatedAt: Timestamp.fromDate(new Date())
     });
 

@@ -11,21 +11,19 @@ export default function ApprovalConfirmationModal(
   onFriendDeleted: (friendId: string) => void,
   setStatus: (status: string) => void,
 ) {
-  if (friendData.status === 'awaitingApproval' ) {
-    // 承認確認モーダルを表示
-    Alert.alert(
-      '友人承認',
-      `${friendData.userName}さんからの友達申請を承認しますか？`,
-      [
-        {
-          text: '承認しない',
-          onPress: async () => deleteFriend(userId, friendData, friendDocumentId, onFriendDeleted),
-        },
-        {
-          text: '承認する',
-          onPress: () => updateApprovalStatus(userId, friendData, friendDocumentId, setStatus),
-        },
-      ]
-    );
-  }
+  // 承認確認モーダルを表示
+  Alert.alert(
+    '友人承認',
+    `${friendData.userName}さんからの友達申請を承認しますか？`,
+    [
+      {
+        text: '承認しない',
+        onPress: async () => deleteFriend(userId, friendData, friendDocumentId, onFriendDeleted),
+      },
+      {
+        text: '承認する',
+        onPress: () => updateApprovalStatus(userId, friendData, friendDocumentId, setStatus),
+      },
+    ]
+  );
 }

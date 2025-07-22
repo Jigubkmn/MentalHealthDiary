@@ -6,10 +6,10 @@ import SettingIcon from '../../components/Icon/SettingIcon';
 
 type Props = {
   currentAccountId?: string;
-  currentUserInfosId?: string;
+  userId?: string;
 }
 
-export default function Header({ currentAccountId, currentUserInfosId }: Props) {
+export default function Header({ currentAccountId, userId }: Props) {
 
   return (
     <View style={styles.header}>
@@ -25,7 +25,7 @@ export default function Header({ currentAccountId, currentUserInfosId }: Props) 
             pathname: '/searchFriend/searchFriend',
             params: {
               currentAccountId: currentAccountId,
-              currentUserInfosId: currentUserInfosId,
+              userId: userId,
             }})}}
           style={styles.userAddIcon}>
           <UserAddIcon size={24} color="#FFA500" />

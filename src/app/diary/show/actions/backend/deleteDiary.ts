@@ -1,0 +1,34 @@
+import { Alert } from 'react-native';
+import { db } from '../../../../../config';
+import { doc, deleteDoc } from 'firebase/firestore';
+import handleBack from '../../../../actions/handleBack';
+
+
+export default async function deleteDiary(userId?: string, diaryId?: string) {
+  if (!userId || !diaryId) return;
+    Alert.alert(
+      '日記を削除',
+      'この日記を削除しますか？\nこの操作は取り消せません。',
+      [
+        {
+          text: 'キャンセル',
+          style: 'cancel',
+        },
+        {
+          text: '削除',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
+              await deleteDoc(diaryRef);
+              console.log('日記を削除しました');
+              handleBack();
+            } catch (error) {
+              console.error('日記の削除に失敗しました:', error);
+              Alert.alert('エラー', '日記の削除に失敗しました。');
+            }
+          },
+        },
+      ]
+    );
+}

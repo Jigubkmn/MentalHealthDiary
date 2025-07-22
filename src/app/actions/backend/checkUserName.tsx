@@ -1,25 +1,26 @@
-import { db } from '../../config'
+import { db } from '../../../config'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 
 // ユーザー名の重複チェック関数
-export default async function checkAccountId(newAccountId: string): Promise<boolean> {
+export default async function checkUserName(newUserName: string): Promise<boolean> {
   try{
     const usersRef = collectionGroup(db, 'userInfo')
 
     // ユーザー名の重複チェック
-    const q = query(usersRef, where('accountId', '==', newAccountId))
+    const q = query(usersRef, where('userName', '==', newUserName))
     const querySnapshot = await getDocs(q)
     // true：重複している、false：重複していない
     const isDuplicate = !querySnapshot.empty
 
-    // 重複している場合はtrue、重複していない場合はfalseを返す
     if (isDuplicate) {
+      console.log(`ユーザー名 "${newUserName}" は既に存在します。`)
       return true
     } else {
+      console.log(`ユーザー名 "${newUserName}" は使用可能です。`)
       return false
     }
   } catch (error) {
-    console.error("ユーザーIDの重複チェックに失敗しました:", error)
+    console.error("ユーザー名の重複チェックに失敗しました:", error)
     return true
   }
 }

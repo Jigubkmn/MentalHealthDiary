@@ -1,7 +1,7 @@
-import { db } from '../../config';
+import { db } from '../../../config';
 import { doc, getDoc } from 'firebase/firestore';
 import dayjs from 'dayjs';
-import { DiaryType } from '../../../type/diary';
+import { DiaryType } from '../../../../type/diary';
 
 type Props = {
   userId?: string;
@@ -12,7 +12,7 @@ type Props = {
 export default async function fetchSelectedDiary({ userId, diaryId, setSelectedDiaryInfo }: Props) {
   if (userId === null || diaryId === null) return;
     try {
-      const diaryRef = doc(db, `users/${userId}/diary/${diaryId}`);
+      const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
       const diarySnap = await getDoc(diaryRef);
       if (diarySnap.exists()) {
         const data = diarySnap.data();
@@ -21,8 +21,8 @@ export default async function fetchSelectedDiary({ userId, diaryId, setSelectedD
           diaryText: data.diaryText,
           diaryDate: dayjs(data.diaryDate.toDate()),
           feeling: data.feeling || null,
+          diaryImage: data.diaryImage,
           updatedAt: data.updatedAt.toDate(),
-          selectedImage: data.selectedImage
         };
         setSelectedDiaryInfo(diary);
       } else {

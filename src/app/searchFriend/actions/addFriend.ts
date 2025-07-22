@@ -4,7 +4,7 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { router } from 'expo-router';
 
 type Props = {
-  currentUserId?: string;
+  userId?: string;
   friendUsersId: string;
   accountId: string;
   currentUserInfosId?: string;
@@ -12,13 +12,13 @@ type Props = {
   friendUserInfosId: string | null;
 }
 
-export default async function addFriend({ currentUserId, friendUsersId, accountId, currentUserInfosId, currentAccountId, friendUserInfosId }: Props) {
-  if (!currentUserId || !friendUsersId || !accountId || !currentUserInfosId || !currentAccountId || !friendUserInfosId) {
+export default async function addFriend({ userId, friendUsersId, accountId, currentAccountId, friendUserInfosId }: Props) {
+  if (!userId || !friendUsersId || !accountId || !currentAccountId || !friendUserInfosId) {
     return;
   }
 
   try {
-    const currentUserRef = collection(db, `users/${currentUserId}/friends`);
+    const currentUserRef = collection(db, `users/${userId}/friends`);
     const friendRef = collection(db, `users/${friendUsersId}/friends`);
     // ログインユーザーのfriendsコレクションに友人を追加
     await addDoc(currentUserRef, {
@@ -32,7 +32,7 @@ export default async function addFriend({ currentUserId, friendUsersId, accountI
     });
     // 友人のfriendsコレクションにログインユーザーを追加
     await addDoc(friendRef, {
-      friendId: currentUserInfosId,
+      friendId: userId,
       accountId: currentAccountId,
       blocked: false,
       notifyOnDiary: true,
@@ -40,6 +40,7 @@ export default async function addFriend({ currentUserId, friendUsersId, accountI
       status: 'awaitingApproval',
       createdAt: Timestamp.fromDate(new Date()),
     });
+
     Alert.alert('友人を追加しました');
     router.push('/(tabs)/myPage');
 
