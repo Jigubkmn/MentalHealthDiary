@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Header from '../myPage/components/Header'
-import { auth } from '../../config';
 import { router } from 'expo-router';
 import { UserInfoType } from '../../../type/userInfo'
 import { FriendInfoType } from '../../../type/friend'
@@ -13,9 +12,8 @@ import { useFriends } from '../../contexts/FriendContext';
 
 export default function myPage() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
-  const { friends } = useFriends();
+  const { friends, userId } = useFriends();
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>(friends)
-  const userId = auth.currentUser?.uid
 
   useEffect(() => {
     // ユーザー情報取得
@@ -28,6 +26,11 @@ export default function myPage() {
 
     return unsubscribe;
   }, [userId])
+
+  // FriendContextのfriendsが更新された時にfriendsDataも更新
+  useEffect(() => {
+    setFriendsData(friends);
+  }, [friends]);
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {
