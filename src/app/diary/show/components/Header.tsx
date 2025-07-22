@@ -13,12 +13,15 @@ type Props = {
   userId?: string;
   diaryId: string;
   diaryDate: dayjs.Dayjs;
+  selectedUserId?: string;
 }
 
-export default function Header({ userId, diaryId, diaryDate }: Props) {
+export default function Header({ userId, diaryId, diaryDate, selectedUserId }: Props) {
   const router = useRouter();
   const [date, setDate] = useState(diaryDate);  // diaryDate："2025-07-06T09:21:43.658Z"
   const [selectedDate, setSelectedDate] = useState('');
+
+  const isButtonVisible = selectedUserId === userId;
 
   useEffect(() => {
     // diaryDateが変更されたらdateも更新
@@ -48,14 +51,18 @@ export default function Header({ userId, diaryId, diaryDate }: Props) {
       {/* 日付タイトル */}
       <HeaderDiaryDateTitle selectedDate={selectedDate} date={date} setDate={setDate} isArrowIcon={false} />
       {/* ヘッダー右側 */}
-      <View style={styles.headerRight}>
-        <TouchableOpacity onPress={handleEdit} style={styles.editIcon}>
-          <EditIcon size={24} color="#FFA500" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() =>deleteDiary(userId, diaryId)}>
-          <DeleteIcon size={24} color="#FFA500" />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.headerRight}>
+          {isButtonVisible &&
+            <>
+              <TouchableOpacity onPress={handleEdit} style={styles.editIcon}>
+                <EditIcon size={24} color="#FFA500" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() =>deleteDiary(userId, diaryId)}>
+                <DeleteIcon size={24} color="#FFA500" />
+              </TouchableOpacity>
+            </>
+          }
+        </View>
     </View>
   )
 }

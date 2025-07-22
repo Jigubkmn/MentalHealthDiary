@@ -14,12 +14,12 @@ export default function diaryShow() {
   const [selectedDiaryInfo, setSelectedDiaryInfo] = useState<DiaryType | null>(null);
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
   const userId = auth.currentUser?.uid;
-  const { diaryId } = useLocalSearchParams<{ diaryId?: string }>(); //idだけを取得
+  const { diaryId, selectedUserId } = useLocalSearchParams<{ diaryId?: string, selectedUserId?: string }>(); //idだけを取得
   const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
 
   useEffect(() => {
     // 日記の情報を取得
-    fetchSelectedDiary({ userId, diaryId, setSelectedDiaryInfo });
+    fetchSelectedDiary({ userId: selectedUserId, diaryId, setSelectedDiaryInfo });
   }, []);
 
   useEffect(() => {
@@ -33,7 +33,12 @@ export default function diaryShow() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <View style={styles.headerArea}>
-          <Header userId={userId} diaryId={selectedDiaryInfo?.id || ''} diaryDate={selectedDiaryInfo?.diaryDate || dayjs()} />
+          <Header
+            userId={userId}
+            diaryId={selectedDiaryInfo?.id || ''}
+            diaryDate={selectedDiaryInfo?.diaryDate || dayjs()}
+            selectedUserId={selectedUserId}
+          />
           <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={() => {}} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
         </View>
         {selectedDiaryInfo && (

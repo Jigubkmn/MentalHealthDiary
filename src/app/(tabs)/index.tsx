@@ -113,6 +113,7 @@ export default function home() {
               diaryList={diaryList}
               userName={selectedUserInfo?.userName}
               userImage={selectedUserInfo?.userImage}
+              selectedUserId={selectedUserId}
             />
           )
         }):

@@ -13,9 +13,10 @@ type Props = {
   diaryList: DiaryType
   userName?: string
   userImage?: string
+  selectedUserId?: string
 }
 
-export default function DiaryList({ diaryList, userName, userImage } :Props) {
+export default function DiaryList({ diaryList, userName, userImage, selectedUserId } :Props) {
   const [diaryDate, setDiaryDate] = useState("");
   const router = useRouter();
 
@@ -30,7 +31,8 @@ export default function DiaryList({ diaryList, userName, userImage } :Props) {
       pathname: `/diary/show/diaryShow`,
       params: {
         diaryId: diaryList.id,
-        isTouchFeelingButton: 'false'
+        isTouchFeelingButton: 'false',
+        selectedUserId: selectedUserId
       }
     });
   };
