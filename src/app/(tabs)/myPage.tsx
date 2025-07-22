@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Header from '../myPage/components/Header'
 import { router } from 'expo-router';
+import { auth } from '../../config';
 import { UserInfoType } from '../../../type/userInfo'
 import { FriendInfoType } from '../../../type/friend'
 import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
 import Divider from '../components/Divider';
-import { useFriends } from '../../contexts/FriendContext';
+import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 
 export default function myPage() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
-  const { friends, userId } = useFriends();
-  const [friendsData, setFriendsData] = useState<FriendInfoType[]>(friends)
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
+  const userId = auth.currentUser?.uid;
 
   useEffect(() => {
     // ユーザー情報取得
@@ -29,8 +30,18 @@ export default function myPage() {
 
   // FriendContextのfriendsが更新された時にfriendsDataも更新
   useEffect(() => {
-    setFriendsData(friends);
-  }, [friends]);
+    const fetchFriends = async () => {
+      try {
+        const data = await fetchFriendList(userId);
+        setFriendsData(data);
+        console.log('友人情報の取得に成功しました');
+      } catch (error) {
+        console.error('友人情報の取得に失敗しました:', error);
+        setFriendsData([]);
+      }
+    }
+    fetchFriends();
+  }, [userId, friendsData]);
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {
