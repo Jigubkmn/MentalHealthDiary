@@ -10,11 +10,17 @@ import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal'
 import { UserInfoType } from '../../../type/userInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
+import { FriendInfoType } from '../../../type/friend';
+import fetchFriendList from '../myPage/action/backend/fetchFriendList';
+import Header from '../diary/list/components/Header';
 
 export default function home() {
-  const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
-  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const userId = auth.currentUser?.uid
+  const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)  // ログイン情報
+  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null) // 日記を表示しているユーザー情報
+  const [selectedUserId, setSelectedUserId] = useState<string>('') // 日記を表示しているユーザーID
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const router = useRouter();
 
   // モーダルの表示状態を管理
@@ -26,27 +32,46 @@ export default function home() {
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
+  // selectedUserIdの初期化
   useEffect(() => {
-    // ユーザー情報取得
-    if (userId === null) return;
+    if (userId && !selectedUserId) {
+      setSelectedUserId(userId);
+    }
+  }, [userId, selectedUserId]);
 
+  useEffect(() => {
+    if (userId === null || !selectedUserId) return;
+
+    // 日記を表示しているユーザー情報を取得
+    const unsubscribe = fetchUserInfo({
+      userId: selectedUserId,
+      setUserInfo: setSelectedUserInfo,
+    });
+
+    fetchFriends();
+    return unsubscribe;
+  }, [selectedUserId])
+
+  useEffect(() => {
+    if (userId === null) return;
+    // ログイン情報取得
     const unsubscribe = fetchUserInfo({
       userId,
       setUserInfo,
     });
-
+    fetchFriends();
     return unsubscribe;
   }, [userId])
 
   useEffect(() => {
-    if (userId === null) return;
+    if (userId === null || !selectedUserId) return;
     // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
     const startOfMonth = displayDate.startOf('month');
     const endOfMonth = displayDate.add(1, 'month').startOf('month');
-    // 日記一覧を取得
-    const unsubscribe = fetchDiaries(userId!, setDiaryLists, startOfMonth, endOfMonth);
+    // 選択されたユーザーの日記一覧を取得
+    const unsubscribe = fetchDiaries(selectedUserId, setDiaryLists, startOfMonth, endOfMonth);
     return unsubscribe;
-  }, [displayDate])
+  }, [displayDate, selectedUserId])
 
   const handleYearMonthPress = () => {
     // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する
@@ -54,8 +79,25 @@ export default function home() {
     setModalVisible(true);
   }
 
+  const fetchFriends = async () => {
+    try {
+      const data = await fetchFriendList(userId);
+      setFriendsData(data);
+      console.log('友人情報の取得に成功しました');
+    } catch (error) {
+      console.error('友人情報の取得に失敗しました:', error);
+      setFriendsData([]);
+    }
+  }
+
   return (
     <View style={styles.container}>
+      <Header
+        userInfo={userInfo}
+        selectedUserInfo={selectedUserInfo}
+        friendsData={friendsData}
+        setSelectedUserId={setSelectedUserId}
+      />
       {/* 年月 */}
       <View style={styles.yearMonthContainer}>
         <TouchableOpacity onPress={handleYearMonthPress}>
@@ -69,8 +111,9 @@ export default function home() {
             <DiaryList
               key={diaryList.id}
               diaryList={diaryList}
-              userName={userInfo?.userName}
-              userImage={userInfo?.userImage}
+              userName={selectedUserInfo?.userName}
+              userImage={selectedUserInfo?.userImage}
+              selectedUserId={selectedUserId}
             />
           )
         }):

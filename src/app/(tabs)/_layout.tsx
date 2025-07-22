@@ -30,6 +30,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "日記一覧",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <HomeIcon size={size} color={color} />
           ),
@@ -63,16 +64,6 @@ export default function TabLayout() {
         name="myPage"
         options={{
           title: "マイページ",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <UserIcon size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="friend"
-        options={{
-          title: "フレンド",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <UserIcon size={size} color={color} />

@@ -17,9 +17,10 @@ export default function fetchUserInfo({ userId, setUserInfo }: FetchUserInfoPara
     // データ1つずつの処理
     snapshot.docs.forEach((doc) => {
       const { accountId, userName, userImage } = doc.data();
-      setUserInfo({ accountId, userName, userImage: userImage || noUserImage })
+      setUserInfo({ userId: doc.id, accountId, userName, userImage: userImage || noUserImage })
     })
   })
 
   return unsubscribe;
 }
+
