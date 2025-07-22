@@ -50,7 +50,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
         setFriendDocumentId(data || null);
         // myPage.tsxにいる時のみ承認確認モーダルを表示
         if (friendData.status === 'awaitingApproval') {
-          ApprovalConfirmationModal(userId, friendData, friendDocumentId, onFriendDeleted, setStatus);
+          ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, setStatus);
         }
       } catch (error) {
         console.error('フレンドドキュメントIDの取得に失敗しました', error);

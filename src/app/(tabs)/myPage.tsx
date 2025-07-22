@@ -30,18 +30,19 @@ export default function myPage() {
 
   // FriendContextのfriendsが更新された時にfriendsDataも更新
   useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        const data = await fetchFriendList(userId);
-        setFriendsData(data);
-        console.log('友人情報の取得に成功しました');
-      } catch (error) {
-        console.error('友人情報の取得に失敗しました:', error);
-        setFriendsData([]);
-      }
-    }
     fetchFriends();
-  }, [userId, friendsData]);
+  }, [userId]);
+
+  const fetchFriends = async () => {
+    try {
+      const data = await fetchFriendList(userId);
+      setFriendsData(data);
+      console.log('友人情報の取得に成功しました');
+    } catch (error) {
+      console.error('友人情報の取得に失敗しました:', error);
+      setFriendsData([]);
+    }
+  }
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {
