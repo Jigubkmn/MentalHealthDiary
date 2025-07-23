@@ -29,8 +29,8 @@ const MoodChartWithIcons = () => {
         // 画像のグラフをざっくり再現
         // データの値はmoodImagesのインデックスに対応させます (0が一番上、4が一番下)
         data: [0, 1, 4, 2, 1, 4, 0],
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 線の色 (黒)
-        strokeWidth: 2,
+        color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`, // 線の色（オレンジ）
+        strokeWidth: 3, // 線の太さを増加
       },
     ],
   };
@@ -39,14 +39,29 @@ const MoodChartWithIcons = () => {
   const chartConfig = {
     backgroundGradientFrom: '#FFFFFF',
     backgroundGradientTo: '#FFFFFF',
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // グリッド線やラベルの色
-    labelColor: (opacity = 1) => `rgba(100, 100, 100, ${opacity})`, // X軸ラベルの色
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // グリッド線の色（黒）
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // X軸ラベルの色
     strokeWidth: 2,
     // データポイントの丸を非表示にする
     propsForDots: {
       r: '3',
       strokeWidth: '0',
-      fill: '#000000',
+      fill: '#FFA500',
+    },
+    // グリッド線の設定
+    propsForBackgroundLines: {
+      strokeDasharray: '', // 実線
+      strokeWidth: 1, // 線の太さ
+      stroke: '#000000', // 線の色
+    },
+    // Y軸の線を表示
+    propsForVerticalLabels: {
+      fontSize: 0, // Y軸ラベルは非表示
+    },
+    // X軸の線を表示
+    propsForHorizontalLabels: {
+      fontSize: 12, // X軸ラベルのフォントサイズ
+
     },
   };
 
@@ -63,12 +78,15 @@ const MoodChartWithIcons = () => {
           withHorizontalLabels={false} // Y軸のラベルを描画しないためのオフセット
           withVerticalLabels={true} // X軸のラベルは表示
           withHorizontalLines={true} // 水平線を表示
+          withVerticalLines={true} // 垂直線を表示
           withDots={true} // データポイントを非表示
           // bezierを付けないことで、カクカクした線になる
           // データを0から開始しないようにする（データの最小値が基点になる）
           fromZero={false}
           // 5段階なので4つの区切り
           segments={4}
+          // X軸の一番下の線を表示するための設定
+          withInnerLines={false} // 内側の線を表示
         />
 
         {/* 絶対配置でY軸アイコンを配置 */}
