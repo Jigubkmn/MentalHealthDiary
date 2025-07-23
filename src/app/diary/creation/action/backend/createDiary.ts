@@ -5,6 +5,7 @@ import { collection, Timestamp, addDoc } from 'firebase/firestore';
 import formatDate from '../../../../actions/formatData';
 import { useRouter } from 'expo-router';
 import checkExistingDiary from '../checkExistingDiary';
+import feelings from '../../../../constants/feelings';
 
 export default async function createDiary(
   selectedFeeling: string | null,
@@ -35,8 +36,16 @@ export default async function createDiary(
   }
 
   try {
-    const ref = collection(db, `users/${userId}/diaries`);
-    await addDoc(ref, {
+    // 体調のスコアを取得
+    const feelingScore = feelings.find((feeling) => feeling.name === selectedFeeling)?.score;
+    const feelingScoresRef = collection(db, `users/${userId}/feelingScores`);
+    await addDoc(feelingScoresRef, {
+      feelingScore: feelingScore,
+      diaryDate: Timestamp.fromDate(date.toDate()),
+      updatedAt: Timestamp.fromDate(new Date()),
+    });
+    const diariesRef = collection(db, `users/${userId}/diaries`);
+    await addDoc(diariesRef, {
       diaryText,
       diaryDate: Timestamp.fromDate(date.toDate()),
       feeling: selectedFeeling,
