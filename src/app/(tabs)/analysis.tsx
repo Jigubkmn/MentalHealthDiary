@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit';
+import Header from '../analysis/components/Header';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -66,46 +67,49 @@ const MoodChartWithIcons = () => {
   };
 
   return (
-    <View style={styles.card}>
-      {/* グラフエリア */}
-      <View style={styles.chartContainer}>
-        {/* グラフ本体 */}
-        <LineChart
-          data={data}
-          width={screenWidth - 80} // カードのpaddingやY軸の幅を引く
-          height={220}
-          chartConfig={chartConfig}
-          withHorizontalLabels={false} // Y軸のラベルを描画しないためのオフセット
-          withVerticalLabels={true} // X軸のラベルは表示
-          withHorizontalLines={true} // 水平線を表示
-          withVerticalLines={true} // 垂直線を表示
-          withDots={true} // データポイントを非表示
-          // bezierを付けないことで、カクカクした線になる
-          // データを0から開始しないようにする（データの最小値が基点になる）
-          fromZero={false}
-          // 5段階なので4つの区切り
-          segments={4}
-          // X軸の一番下の線を表示するための設定
-          withInnerLines={false} // 内側の線を表示
-        />
+    <View style={styles.container}>
+      <Header />
+      <View style={styles.card}>
+        {/* グラフエリア */}
+        <View style={styles.chartContainer}>
+          {/* グラフ本体 */}
+          <LineChart
+            data={data}
+            width={screenWidth - 80} // カードのpaddingやY軸の幅を引く
+            height={220}
+            chartConfig={chartConfig}
+            withHorizontalLabels={false} // Y軸のラベルを描画しないためのオフセット
+            withVerticalLabels={true} // X軸のラベルは表示
+            withHorizontalLines={true} // 水平線を表示
+            withVerticalLines={true} // 垂直線を表示
+            withDots={true} // データポイントを非表示
+            // bezierを付けないことで、カクカクした線になる
+            // データを0から開始しないようにする（データの最小値が基点になる）
+            fromZero={false}
+            // 5段階なので4つの区切り
+            segments={4}
+            // X軸の一番下の線を表示するための設定
+            withInnerLines={false} // 内側の線を表示
+          />
 
-        {/* 絶対配置でY軸アイコンを配置 */}
-        <View style={styles.absoluteYAxis}>
-          {moodImages.map((imgSrc, index) => (
-            <Image
-              key={index}
-              source={imgSrc}
-              style={[
-                styles.moodIcon,
-                {
-                  top: (index * 41), // 各アイコンの位置を計算（36px間隔）
-                  left: 0, // 左端に配置
-                }
-              ]}
-              contentFit="cover"
-              cachePolicy="memory-disk"
-            />
-          ))}
+          {/* 絶対配置でY軸アイコンを配置 */}
+          <View style={styles.absoluteYAxis}>
+            {moodImages.map((imgSrc, index) => (
+              <Image
+                key={index}
+                source={imgSrc}
+                style={[
+                  styles.moodIcon,
+                  {
+                    top: (index * 41), // 各アイコンの位置を計算（36px間隔）
+                    left: 0, // 左端に配置
+                  }
+                ]}
+                contentFit="cover"
+                cachePolicy="memory-disk"
+              />
+            ))}
+          </View>
         </View>
       </View>
     </View>
@@ -114,6 +118,9 @@ const MoodChartWithIcons = () => {
 
 // スタイル定義
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   card: {
     margin: 20,
     backgroundColor: 'white',
