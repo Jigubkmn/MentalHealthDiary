@@ -3,7 +3,6 @@ import { Tabs, useRouter } from 'expo-router'
 import UserIcon from '../components/Icon/UserIcon'
 import HomeIcon from '../components/Icon/HomeIcon'
 import DiaryCreationIcon from '../components/Icon/DiaryCreationIcon'
-import CalendarIcon from '../components/Icon/calendarIcon'
 
 export default function TabLayout() {
 
@@ -34,16 +33,6 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <HomeIcon size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="calendar"
-        options={{
-          title: "カレンダー",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <CalendarIcon width={size} height={size} color={color} />
           ),
         }}
       />
