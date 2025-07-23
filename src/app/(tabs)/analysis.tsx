@@ -3,23 +3,9 @@ import { StyleSheet, View, Dimensions } from 'react-native';
 import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit';
 import Header from '../analysis/components/Header';
+import feelingImageList from '../constants/feelingImageList';
 
 const screenWidth = Dimensions.get('window').width;
-
-// 用意した画像をrequireで読み込み、配列にまとめる
-// 上から順（良い気分 -> 悪い気分）に並べるのがポイント
-const moodImages = [
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../assets/images/excellent_icon.png'), // データ値: 0
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../assets/images/good_icon.png'), // データ値: 1
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../assets/images/normal_icon.png'), // データ値: 2
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../assets/images/bad_icon.png'), // データ値: 3
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../assets/images/terrible_icon.png'), // データ値: 4
-];
 
 const MoodChartWithIcons = () => {
   // グラフ用のデータ
@@ -94,7 +80,7 @@ const MoodChartWithIcons = () => {
 
           {/* 絶対配置でY軸アイコンを配置 */}
           <View style={styles.absoluteYAxis}>
-            {moodImages.map((imgSrc, index) => (
+            {feelingImageList.map((imgSrc, index) => (
               <Image
                 key={index}
                 source={imgSrc}
