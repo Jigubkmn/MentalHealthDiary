@@ -3,6 +3,7 @@ import { Tabs, useRouter } from 'expo-router'
 import UserIcon from '../components/Icon/UserIcon'
 import HomeIcon from '../components/Icon/HomeIcon'
 import DiaryCreationIcon from '../components/Icon/DiaryCreationIcon'
+import AnalysisIcon from '../components/Icon/AnalysisIcon'
 
 export default function TabLayout() {
 
@@ -58,6 +59,16 @@ export default function TabLayout() {
               }
             });
           },
+        }}
+      />
+      <Tabs.Screen
+        name="analysis"
+        options={{
+          title: "分析レポート",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <AnalysisIcon width={size} height={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
