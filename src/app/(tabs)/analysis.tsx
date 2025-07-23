@@ -28,15 +28,7 @@ const MoodChartWithIcons = () => {
       {
         // 画像のグラフをざっくり再現
         // データの値はmoodImagesのインデックスに対応させます (0が一番上、4が一番下)
-        data: [
-          0, // 7/1: 最高
-          1,
-          4, // 7/3あたり: 最悪
-          2,
-          1,
-          4, // 7/8あたり: 最悪
-          0, // 7/11: 最高
-        ],
+        data: [0, 1, 4, 2, 1, 4, 0],
         color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 線の色 (黒)
         strokeWidth: 2,
       },
@@ -45,41 +37,23 @@ const MoodChartWithIcons = () => {
 
   // グラフのスタイル設定
   const chartConfig = {
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
-    color: (opacity = 1) => `rgba(200, 200, 200, ${opacity})`, // グリッド線やラベルの色
+    backgroundGradientFrom: '#FFFFFF',
+    backgroundGradientTo: '#FFFFFF',
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // グリッド線やラベルの色
     labelColor: (opacity = 1) => `rgba(100, 100, 100, ${opacity})`, // X軸ラベルの色
     strokeWidth: 2,
     // データポイントの丸を非表示にする
     propsForDots: {
       r: '3',
       strokeWidth: '0',
+      fill: '#000000',
     },
-    // Y軸の数値を非表示
-    withVerticalLabels: false,
-    // 水平のグリッド線を非表示
-    withHorizontalLines: false,
-    // 垂直のグリッド線は表示
-    withVerticalLines: true,
   };
 
   return (
     <View style={styles.card}>
       {/* グラフエリア */}
       <View style={styles.chartContainer}>
-        {/* カスタムY軸 (アイコン) */}
-        <View style={styles.customYAxis}>
-          {moodImages.map((imgSrc, index) => (
-            <Image
-              key={index}
-              source={imgSrc}
-              style={styles.moodIcon}
-              contentFit="cover"
-              cachePolicy="memory-disk"
-            />
-          ))}
-        </View>
-
         {/* グラフ本体 */}
         <LineChart
           data={data}
@@ -87,17 +61,34 @@ const MoodChartWithIcons = () => {
           height={220}
           chartConfig={chartConfig}
           withHorizontalLabels={false} // Y軸のラベルを描画しないためのオフセット
+          withVerticalLabels={true} // X軸のラベルは表示
           withHorizontalLines={true} // 水平線を表示
           withDots={true} // データポイントを非表示
           // bezierを付けないことで、カクカクした線になる
-          style={styles.chart}
           // データを0から開始しないようにする（データの最小値が基点になる）
           fromZero={false}
-          // Y軸のラベルを描画しないためのオフセット
-          yLabelsOffset={20}
           // 5段階なので4つの区切り
           segments={4}
         />
+
+        {/* 絶対配置でY軸アイコンを配置 */}
+        <View style={styles.absoluteYAxis}>
+          {moodImages.map((imgSrc, index) => (
+            <Image
+              key={index}
+              source={imgSrc}
+              style={[
+                styles.moodIcon,
+                {
+                  top: (index * 41), // 各アイコンの位置を計算（36px間隔）
+                  left: 0, // 左端に配置
+                }
+              ]}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+          ))}
+        </View>
       </View>
     </View>
   );
@@ -121,21 +112,29 @@ const styles = StyleSheet.create({
   chartContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start', // アイコンとグラフの上端を合わせる
+    justifyContent: 'flex-start', // 左寄せ
+    position: 'relative', // 絶対配置の基準点
   },
   customYAxis: {
     height: 220, // グラフの高さと合わせる
     justifyContent: 'space-between', // アイコンを均等に配置
-    paddingRight: 10,
-    paddingVertical: 5, // 上下の余白を微調整
+    paddingRight: 5, // 右側の余白を最小限に
+    marginRight: 0, // 右側のマージンを削除
   },
   moodIcon: {
     width: 32,
     height: 32,
+    borderRadius: 20,
     resizeMode: 'contain',
+    position: 'absolute', // 各アイコンも絶対配置
   },
-  chart: {
-    // グラフの左側に余白が自動で入る場合があるので、マイナスマージンで調整
-    marginLeft: -15,
+  absoluteYAxis: {
+    position: 'absolute',
+    top: 0, // グラフの上部余白を考慮
+    left: 10, // 左端からの距離
+    width: 32, // アイコンの幅
+    height: 220, // グラフの高さと同じ
+    zIndex: 1, // グラフの上に表示
   },
 });
 
