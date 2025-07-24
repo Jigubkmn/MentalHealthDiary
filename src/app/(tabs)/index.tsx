@@ -93,6 +93,7 @@ export default function home() {
   return (
     <View style={styles.container}>
       <Header
+        title="日記一覧"
         userInfo={userInfo}
         selectedUserInfo={selectedUserInfo}
         friendsData={friendsData}

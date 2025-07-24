@@ -96,6 +96,7 @@ export default function analysis() {
   return (
     <View style={styles.container}>
       <Header
+        title="分析レポート"
         userInfo={userInfo}
         selectedUserInfo={selectedUserInfo}
         friendsData={friendsData}
