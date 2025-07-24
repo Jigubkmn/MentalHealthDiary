@@ -2,7 +2,6 @@ import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../../config';
 
 export default async function fetchFriendAccountId(userId?: string): Promise<string[]> {
-  console.log("userId", userId)
   try {
     const friendsRef = collection(db, `users/${userId}/friends`);
     const friendsQuery = query(friendsRef);
