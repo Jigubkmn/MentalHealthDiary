@@ -1,13 +1,54 @@
-import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit';
 import Header from '../analysis/components/Header';
 import feelingImageList from '../constants/feelingImageList';
+import { auth } from '../../config';
+import dayjs from 'dayjs';
+import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
+import fetchFeelingScore from '../analysis/actions/backend/fetchFeelingScore';
 
 const screenWidth = Dimensions.get('window').width;
 
-const MoodChartWithIcons = () => {
+export default function analysis() {
+  const userId = auth.currentUser?.uid
+  const [feelingScoreList, setFeelingScoreList] = useState<number[]>([]);
+  const [feelingDateList, setFeelingDateList] = useState<string[]>([]);
+  // モーダルの表示状態を管理
+  const [isModalVisible, setModalVisible] = useState(false);
+  // 表示用の年月を管理する
+  const [displayDate, setDisplayDate] = useState(dayjs());
+  // 選択された年月を'YYYY-M'形式の文字列で保持する
+  const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
+
+  console.log("feelingScoreList", feelingScoreList);
+  console.log("feelingDateList", feelingDateList);
+
+
+  useEffect(() => {
+    if (userId === null) return;
+    // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
+    const startOfMonth = displayDate.startOf('month');
+    const endOfMonth = displayDate.add(1, 'month').startOf('month');
+    // 選択されたユーザーの日記一覧を取得
+    const unsubscribe = fetchFeelingScore(
+      setFeelingScoreList,
+      setFeelingDateList,
+      startOfMonth,
+      endOfMonth,
+      userId
+    );
+    return unsubscribe;
+  }, [displayDate, userId])
+
+  const handleYearMonthPress = () => {
+    // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する
+    setSelectedYearMonth(displayDate.format('YYYY-M'));
+    setModalVisible(true);
+  }
+
+
   // グラフ用のデータ
   const data = {
     labels: ['7/1', '7/6', '7/11', '7/16', '7/21', '7/26', '7/31'],
@@ -55,6 +96,12 @@ const MoodChartWithIcons = () => {
   return (
     <View style={styles.container}>
       <Header />
+      {/* 年月 */}
+      <View style={styles.yearMonthContainer}>
+        <TouchableOpacity onPress={handleYearMonthPress}>
+          <Text style={styles.yearMonthText}>{displayDate.format('YYYY年M月')} ↓</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.card}>
         {/* グラフエリア */}
         <View style={styles.chartContainer}>
@@ -98,6 +145,14 @@ const MoodChartWithIcons = () => {
           </View>
         </View>
       </View>
+      {/* 年月選択モーダル */}
+      <YearMonthSelectModal
+        setModalVisible={setModalVisible}
+        setDisplayDate={setDisplayDate}
+        selectedYearMonth={selectedYearMonth}
+        setSelectedYearMonth={setSelectedYearMonth}
+        isModalVisible={isModalVisible}
+      />
     </View>
   );
 };
@@ -106,6 +161,15 @@ const MoodChartWithIcons = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  yearMonthContainer: {
+    backgroundColor: '#ffffff',
+  },
+  yearMonthText: {
+    fontSize: 20,
+    lineHeight: 38,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   card: {
     margin: 20,
@@ -142,5 +206,3 @@ const styles = StyleSheet.create({
     zIndex: 1, // グラフの上に表示
   },
 });
-
-export default MoodChartWithIcons;
