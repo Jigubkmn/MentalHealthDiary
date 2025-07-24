@@ -1,10 +1,10 @@
 import { db } from '../../../../config';
-import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import dayjs from 'dayjs';
+import { FeelingScoreType } from '../../../../../type/feelingScore';
 
 export default function fetchFeelingScore(
-  setFeelingScoreList: (feelingScoreList: number[]) => void,
-  setFeelingDateList: (feelingDateList: string[]) => void,
+  setFeelingScoreDates: (feelingScoreDates: FeelingScoreType[]) => void,
   startOfMonth: dayjs.Dayjs,
   endOfMonth: dayjs.Dayjs,
   userId?: string,
@@ -12,19 +12,14 @@ export default function fetchFeelingScore(
   const ref = collection(db, `users/${userId}/feelingScores`)
   const q = query(ref, orderBy('diaryDate', 'asc'), where('diaryDate', '>=', startOfMonth.toDate()), where('diaryDate', '<', endOfMonth.toDate()))
   const unsubscribe = onSnapshot(q, (snapshot) => {
-    const remoteFeelingScoreList: number[] = []
-    const remoteFeelingDateList: string[] = []
+    const remoteChartData: FeelingScoreType[] = []
     snapshot.docs.forEach((doc) => {
-      const { feelingScore, diaryDate } = doc.data();
-      remoteFeelingScoreList.push(feelingScore)
-      // 1. TimestampオブジェクトをJavaScriptのDateオブジェクトに変換
-      const jsDate = diaryDate.toDate();
-      // 2. dayjsを使って 'M/D' (月/日) 形式の文字列にフォーマット
-      const formattedDate = dayjs(jsDate).format('M/D');
-      remoteFeelingDateList.push(formattedDate)
+      const { diaryDate, feelingScore } = doc.data() as { diaryDate: Timestamp, feelingScore: number};
+      // Timestampオブジェクトを 'M/D' 形式の文字列に変換
+      const formattedDate = dayjs(diaryDate.toDate()).format('M/D');
+      remoteChartData.push({ date: formattedDate, value: feelingScore });
     })
-    setFeelingScoreList(remoteFeelingScoreList)
-    setFeelingDateList(remoteFeelingDateList)
+    setFeelingScoreDates(remoteChartData)
   })
   return unsubscribe;
 }
