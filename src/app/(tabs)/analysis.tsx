@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 16,
     paddingVertical: 20,
-    paddingHorizontal: 10,
   },
   chartContainer: {
     flexDirection: 'row',
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
   absoluteYAxis: {
     position: 'absolute',
     top: 0, // グラフの上部余白を考慮
-    left: 10, // 左端からの距離
+    left: 20, // 左端からの距離
     width: 32, // アイコンの幅
     height: 220, // グラフの高さと同じ
     zIndex: 1, // グラフの上に表示
