@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit';
 import Header from '../analysis/components/Header';
@@ -22,20 +23,20 @@ export default function analysis() {
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
-  useEffect(() => {
-    if (userId === null) return;
-    // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
-    const startOfMonth = displayDate.startOf('month');
-    const endOfMonth = displayDate.add(1, 'month').startOf('month');
-    // 選択されたユーザーの日記一覧を取得
-    const unsubscribe = fetchFeelingScore(
-      setFeelingScoreDates,
-      startOfMonth,
-      endOfMonth,
-      userId
-    );
-    return unsubscribe;
-  }, [displayDate, userId])
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+      const startOfMonth = displayDate.startOf('month');
+      const endOfMonth = displayDate.add(1, 'month').startOf('month');
+      const unsubscribe = fetchFeelingScore(
+        setFeelingScoreDates,
+        startOfMonth,
+        endOfMonth,
+        userId
+      );
+      return unsubscribe;
+    }, [displayDate, userId])
+  );
 
   // X軸の全日付ラベルを生成 ('7/1', '7/2', ..., '7/31')
   const allDaysInMonth = useMemo(() => {
@@ -64,16 +65,30 @@ export default function analysis() {
 
 
   // グラフ用のデータ
-  const data = {
-    labels: allDaysInMonth,
-    datasets: [
-      {
-        data: chartDataValues,
-        color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`, // 線の色（オレンジ）
-        strokeWidth: 3, // 線の太さを増加
-      },
-    ],
-  };
+  const data = useMemo(() => {
+    const yAxisMax = 10;
+    const yAxisMin = -10;
+    return {
+      // ダミーデータに合わせて、labelsの最初と最後に空文字を追加
+      labels: ['', ...allDaysInMonth, ''],
+      datasets: [
+        {
+          // データの最初と最後にY軸の最大/最小値をダミーとして追加
+          data: chartDataValues,
+          color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`,
+          strokeWidth: 3,
+        },
+        {
+          // Dataset 2: Y軸のスケールを固定するための非表示データ
+          data: [yAxisMax, yAxisMin],
+          // 線とドットを完全に見えなくする
+          withDots: false,
+          color: () => `rgba(0, 0, 0, 0)`,
+          strokeWidth: 0,
+        },
+      ],
+    };
+  }, [chartDataValues, allDaysInMonth]);
 
   // グラフのスタイル設定
   const chartConfig = {
@@ -136,6 +151,7 @@ export default function analysis() {
               segments={4}
               // X軸の一番下の線を表示するための設定
               withInnerLines={false} // 内側の線を表示
+              hidePointsAtIndex={[0, chartDataValues.length + 1]}
               getDotProps={(value) => {
                 if (value === null) {
                   return { r: '0' }; // 半径0で見えなくする
@@ -145,6 +161,10 @@ export default function analysis() {
               formatXLabel={(label) => {
                 const day = parseInt(label.split('/')[1], 10);
                 // 1日、または5の倍数の日だけラベルを表示
+                // ダミーデータ用の空ラベルは表示しない
+                if (label === '') {
+                  return '';
+                }
                 if (day === 1 || day % 5 === 0) {
                   return label;
                 }
