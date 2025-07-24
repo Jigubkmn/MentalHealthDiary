@@ -93,11 +93,11 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
         }}
         formatXLabel={(label) => {
           const day = parseInt(label.split('/')[1], 10);
-          // 1日、または5の倍数の日だけラベルを表示
           // ダミーデータ用の空ラベルは表示しない
           if (label === '') {
             return '';
           }
+          // 1日、または5の倍数の日だけラベルを表示
           if (day === 1 || day % 5 === 0) {
             return label;
           }
@@ -113,7 +113,7 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
             style={[
               styles.moodIcon,
               {
-                top: (index * 41), // 各アイコンの位置を計算（36px間隔）
+                top: (index * 41), // 各アイコンの位置を計算（41px間隔）
                 left: 0,
               }
             ]}
