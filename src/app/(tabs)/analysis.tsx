@@ -151,7 +151,7 @@ export default function analysis() {
               segments={4}
               // X軸の一番下の線を表示するための設定
               withInnerLines={false} // 内側の線を表示
-              hidePointsAtIndex={[0, chartDataValues.length + 1]}
+              hidePointsAtIndex={[chartDataValues.length + 1]}
               getDotProps={(value) => {
                 if (value === null) {
                   return { r: '0' }; // 半径0で見えなくする
