@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit';
@@ -8,23 +8,19 @@ import { auth } from '../../config';
 import dayjs from 'dayjs';
 import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
 import fetchFeelingScore from '../analysis/actions/backend/fetchFeelingScore';
+import { FeelingScoreType } from '../../../type/feelingScore';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function analysis() {
   const userId = auth.currentUser?.uid
-  const [feelingScoreList, setFeelingScoreList] = useState<number[]>([]);
-  const [feelingDateList, setFeelingDateList] = useState<string[]>([]);
+  const [feelingScoreDates, setFeelingScoreDates] = useState<FeelingScoreType[]>([]);
   // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
   // 表示用の年月を管理する
   const [displayDate, setDisplayDate] = useState(dayjs());
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
-
-  console.log("feelingScoreList", feelingScoreList);
-  console.log("feelingDateList", feelingDateList);
-
 
   useEffect(() => {
     if (userId === null) return;
@@ -33,14 +29,32 @@ export default function analysis() {
     const endOfMonth = displayDate.add(1, 'month').startOf('month');
     // 選択されたユーザーの日記一覧を取得
     const unsubscribe = fetchFeelingScore(
-      setFeelingScoreList,
-      setFeelingDateList,
+      setFeelingScoreDates,
       startOfMonth,
       endOfMonth,
       userId
     );
     return unsubscribe;
   }, [displayDate, userId])
+
+  // X軸の全日付ラベルを生成 ('7/1', '7/2', ..., '7/31')
+  const allDaysInMonth = useMemo(() => {
+    return Array.from({ length: displayDate.daysInMonth() }, (_, i) =>
+      displayDate.date(i + 1).format('M/D')
+    );
+  }, [displayDate])
+
+  // グラフ用のデータを生成
+  const chartDataValues = allDaysInMonth.map(label => {
+    const dataPoint = feelingScoreDates.find(d => d.date === label);
+    return dataPoint ? dataPoint.value : null;
+  });
+
+  // 描画可能なデータがあるか判定
+  const hasDataToRender = useMemo(() => {
+    // chartDataValues の中に一つでも null でない値があれば true
+    return chartDataValues.some(value => value !== null);
+  }, [chartDataValues]);
 
   const handleYearMonthPress = () => {
     // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する
@@ -51,12 +65,10 @@ export default function analysis() {
 
   // グラフ用のデータ
   const data = {
-    labels: ['7/1', '7/6', '7/11', '7/16', '7/21', '7/26', '7/31'],
+    labels: allDaysInMonth,
     datasets: [
       {
-        // 画像のグラフをざっくり再現
-        // データの値はmoodImagesのインデックスに対応させます (0が一番上、4が一番下)
-        data: [0, 1, 4, 2, 1, 4, 0],
+        data: chartDataValues,
         color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`, // 線の色（オレンジ）
         strokeWidth: 3, // 線の太さを増加
       },
@@ -70,9 +82,8 @@ export default function analysis() {
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // グリッド線の色（黒）
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // X軸ラベルの色
     strokeWidth: 2,
-    // データポイントの丸を非表示にする
     propsForDots: {
-      r: '3',
+      r: '4',
       strokeWidth: '0',
       fill: '#FFA500',
     },
@@ -104,46 +115,63 @@ export default function analysis() {
       </View>
       <View style={styles.card}>
         {/* グラフエリア */}
-        <View style={styles.chartContainer}>
-          {/* グラフ本体 */}
-          <LineChart
-            data={data}
-            width={screenWidth - 80} // カードのpaddingやY軸の幅を引く
-            height={220}
-            chartConfig={chartConfig}
-            withHorizontalLabels={false} // Y軸のラベルを描画しないためのオフセット
-            withVerticalLabels={true} // X軸のラベルは表示
-            withHorizontalLines={true} // 水平線を表示
-            withVerticalLines={true} // 垂直線を表示
-            withDots={true} // データポイントを非表示
-            // bezierを付けないことで、カクカクした線になる
-            // データを0から開始しないようにする（データの最小値が基点になる）
-            fromZero={false}
-            // 5段階なので4つの区切り
-            segments={4}
-            // X軸の一番下の線を表示するための設定
-            withInnerLines={false} // 内側の線を表示
-          />
+        {hasDataToRender && (
+          <View style={styles.chartContainer}>
+            {/* グラフ本体 */}
+            <LineChart
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              data={data as any}
+              width={screenWidth - 80} // カードのpaddingやY軸の幅を引く
+              height={220}
+              chartConfig={chartConfig}
+              withHorizontalLabels={false} // Y軸のラベルを描画しないためのオフセット
+              withVerticalLabels={true} // X軸のラベルは表示
+              withHorizontalLines={true} // 水平線を表示
+              withVerticalLines={true} // 垂直線を表示
+              withDots={true} // データポイントを非表示
+              // bezierを付けないことで、カクカクした線になる
+              // データを0から開始しないようにする（データの最小値が基点になる）
+              fromZero={false}
+              // 5段階なので4つの区切り
+              segments={4}
+              // X軸の一番下の線を表示するための設定
+              withInnerLines={false} // 内側の線を表示
+              getDotProps={(value) => {
+                if (value === null) {
+                  return { r: '0' }; // 半径0で見えなくする
+                }
+                return chartConfig.propsForDots;
+              }}
+              formatXLabel={(label) => {
+                const day = parseInt(label.split('/')[1], 10);
+                // 1日、または5の倍数の日だけラベルを表示
+                if (day === 1 || day % 5 === 0) {
+                  return label;
+                }
+                return ''; // それ以外は空文字にして非表示
+              }}
+            />
 
-          {/* 絶対配置でY軸アイコンを配置 */}
-          <View style={styles.absoluteYAxis}>
-            {feelingImageList.map((imgSrc, index) => (
-              <Image
-                key={index}
-                source={imgSrc}
-                style={[
-                  styles.moodIcon,
-                  {
-                    top: (index * 41), // 各アイコンの位置を計算（36px間隔）
-                    left: 0, // 左端に配置
-                  }
-                ]}
-                contentFit="cover"
-                cachePolicy="memory-disk"
-              />
-            ))}
+            {/* 絶対配置でY軸アイコンを配置 */}
+            <View style={styles.absoluteYAxis}>
+              {feelingImageList.map((imgSrc, index) => (
+                <Image
+                  key={index}
+                  source={imgSrc}
+                  style={[
+                    styles.moodIcon,
+                    {
+                      top: (index * 41), // 各アイコンの位置を計算（36px間隔）
+                      left: 0, // 左端に配置
+                    }
+                  ]}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+              ))}
+            </View>
           </View>
-        </View>
+        )}
       </View>
       {/* 年月選択モーダル */}
       <YearMonthSelectModal
