@@ -130,7 +130,7 @@ export default function analysis() {
       </View>
       <View style={styles.card}>
         {/* グラフエリア */}
-        {hasDataToRender && (
+        {hasDataToRender ? (
           <View style={styles.chartContainer}>
             {/* グラフ本体 */}
             <LineChart
@@ -190,6 +190,10 @@ export default function analysis() {
                 />
               ))}
             </View>
+          </View>
+        ): (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>データがありません</Text>
           </View>
         )}
       </View>
@@ -252,4 +256,14 @@ const styles = StyleSheet.create({
     height: 220, // グラフの高さと同じ
     zIndex: 1, // グラフの上に表示
   },
+  noDataContainer: {
+    height: 220,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noDataText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000000',
+  }
 });
