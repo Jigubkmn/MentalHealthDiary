@@ -20,7 +20,9 @@ export default async function deleteDiary(userId?: string, diaryId?: string) {
           onPress: async () => {
             try {
               const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
+              const feelingScoreRef = doc(db, `users/${userId}/feelingScores/${diaryId}`);
               await deleteDoc(diaryRef);
+              await deleteDoc(feelingScoreRef);
               console.log('日記を削除しました');
               handleBack();
             } catch (error) {

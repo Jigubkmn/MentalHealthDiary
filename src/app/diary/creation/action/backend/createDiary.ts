@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import dayjs from 'dayjs';
 import { db } from '../../../../../config';
-import { collection, Timestamp, addDoc } from 'firebase/firestore';
+import { collection, Timestamp, addDoc, setDoc, doc } from 'firebase/firestore';
 import formatDate from '../../../../actions/formatData';
 import { useRouter } from 'expo-router';
 import checkExistingDiary from '../checkExistingDiary';
@@ -38,19 +38,22 @@ export default async function createDiary(
   try {
     // 体調のスコアを取得
     const feelingScore = feelings.find((feeling) => feeling.name === selectedFeeling)?.score;
-    const feelingScoresRef = collection(db, `users/${userId}/feelingScores`);
-    await addDoc(feelingScoresRef, {
-      feelingScore: feelingScore,
-      diaryDate: Timestamp.fromDate(date.toDate()),
-      updatedAt: Timestamp.fromDate(new Date()),
-    });
     const diariesRef = collection(db, `users/${userId}/diaries`);
-    await addDoc(diariesRef, {
+    // 日記を保存してIDを取得
+    const diaryDocRef = await addDoc(diariesRef, {
       diaryText,
       diaryDate: Timestamp.fromDate(date.toDate()),
       feeling: selectedFeeling,
       diaryImage: selectedImage,
       userId,
+      updatedAt: Timestamp.fromDate(new Date()),
+    });
+
+    // feelingScoresを同じIDで保存
+    const feelingScoresRef = doc(db, `users/${userId}/feelingScores`, diaryDocRef.id);
+    await setDoc(feelingScoresRef, {
+      feelingScore: feelingScore,
+      diaryDate: Timestamp.fromDate(date.toDate()),
       updatedAt: Timestamp.fromDate(new Date()),
     });
 
