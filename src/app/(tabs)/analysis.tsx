@@ -1,21 +1,28 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit';
-import Header from '../analysis/components/Header';
+import Header from '../diary/list/components/Header';
 import feelingImageList from '../constants/feelingImageList';
 import { auth } from '../../config';
 import dayjs from 'dayjs';
 import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
 import fetchFeelingScore from '../analysis/actions/backend/fetchFeelingScore';
 import { FeelingScoreType } from '../../../type/feelingScore';
+import { UserInfoType } from '../../../type/userInfo';
+import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchFriends from '../actions/backend/fetchFriends';
+import { FriendInfoType } from '../../../type/friend';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function analysis() {
   const userId = auth.currentUser?.uid
   const [feelingScoreDates, setFeelingScoreDates] = useState<FeelingScoreType[]>([]);
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)  // ログイン情報
+  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null) // 日記を表示しているユーザー情報
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
+  const [selectedUserId, setSelectedUserId] = useState<string>('') // 日記を表示しているユーザーID
   // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
   // 表示用の年月を管理する
@@ -23,20 +30,50 @@ export default function analysis() {
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
-  useFocusEffect(
-    useCallback(() => {
+  // selectedUserIdの初期化
+  useEffect(() => {
+    if (userId && !selectedUserId) {
+      setSelectedUserId(userId);
+    }
+  }, [userId, selectedUserId]);
+
+  useEffect(() => {
+    if (userId === null || !selectedUserId) return;
+
+    // 日記を表示しているユーザー情報を取得
+    const unsubscribe = fetchUserInfo({
+      userId: selectedUserId,
+      setUserInfo: setSelectedUserInfo,
+    });
+
+    fetchFriends(setFriendsData, userId);
+    return unsubscribe;
+  }, [selectedUserId])
+
+  // ログインユーザー情報を取得
+  useEffect(() => {
+    if (userId === null) return;
+    // ログイン情報取得
+    const unsubscribe = fetchUserInfo({
+      userId,
+      setUserInfo,
+    });
+    fetchFriends(setFriendsData, userId);
+    return unsubscribe;
+  }, [userId])
+
+  useEffect(() => {
       if (!userId) return;
       const startOfMonth = displayDate.startOf('month');
       const endOfMonth = displayDate.add(1, 'month').startOf('month');
       const unsubscribe = fetchFeelingScore(
+        selectedUserId,
         setFeelingScoreDates,
         startOfMonth,
         endOfMonth,
-        userId
       );
       return unsubscribe;
-    }, [displayDate, userId])
-  );
+    }, [displayDate, selectedUserId])
 
   // X軸の全日付ラベルを生成 ('7/1', '7/2', ..., '7/31')
   const allDaysInMonth = useMemo(() => {
@@ -70,7 +107,7 @@ export default function analysis() {
     const yAxisMin = -10;
     return {
       // ダミーデータに合わせて、labelsの最初と最後に空文字を追加
-      labels: ['', ...allDaysInMonth, ''],
+      labels: [ ...allDaysInMonth, '', ''],
       datasets: [
         {
           // データの最初と最後にY軸の最大/最小値をダミーとして追加
@@ -121,7 +158,12 @@ export default function analysis() {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header
+        userInfo={userInfo}
+        selectedUserInfo={selectedUserInfo}
+        friendsData={friendsData}
+        setSelectedUserId={setSelectedUserId}
+      />
       {/* 年月 */}
       <View style={styles.yearMonthContainer}>
         <TouchableOpacity onPress={handleYearMonthPress}>
