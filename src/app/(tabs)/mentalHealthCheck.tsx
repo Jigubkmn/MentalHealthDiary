@@ -4,6 +4,9 @@ import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResu
 import QuestionList from '../mentalHealthCheck/components/QuestionList';
 import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
 import PaginationControlButton from '../mentalHealthCheck/components/PaginationControlButton';
+// import dayjs from 'dayjs';
+// import { auth } from '../../config';
+// import createMentalHealthCheckResult from '../mentalHealthCheck/actions/backend/createMentalHealthCheckResult';
 
 const questions = Array.from({ length: 23 }, (_, i) => {
   const topics = [
@@ -19,6 +22,7 @@ const questions = Array.from({ length: 23 }, (_, i) => {
 
 const pageConfig = [
   {
+    questionGroupHeader: '<設問A>',
     header: '最近1ヶ月のあなたの状態についてうかがいます。\n最もあてはまるものを解答してください。',
     questionCount: 11,
     answerOptions: [
@@ -29,6 +33,7 @@ const pageConfig = [
     ],
   },
   {
+    questionGroupHeader: '<設問B-1>',
     header: 'あなたの仕事について伺います。\n最もあてはまるものを解答してください。',
     questionCount: 6,
     answerOptions: [
@@ -39,6 +44,7 @@ const pageConfig = [
     ],
   },
   {
+    questionGroupHeader: '<設問B-2>',
     header: 'あなたの上司と同僚について伺います。\n最もあてはまるものを解答してください。',
     questionCount: 6,
     answerOptions: [
@@ -58,9 +64,12 @@ export default function mentalHealthCheck() {
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  // const [date, setDate] = useState(dayjs()); // "2025-07-06T09:16:59.082Z"
+  // const userId = auth.currentUser?.uid;
 
   // 現在のページ設定をまとめて取得
   const {
+    questionGroupHeader: currentPageQuestionGroupHeader,
     header: currentPageHeader,
     questionCount: currentPageQuestionCount,
     answerOptions: currentAnswerOptions,
@@ -87,6 +96,13 @@ export default function mentalHealthCheck() {
     );
   }, [answers, currentQuestions]);
 
+  // 同じ日付のメンタルヘルスチェック結果が既に存在するかチェック
+  // const hasExistingDiary = await checkExistingDiary(userId, date);
+  // if (hasExistingDiary) {
+  //   Alert.alert("エラー", `${formatDate(date)}の日記は既に存在します。`);
+  //   return;
+  // }
+
   const handleSelectOption = (questionIndex: number, value: number) => {
     const newAnswers = [...answers];
     newAnswers[questionIndex] = value;
@@ -103,6 +119,8 @@ export default function mentalHealthCheck() {
       setCurrentPage(currentPage + 1);
     } else {
       setIsCompleted(true);
+      // if (!userId) return;
+      // createMentalHealthCheckResult(answers, userId);
     }
   };
 
@@ -140,6 +158,7 @@ export default function mentalHealthCheck() {
           {/* 進捗バー */}
           <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
           {/* ページヘッダー */}
+          <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
           <Text style={styles.pageHeader}>{currentPageHeader}</Text>
           {/* 質問リスト */}
           {currentQuestions.map(({ text, questionIndex }, index) => (
@@ -189,6 +208,12 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+  },
+  pageGroupHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
   },
   pageHeader: {
     fontSize: 18,
