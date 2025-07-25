@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResult';
 import QuestionList from '../mentalHealthCheck/components/QuestionList';
+import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
 
 // --- データ定義 ---
 
@@ -61,7 +62,7 @@ const PAGE_CONFIG = [
   },
 ];
 
-const TOTAL_PAGES = PAGE_CONFIG.length;
+const totalPages = PAGE_CONFIG.length;
 
 // --- メインコンポーネント ---
 
@@ -114,7 +115,7 @@ export default function mentalHealthCheck() {
       Alert.alert('未回答の質問があります', 'このページのすべての質問に回答してください。');
       return;
     }
-    if (currentPage < TOTAL_PAGES - 1) {
+    if (currentPage < totalPages - 1) {
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
       setCurrentPage(currentPage + 1);
     } else {
@@ -154,21 +155,10 @@ export default function mentalHealthCheck() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <View style={styles.progressContainer}>
-            <Text style={styles.progressText}>
-              ページ {currentPage + 1} / {TOTAL_PAGES}
-            </Text>
-            <View style={styles.progressBarBackground}>
-              <View
-                style={[
-                  styles.progressBarFill,
-                  { width: `${((currentPage + 1) / TOTAL_PAGES) * 100}%` },
-                ]}
-              />
-            </View>
-          </View>
+          {/* 進捗バー */}
+          <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
 
-          {/* 【追加】ページヘッダー */}
+          {/* ページヘッダー */}
           <Text style={styles.pageHeader}>{currentPageHeader}</Text>
 
           {/* 質問リスト */}
@@ -199,7 +189,7 @@ export default function mentalHealthCheck() {
               disabled={!isPageCompleted}
             >
               <Text style={styles.buttonText}>
-                {currentPage === TOTAL_PAGES - 1 ? '結果を見る' : '次のページへ'}
+                {currentPage === totalPages - 1 ? '結果を見る' : '次のページへ'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -234,27 +224,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
   },
-  progressContainer: {
-    marginBottom: 20,
-  },
-  progressText: {
-    fontSize: 14,
-    color: '#666666',
-    textAlign: 'right',
-    marginBottom: 8,
-  },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: '#FFA500',
-    borderRadius: 4,
-  },
-  // 【追加】ページヘッダーのスタイル
   pageHeader: {
     fontSize: 18,
     fontWeight: 'bold',
