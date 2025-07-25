@@ -1,21 +1,9 @@
 import React, { useState, useMemo, useRef } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  Alert,
-  StatusBar,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
 import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResult';
 import QuestionList from '../mentalHealthCheck/components/QuestionList';
 import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
 
-// --- データ定義 ---
-
-// 仮の質問リスト（23個）
 const QUESTIONS = Array.from({ length: 23 }, (_, i) => {
   const topics = [
     'ひどく疲れた', 'へとへとだ', 'だるい', '気がはりつめている', '不安だ', '落ち着かない',
@@ -28,7 +16,6 @@ const QUESTIONS = Array.from({ length: 23 }, (_, i) => {
   return topics[i];
 });
 
-// 【変更】ページごとの設定をまとめて定義
 const PAGE_CONFIG = [
   {
     header: '最近1ヶ月のあなたの状態についてうかがいます。\n最もあてはまるものを解答してください。',
@@ -68,13 +55,11 @@ const totalPages = PAGE_CONFIG.length;
 
 export default function mentalHealthCheck() {
   const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(
-    Array(QUESTIONS.length).fill(null)
-  );
+  const [answers, setAnswers] = useState<(number | null)[]>(Array(QUESTIONS.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // 【変更】現在のページ設定をまとめて取得
+  // 現在のページ設定をまとめて取得
   const {
     header: currentPageHeader,
     questionCount: currentPageQuestionCount,
@@ -101,8 +86,6 @@ export default function mentalHealthCheck() {
       (q) => answers[q.questionIndex] !== null
     );
   }, [answers, currentQuestions]);
-
-  // --- (以降のハンドラはほぼ変更なし) ---
 
   const handleSelectOption = (questionIndex: number, value: number) => {
     const newAnswers = [...answers];
@@ -136,8 +119,6 @@ export default function mentalHealthCheck() {
     setIsCompleted(false);
   };
 
-  // --- レンダリング ---
-
   if (isCompleted) {
     return <MentalHealthResult
       pageQuestionCount={PAGE_CONFIG[0].questionCount}
@@ -157,10 +138,8 @@ export default function mentalHealthCheck() {
         >
           {/* 進捗バー */}
           <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
-
           {/* ページヘッダー */}
           <Text style={styles.pageHeader}>{currentPageHeader}</Text>
-
           {/* 質問リスト */}
           {currentQuestions.map(({ text, questionIndex }, index) => (
             <QuestionList
@@ -173,7 +152,6 @@ export default function mentalHealthCheck() {
               handleSelectOption={handleSelectOption}
             />
           ))}
-
           <View style={styles.buttonContainer}>
             {currentPage > 0 && (
               <TouchableOpacity style={styles.prevButton} onPress={handlePrevPress}>
@@ -198,8 +176,6 @@ export default function mentalHealthCheck() {
     </SafeAreaView>
   );
 }
-
-// --- スタイル定義 ---
 
 const styles = StyleSheet.create({
   container: {
