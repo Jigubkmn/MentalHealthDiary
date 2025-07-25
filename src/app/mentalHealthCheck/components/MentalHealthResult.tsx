@@ -2,27 +2,18 @@ import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
 type Props = {
-  scoreAResult: number
-  scoreBResult: number
+  evaluationResult: string
   handleRestart: () => void;
 }
 
-export default function MentalHealthResult({ scoreAResult, scoreBResult, handleRestart }: Props) {
-  // 2. 結果メッセージ用の変数を初期化
+export default function MentalHealthResult({ evaluationResult, handleRestart }: Props) {
   let resultTitle = '';
   let resultMessage = '';
 
-  // 3. 条件分岐
-  const isHighStressCondition =
-    (scoreAResult >= 31 && scoreBResult <= 38) ||
-    (scoreAResult >= 23 && scoreBResult >= 39);
-
-  if (isHighStressCondition) {
-    // 条件1または条件2の場合
-    resultTitle = 'ストレスがかなり高い状態です';
+  if (evaluationResult === '要治療') {
+    resultTitle = evaluationResult;
     resultMessage = '診断結果から、あなたは現在、心身に大きな負担がかかっている可能性があります。このまま一人で抱え込まず、できるだけ早く専門家へ相談することをお勧めします。\nお近くの精神科・心療内科、または公的な相談窓口にご相談ください。';
   } else {
-    // 条件3の場合
     resultTitle = 'お疲れ様でした';
     resultMessage = 'あなたは現在、ある程度のストレスを感じているようですが、今のところ深刻な状態ではないようです。\n日々の生活の中で意識的にリラックスする時間を作ったり、自分の好きなことをする時間を大切にしたりすることが、今後の心の健康につながります。';
   }

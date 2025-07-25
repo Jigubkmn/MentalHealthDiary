@@ -4,8 +4,9 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 export default async function createMentalHealthCheckResult(
   answers: (number | null)[],
-  ScoreA: number | null,
-  ScoreB: number | null,
+  evaluation: string,
+  scoreA: number | null,
+  scoreB: number | null,
   userId?: string
 ) {
 
@@ -13,9 +14,9 @@ export default async function createMentalHealthCheckResult(
     const ref = collection(db, `users/${userId}/mentalHealthChecks`);
     await addDoc(ref, {
       answers,
-      ScoreA,
-      ScoreB,
-      userId,
+      evaluation,
+      scoreA,
+      scoreB,
       createdAt: Timestamp.fromDate(new Date())
     });
 

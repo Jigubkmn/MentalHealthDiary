@@ -65,8 +65,9 @@ export default function mentalHealthCheck() {
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);
-  const [scoreAResult, setScoreAResult] = useState<number | null>(null); // 設問Aの合計
-  const [scoreBResult, setScoreBResult] = useState<number | null>(null); // 設問B-1とB-2の合計
+  // const [scoreAResult, setScoreAResult] = useState<number | null>(null); // 設問Aの合計
+  // const [scoreBResult, setScoreBResult] = useState<number | null>(null); // 設問B-1とB-2の合計
+  const [evaluationResult, setEvaluationResult] = useState<string>(''); // 最終評価
   const [isExistingMentalHealth, setIsExistingMentalHealth] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const today = dayjs(); // "2025-07-06T09:16:59.082Z"
@@ -130,12 +131,13 @@ export default function mentalHealthCheck() {
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
       setCurrentPage(currentPage + 1);
     } else {
-      const { ScoreA, ScoreB } = getScoreResult(pageConfig[0].questionCount, answers);
-      setScoreAResult(ScoreA);
-      setScoreBResult(ScoreB);
+      const { scoreA, scoreB, evaluation } = getScoreResult(pageConfig[0].questionCount, answers);
+      // setScoreAResult(scoreA);
+      // setScoreBResult(scoreB);
+      setEvaluationResult(evaluation);
       setIsCompleted(true);
       if (!userId) return;
-      createMentalHealthCheckResult(answers, ScoreA, ScoreB, userId);
+      createMentalHealthCheckResult(answers, evaluation, scoreA, scoreB, userId);
     }
   };
 
@@ -155,8 +157,7 @@ export default function mentalHealthCheck() {
   // 結果画面
   if (isCompleted) {
     return <MentalHealthResult
-      scoreAResult={scoreAResult ?? 0}
-      scoreBResult={scoreBResult ?? 0}
+      evaluationResult={evaluationResult}
       handleRestart={handleRestart}
     />;
   }
