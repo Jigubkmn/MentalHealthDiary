@@ -51,11 +51,6 @@ export default function MentalHealthResult({ pageQuestionCount, answers, handleR
             <Text style={styles.resultText}>{resultMessage}</Text>
           </View>
 
-          <View style={styles.debugScoreBox}>
-            <Text style={styles.debugScoreText}>ページ1スコア: {page1Score}</Text>
-            <Text style={styles.debugScoreText}>ページ2&3スコア: {page2And3Score}</Text>
-          </View>
-
           <Text style={styles.disclaimer}>
             ※この結果は医学的な診断に代わるものではありません。気分の落ち込みが続く場合や、心配なことがある場合は、専門の医療機関にご相談ください。
           </Text>
@@ -126,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#888',
     textAlign: 'center',
-    marginTop: 24,
+    marginVertical: 16,
     lineHeight: 18,
   },
   button: {
