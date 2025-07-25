@@ -1,36 +1,21 @@
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
 type Props = {
-  pageQuestionCount: number;
-  answers: (number | null)[];
+  scoreAResult: number
+  scoreBResult: number
   handleRestart: () => void;
 }
 
-export default function MentalHealthResult({ pageQuestionCount, answers, handleRestart }: Props) {
-  // 1. スコアを分割して計算
-  const page1QuestionsCount = pageQuestionCount;
-  const page1Answers = answers.slice(0, page1QuestionsCount);
-  const page2And3Answers = answers.slice(page1QuestionsCount);
-
-  const ScoreA = page1Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
-  const ScoreB = page2And3Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
-
+export default function MentalHealthResult({ scoreAResult, scoreBResult, handleRestart }: Props) {
   // 2. 結果メッセージ用の変数を初期化
   let resultTitle = '';
   let resultMessage = '';
 
   // 3. 条件分岐
   const isHighStressCondition =
-    (ScoreA >= 31 && ScoreB <= 38) ||
-    (ScoreA >= 23 && ScoreB >= 39);
+    (scoreAResult >= 31 && scoreBResult <= 38) ||
+    (scoreAResult >= 23 && scoreBResult >= 39);
 
   if (isHighStressCondition) {
     // 条件1または条件2の場合
