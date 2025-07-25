@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
 import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResult';
 import QuestionList from '../mentalHealthCheck/components/QuestionList';
 import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
+import PaginationControlButton from '../mentalHealthCheck/components/PaginationControlButton';
 
 const questions = Array.from({ length: 23 }, (_, i) => {
   const topics = [
@@ -118,6 +119,7 @@ export default function mentalHealthCheck() {
     setIsCompleted(false);
   };
 
+  // 結果画面
   if (isCompleted) {
     return <MentalHealthResult
       pageQuestionCount={pageConfig[0].questionCount}
@@ -151,25 +153,14 @@ export default function mentalHealthCheck() {
               handleSelectOption={handleSelectOption}
             />
           ))}
-          <View>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                !isPageCompleted && styles.buttonDisabled,
-              ]}
-              onPress={handleNextPress}
-              disabled={!isPageCompleted}
-            >
-              <Text style={styles.buttonText}>
-                {currentPage === lastPage ? '結果を見る' : '次のページへ'}
-              </Text>
-            </TouchableOpacity>
-            {currentPage > 0 && (
-              <TouchableOpacity style={styles.prevButton} onPress={handlePrevPress}>
-                <Text style={styles.prevButtonText}>前のページへ</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          {/* ボタン */}
+          <PaginationControlButton
+            isPageCompleted={isPageCompleted}
+            handleNextPress={handleNextPress}
+            handlePrevPress={handlePrevPress}
+            currentPage={currentPage}
+            lastPage={lastPage}
+          />
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -207,33 +198,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#FFA500',
     paddingBottom: 10,
-  },
-  button: {
-    backgroundColor: '#FFA500',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: '#FFDEAD',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  prevButton: {
-    backgroundColor: 'white',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#8D8D8D',
-    marginTop: 10,
-  },
-  prevButtonText: {
-    color: '#8D8D8D',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
