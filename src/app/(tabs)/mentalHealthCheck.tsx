@@ -4,7 +4,7 @@ import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResu
 import QuestionList from '../mentalHealthCheck/components/QuestionList';
 import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
 
-const QUESTIONS = Array.from({ length: 23 }, (_, i) => {
+const questions = Array.from({ length: 23 }, (_, i) => {
   const topics = [
     'ひどく疲れた', 'へとへとだ', 'だるい', '気がはりつめている', '不安だ', '落ち着かない',
     'ゆううつだ', '何をするのも面倒だ', '気分が晴れない', '食欲がない', 'よく眠れない',
@@ -16,7 +16,7 @@ const QUESTIONS = Array.from({ length: 23 }, (_, i) => {
   return topics[i];
 });
 
-const PAGE_CONFIG = [
+const pageConfig = [
   {
     header: '最近1ヶ月のあなたの状態についてうかがいます。\n最もあてはまるものを解答してください。',
     questionCount: 11,
@@ -49,11 +49,11 @@ const PAGE_CONFIG = [
   },
 ];
 
-const totalPages = PAGE_CONFIG.length;
+const totalPages = pageConfig.length;
 
 export default function mentalHealthCheck() {
   const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(Array(QUESTIONS.length).fill(null));
+  const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -62,17 +62,17 @@ export default function mentalHealthCheck() {
     header: currentPageHeader,
     questionCount: currentPageQuestionCount,
     answerOptions: currentAnswerOptions,
-  } = PAGE_CONFIG[currentPage];
+  } = pageConfig[currentPage];
 
   // 現在のページに表示する質問を計算
   const currentQuestions = useMemo(() => {
     // 現在のページまでの質問数を合計して開始インデックスを計算
-    const startIndex = PAGE_CONFIG.slice(0, currentPage).reduce(
+    const startIndex = pageConfig.slice(0, currentPage).reduce(
       (acc, config) => acc + config.questionCount,
       0
     );
     const endIndex = startIndex + currentPageQuestionCount;
-    return QUESTIONS.slice(startIndex, endIndex).map((question, index) => ({
+    return questions.slice(startIndex, endIndex).map((question, index) => ({
       text: question,
       questionIndex: startIndex + index,
     }));
@@ -113,13 +113,13 @@ export default function mentalHealthCheck() {
 
   const handleRestart = () => {
     setCurrentPage(0);
-    setAnswers(Array(QUESTIONS.length).fill(null));
+    setAnswers(Array(questions.length).fill(null));
     setIsCompleted(false);
   };
 
   if (isCompleted) {
     return <MentalHealthResult
-      pageQuestionCount={PAGE_CONFIG[0].questionCount}
+      pageQuestionCount={pageConfig[0].questionCount}
       answers={answers}
       handleRestart={handleRestart}
     />;
