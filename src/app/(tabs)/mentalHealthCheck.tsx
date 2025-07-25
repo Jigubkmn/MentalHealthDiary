@@ -5,8 +5,9 @@ import QuestionList from '../mentalHealthCheck/components/QuestionList';
 import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
 import PaginationControlButton from '../mentalHealthCheck/components/PaginationControlButton';
 // import dayjs from 'dayjs';
-// import { auth } from '../../config';
-// import createMentalHealthCheckResult from '../mentalHealthCheck/actions/backend/createMentalHealthCheckResult';
+import { auth } from '../../config';
+import createMentalHealthCheckResult from '../mentalHealthCheck/actions/backend/createMentalHealthCheckResult';
+import getScoreResult from '../mentalHealthCheck/actions/getScoreResult';
 
 const questions = Array.from({ length: 23 }, (_, i) => {
   const topics = [
@@ -63,9 +64,11 @@ export default function mentalHealthCheck() {
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);
+  const [scoreAResult, setScoreAResult] = useState<number | null>(null); // 設問Aの合計
+  const [scoreBResult, setScoreBResult] = useState<number | null>(null); // 設問B-1とB-2の合計
   const scrollViewRef = useRef<ScrollView>(null);
-  // const [date, setDate] = useState(dayjs()); // "2025-07-06T09:16:59.082Z"
-  // const userId = auth.currentUser?.uid;
+  // const today = dayjs(); // "2025-07-06T09:16:59.082Z"
+  const userId = auth.currentUser?.uid;
 
   // 現在のページ設定をまとめて取得
   const {
@@ -118,9 +121,12 @@ export default function mentalHealthCheck() {
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
       setCurrentPage(currentPage + 1);
     } else {
+      const { ScoreA, ScoreB } = getScoreResult(pageConfig[0].questionCount, answers);
+      setScoreAResult(ScoreA);
+      setScoreBResult(ScoreB);
       setIsCompleted(true);
-      // if (!userId) return;
-      // createMentalHealthCheckResult(answers, userId);
+      if (!userId) return;
+      createMentalHealthCheckResult(answers, ScoreA, ScoreB, userId);
     }
   };
 
@@ -140,8 +146,8 @@ export default function mentalHealthCheck() {
   // 結果画面
   if (isCompleted) {
     return <MentalHealthResult
-      pageQuestionCount={pageConfig[0].questionCount}
-      answers={answers}
+      scoreAResult={scoreAResult ?? 0}
+      scoreBResult={scoreBResult ?? 0}
       handleRestart={handleRestart}
     />;
   }
