@@ -4,6 +4,7 @@ import UserIcon from '../components/Icon/UserIcon'
 import HomeIcon from '../components/Icon/HomeIcon'
 import DiaryCreationIcon from '../components/Icon/DiaryCreationIcon'
 import AnalysisIcon from '../components/Icon/AnalysisIcon'
+import HeartIcon from '../components/Icon/HeartIcon'
 
 export default function TabLayout() {
 
@@ -74,20 +75,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="mentalHealthCheck"
         options={{
-          title: "メンタルヘルスチェック",
+          title: "メンタルヘルスチェック一覧",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <UserIcon size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="test"
-        options={{
-          title: "テスト",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <UserIcon size={size} color={color} />
+            <HeartIcon size={size} color={color} />
           ),
         }}
       />
