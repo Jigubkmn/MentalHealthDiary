@@ -110,16 +110,45 @@ export default function MentalHealthCheckHistory() {
         </View>
 
         <View style={styles.qaListContainer}>
-          {questions.map((questionText, index) => (
-            <View key={index} style={styles.qaBlock}>
-              <Text style={styles.questionText}>{`Q${index + 1}. ${questionText}`}</Text>
-              <View style={styles.answerContainer}>
-                <Text style={styles.answerText}>
-                  {getAnswerText(index, mockAnswers[index])}
+          {questions.map((questionText, index) => {
+            let sectionHeaderComponent = null;
+
+            // 各セクションの開始インデックスでヘッダーを生成
+            if (index === 0) {
+              sectionHeaderComponent = (
+                <Text style={[styles.sectionHeader, { marginTop: 0 }]}>
+                  {'<設問A>\n最近1ヶ月間のあなたの状態について'}
                 </Text>
+              );
+            } else if (index === pageConfig[0].questionCount) {
+              sectionHeaderComponent = (
+                <Text style={styles.sectionHeader}>
+                  {'<設問B-1>\nあなたの仕事について'}
+                </Text>
+              );
+            } else if (index === pageConfig[0].questionCount + pageConfig[1].questionCount) {
+              sectionHeaderComponent = (
+                <Text style={styles.sectionHeader}>
+                  {'<設問B-2>\nあなたの周りの方々について'}
+                </Text>
+              );
+            }
+
+            return (
+              // keyは一番外側の要素に設定
+              <View key={index}>
+                {sectionHeaderComponent}
+                <View style={styles.qaBlock}>
+                  <Text style={styles.questionText}>{`Q${index + 1}. ${questionText}`}</Text>
+                  <View style={styles.answerContainer}>
+                    <Text style={styles.answerText}>
+                      {getAnswerText(index, mockAnswers[index])}
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -187,12 +216,24 @@ const styles = StyleSheet.create({
   qaListContainer: {
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 16,
+    paddingTop: 16,
+    paddingBottom: 1,
+    paddingHorizontal: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFA500',
+    marginBottom: 16,
+    marginTop: 16, // セクション間のスペース
   },
   qaBlock: {
     marginBottom: 20,
