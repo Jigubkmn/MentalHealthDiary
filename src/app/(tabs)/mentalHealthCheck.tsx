@@ -74,8 +74,8 @@ export default function mentalHealthCheck() {
   // 【変更】現在のページ設定をまとめて取得
   const {
     header: currentPageHeader,
-    answerOptions: currentAnswerOptions,
     questionCount: currentPageQuestionCount,
+    answerOptions: currentAnswerOptions,
   } = PAGE_CONFIG[currentPage];
 
   // 【変更】現在のページに表示する質問を計算
@@ -136,22 +136,57 @@ export default function mentalHealthCheck() {
   // --- レンダリング ---
 
   if (isCompleted) {
-    const totalScore = answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.card}>
-          <Text style={styles.resultTitle}>チェック完了</Text>
-          <Text style={styles.resultText}>お疲れ様でした。</Text>
-          <Text style={styles.resultText}>あなたの合計スコアは {totalScore} 点です。</Text>
-          <Text style={styles.disclaimer}>
-            ※この結果は医学的な診断に代わるものではありません。気分の落ち込みが続く場合や、心配なことがある場合は、専門の医療機関にご相談ください。
-          </Text>
-          <TouchableOpacity style={styles.button} onPress={handleRestart}>
-            <Text style={styles.buttonText}>もう一度試す</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
+    // 1. スコアを分割して計算
+    const page1QuestionsCount = PAGE_CONFIG[0].questionCount;
+    const page1Answers = answers.slice(0, page1QuestionsCount);
+    const page2And3Answers = answers.slice(page1QuestionsCount);
+
+    const page1Score = page1Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
+    const page2And3Score = page2And3Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
+
+    // 2. 結果メッセージ用の変数を初期化
+    let resultTitle = '';
+    let resultMessage = '';
+
+    // 3. 条件分岐
+    const isHighStressCondition =
+      (page1Score >= 31 && page2And3Score <= 38) ||
+      (page1Score >= 23 && page2And3Score >= 39);
+
+      if (isHighStressCondition) {
+        // 条件1または条件2の場合
+        resultTitle = 'ストレスがかなり高い状態です';
+        resultMessage = '診断結果から、あなたは現在、心身に大きな負担がかかっている可能性があります。このまま一人で抱え込まず、できるだけ早く専門家へ相談することをお勧めします。\nお近くの精神科・心療内科、または公的な相談窓口にご相談ください。';
+      } else {
+        // 条件3の場合
+        resultTitle = 'お疲れ様でした';
+        resultMessage = 'あなたは現在、ある程度のストレスを感じているようですが、今のところ深刻な状態ではないようです。\n日々の生活の中で意識的にリラックスする時間を作ったり、自分の好きなことをする時間を大切にしたりすることが、今後の心の健康につながります。';
+      }
+
+      return (
+        <SafeAreaView style={styles.container}>
+          <View style={styles.card}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+              <Text style={styles.resultTitle}>{resultTitle}</Text>
+              <View style={styles.resultBox}>
+                <Text style={styles.resultText}>{resultMessage}</Text>
+              </View>
+
+              <View style={styles.debugScoreBox}>
+                <Text style={styles.debugScoreText}>ページ1スコア: {page1Score}</Text>
+                <Text style={styles.debugScoreText}>ページ2&3スコア: {page2And3Score}</Text>
+              </View>
+
+              <Text style={styles.disclaimer}>
+                ※この結果は医学的な診断に代わるものではありません。気分の落ち込みが続く場合や、心配なことがある場合は、専門の医療機関にご相談ください。
+              </Text>
+              <TouchableOpacity style={styles.button} onPress={handleRestart}>
+                <Text style={styles.buttonText}>もう一度試す</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </SafeAreaView>
+      );
   }
 
   return (
@@ -206,7 +241,7 @@ export default function mentalHealthCheck() {
               </View>
             </View>
           ))}
-          
+
           <View style={styles.buttonContainer}>
             {currentPage > 0 && (
               <TouchableOpacity style={styles.prevButton} onPress={handlePrevPress}>
@@ -356,6 +391,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
     color: '#333',
+  },
+  resultBox: {
+    backgroundColor: '#FFFBEA',
+    borderColor: '#FEEABC',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 24,
+  },
+  debugScoreBox: {
+    padding: 10,
+    backgroundColor: '#EFEFEF',
+    borderRadius: 4,
+    marginBottom: 24
+  },
+  debugScoreText: {
+    fontSize: 12,
+    color: '#555'
   },
   resultText: {
     fontSize: 18,
