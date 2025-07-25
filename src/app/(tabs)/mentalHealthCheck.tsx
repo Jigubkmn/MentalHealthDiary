@@ -50,6 +50,7 @@ const pageConfig = [
 ];
 
 const totalPages = pageConfig.length;
+const lastPage = totalPages - 1;
 
 export default function mentalHealthCheck() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -96,7 +97,7 @@ export default function mentalHealthCheck() {
       Alert.alert('未回答の質問があります', 'このページのすべての質問に回答してください。');
       return;
     }
-    if (currentPage < totalPages - 1) {
+    if (currentPage < lastPage) {
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
       setCurrentPage(currentPage + 1);
     } else {
@@ -150,12 +151,7 @@ export default function mentalHealthCheck() {
               handleSelectOption={handleSelectOption}
             />
           ))}
-          <View style={styles.buttonContainer}>
-            {currentPage > 0 && (
-              <TouchableOpacity style={styles.prevButton} onPress={handlePrevPress}>
-                <Text style={styles.prevButtonText}>前のページへ</Text>
-              </TouchableOpacity>
-            )}
+          <View>
             <TouchableOpacity
               style={[
                 styles.button,
@@ -165,9 +161,14 @@ export default function mentalHealthCheck() {
               disabled={!isPageCompleted}
             >
               <Text style={styles.buttonText}>
-                {currentPage === totalPages - 1 ? '結果を見る' : '次のページへ'}
+                {currentPage === lastPage ? '結果を見る' : '次のページへ'}
               </Text>
             </TouchableOpacity>
+            {currentPage > 0 && (
+              <TouchableOpacity style={styles.prevButton} onPress={handlePrevPress}>
+                <Text style={styles.prevButtonText}>前のページへ</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </ScrollView>
       </View>
@@ -207,9 +208,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#FFA500',
     paddingBottom: 10,
   },
-  buttonContainer: {
-    marginTop: 20,
-  },
   button: {
     backgroundColor: '#FFA500',
     padding: 16,
@@ -230,11 +228,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FFA500',
-    marginBottom: 12,
+    borderColor: '#8D8D8D',
+    marginTop: 10,
   },
   prevButtonText: {
-    color: '#FFA500',
+    color: '#8D8D8D',
     fontSize: 16,
     fontWeight: 'bold',
   },

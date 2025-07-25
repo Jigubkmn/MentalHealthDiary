@@ -47,7 +47,7 @@ export default function QuestionList({ text, questionIndex, index, currentAnswer
 
 const styles = StyleSheet.create({
   questionBlock: {
-    marginBottom: 28,
+    marginBottom: 16,
   },
   questionText: {
     fontSize: 16,
