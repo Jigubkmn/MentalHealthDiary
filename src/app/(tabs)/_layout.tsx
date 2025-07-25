@@ -72,6 +72,26 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="mentalHealthCheck"
+        options={{
+          title: "メンタルヘルスチェック",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <UserIcon size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="test"
+        options={{
+          title: "テスト",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <UserIcon size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="myPage"
         options={{
           title: "マイページ",
