@@ -30,7 +30,7 @@ const PAGE_CONFIG = [
   {
     header: 'あなたの仕事について伺います。\n最もあてはまるものを解答してください。',
     questionCount: 6,
-    answerOptions: [ // 2ページ目用の選択肢
+    answerOptions: [
       { text: 'ちがう', value: 1 },
       { text: 'ややちがう', value: 2 },
       { text: 'まあそうだ', value: 3 },
@@ -40,7 +40,7 @@ const PAGE_CONFIG = [
   {
     header: 'あなたの上司と同僚について伺います。\n最もあてはまるものを解答してください。',
     questionCount: 6,
-    answerOptions: [ // 3ページ目用の選択肢
+    answerOptions: [
       { text: '全くない', value: 1 },
       { text: '多少', value: 2 },
       { text: 'かなり', value: 3 },
@@ -50,8 +50,6 @@ const PAGE_CONFIG = [
 ];
 
 const totalPages = PAGE_CONFIG.length;
-
-// --- メインコンポーネント ---
 
 export default function mentalHealthCheck() {
   const [currentPage, setCurrentPage] = useState(0);
