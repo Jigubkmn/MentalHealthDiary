@@ -1,13 +1,14 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
 import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResult';
 import QuestionList from '../mentalHealthCheck/components/QuestionList';
 import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
 import PaginationControlButton from '../mentalHealthCheck/components/PaginationControlButton';
-// import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { auth } from '../../config';
 import createMentalHealthCheckResult from '../mentalHealthCheck/actions/backend/createMentalHealthCheckResult';
 import getScoreResult from '../mentalHealthCheck/actions/getScoreResult';
+import checkExistingMentalHealthCheckResult from '../mentalHealthCheck/actions/checkExistingMentalHealthCheckResult';
 
 const questions = Array.from({ length: 23 }, (_, i) => {
   const topics = [
@@ -66,8 +67,9 @@ export default function mentalHealthCheck() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [scoreAResult, setScoreAResult] = useState<number | null>(null); // 設問Aの合計
   const [scoreBResult, setScoreBResult] = useState<number | null>(null); // 設問B-1とB-2の合計
+  const [isExistingMentalHealth, setIsExistingMentalHealth] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  // const today = dayjs(); // "2025-07-06T09:16:59.082Z"
+  const today = dayjs(); // "2025-07-06T09:16:59.082Z"
   const userId = auth.currentUser?.uid;
 
   // 現在のページ設定をまとめて取得
@@ -99,12 +101,19 @@ export default function mentalHealthCheck() {
     );
   }, [answers, currentQuestions]);
 
+
+  useEffect(() => {
+  const checkExistingMentalHealth = async () => {
   // 同じ日付のメンタルヘルスチェック結果が既に存在するかチェック
-  // const hasExistingDiary = await checkExistingDiary(userId, date);
-  // if (hasExistingDiary) {
-  //   Alert.alert("エラー", `${formatDate(date)}の日記は既に存在します。`);
-  //   return;
-  // }
+  const hasExistingMentalHealthCheckResult = await checkExistingMentalHealthCheckResult(userId ?? '', today);
+  if (hasExistingMentalHealthCheckResult) {
+      setIsExistingMentalHealth(true);
+    } else {
+      setIsExistingMentalHealth(false);
+    }
+  }
+  checkExistingMentalHealth();
+  }, []);
 
   const handleSelectOption = (questionIndex: number, value: number) => {
     const newAnswers = [...answers];
@@ -150,6 +159,18 @@ export default function mentalHealthCheck() {
       scoreBResult={scoreBResult ?? 0}
       handleRestart={handleRestart}
     />;
+  }
+
+  if (isExistingMentalHealth) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.messageContainer}>
+          <Text style={styles.messageTitle}>本日のチェックは完了しています</Text>
+          <Text style={styles.messageBody}>お疲れ様でした。</Text>
+          <Text style={styles.messageBody}>次回のメンタルヘルスチェックは明日以降に可能です。</Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -198,6 +219,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  messageContainer: {
+    flex: 1,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    marginVertical: 20,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  messageTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 16,
+  },
+  messageBody: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    lineHeight: 24, // 行間を少し空けると読みやすい
   },
   card: {
     flex: 1,
