@@ -20,8 +20,8 @@ export default function MentalHealthResult({ pageQuestionCount, answers, handleR
   const page1Answers = answers.slice(0, page1QuestionsCount);
   const page2And3Answers = answers.slice(page1QuestionsCount);
 
-  const page1Score = page1Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
-  const page2And3Score = page2And3Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
+  const ScoreA = page1Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
+  const ScoreB = page2And3Answers.reduce<number>((sum, val) => sum + (val ?? 0), 0);
 
   // 2. 結果メッセージ用の変数を初期化
   let resultTitle = '';
@@ -29,8 +29,8 @@ export default function MentalHealthResult({ pageQuestionCount, answers, handleR
 
   // 3. 条件分岐
   const isHighStressCondition =
-    (page1Score >= 31 && page2And3Score <= 38) ||
-    (page1Score >= 23 && page2And3Score >= 39);
+    (ScoreA >= 31 && ScoreB <= 38) ||
+    (ScoreA >= 23 && ScoreB >= 39);
 
   if (isHighStressCondition) {
     // 条件1または条件2の場合
