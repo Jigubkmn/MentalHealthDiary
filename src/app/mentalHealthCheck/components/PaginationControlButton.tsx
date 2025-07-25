@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   prevButton: {
     backgroundColor: 'white',
-    padding: 14,
+    padding: 4,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 2,
