@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   Alert,
   StatusBar,
-  ScrollView, // ScrollViewをインポート
+  ScrollView,
 } from 'react-native';
 
 // --- データ定義 ---
@@ -15,28 +15,51 @@ import {
 // 仮の質問リスト（23個）
 const QUESTIONS = Array.from({ length: 23 }, (_, i) => {
   const topics = [
-    'よく眠れていますか？', '食欲はありますか？', '物事に集中できますか？',
-    '気分が落ち込むことがありますか？', '将来に希望が持てますか？', 'イライラすることはありますか？',
-    '疲れやすいと感じますか？', '物事を楽しめていますか？', '自分に価値がないと感じますか？',
-    '不安で落ち着かないことがありますか？', '人に会いたいと思いますか？', '朝、すっきりと起きられますか？',
-    '自分の見た目に満足していますか？', 'ささいなことで動揺しますか？', '決断するのが難しいですか？',
-    'リラックスする時間がありますか？', '頭がスッキリしていますか？', '体が重いと感じますか？',
-    '誰かに相談したいと感じますか？', '物事を肯定的に考えられますか？', '趣味に没頭できていますか？',
-    '1日の終わりに満足感がありますか？', '自分を責めてしまうことがありますか？',
+    'ひどく疲れた', 'へとへとだ', 'だるい', '気がはりつめている', '不安だ', '落ち着かない',
+    'ゆううつだ', '何をするのも面倒だ', '気分が晴れない', '食欲がない', 'よく眠れない',
+    '非常にたくさんの仕事をしないといけない', '時間内に仕事が処理しきれない', '一生懸命働かなければならない',
+    '自分のベースで仕事ができる', '自分で仕事の手順・やり方を決めることができる', '職場の仕事の方針に自分の意見を反映できる',
+    '上司たちとどのくらい気軽に話ができますか？', '同僚たちとどのくらい気軽に話ができますか？', 'あなたが困った時、上司はどのくらい頼りになりますか？',
+    'あなたが困った時、同僚はどのくらい頼りになりますか？', 'あなたの個人的な話を上司はどのくらい聞いてくれますか？', 'あなたの個人的な話を同僚はどのくらい聞いてくれますか？',
   ];
-  return `【質問 ${i + 1}】 ${topics[i] || '最近のあなたの状態について教えてください。'}`;
+  return topics[i];
 });
 
-// 回答の選択肢
-const ANSWER_OPTIONS = [
-  { text: '全くない', value: 0 },
-  { text: '時々あった', value: 1 },
-  { text: 'しばしばあった', value: 2 },
-  { text: 'ほとんどいつもあった', value: 3 },
+// 【変更】ページごとの設定をまとめて定義
+const PAGE_CONFIG = [
+  {
+    header: '最近1ヶ月のあなたの状態についてうかがいます。\n最もあてはまるものを解答してください。',
+    questionCount: 11,
+    answerOptions: [
+      { text: 'ほとんどなかった', value: 1 },
+      { text: 'ときどきあった', value: 2 },
+      { text: 'しばしばあった', value: 3 },
+      { text: 'ほとんどいつもあった', value: 4 },
+    ],
+  },
+  {
+    header: 'あなたの仕事について伺います。\n最もあてはまるものを解答してください。',
+    questionCount: 6,
+    answerOptions: [ // 2ページ目用の選択肢
+      { text: 'ちがう', value: 1 },
+      { text: 'ややちがう', value: 2 },
+      { text: 'まあそうだ', value: 3 },
+      { text: 'そうだ', value: 4 },
+    ],
+  },
+  {
+    header: 'あなたの上司と同僚について伺います。\n最もあてはまるものを解答してください。',
+    questionCount: 6,
+    answerOptions: [ // 3ページ目用の選択肢
+      { text: '全くない', value: 1 },
+      { text: '多少', value: 2 },
+      { text: 'かなり', value: 3 },
+      { text: '非常に', value: 4 },
+    ],
+  },
 ];
 
-const QUESTIONS_PER_PAGE = 10;
-const TOTAL_PAGES = Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE);
+const TOTAL_PAGES = PAGE_CONFIG.length;
 
 // --- メインコンポーネント ---
 
@@ -46,18 +69,28 @@ export default function mentalHealthCheck() {
     Array(QUESTIONS.length).fill(null)
   );
   const [isCompleted, setIsCompleted] = useState(false);
-  // 【追加】ScrollViewへの参照を作成
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // 現在のページに表示する質問を計算
+  // 【変更】現在のページ設定をまとめて取得
+  const {
+    header: currentPageHeader,
+    answerOptions: currentAnswerOptions,
+    questionCount: currentPageQuestionCount,
+  } = PAGE_CONFIG[currentPage];
+
+  // 【変更】現在のページに表示する質問を計算
   const currentQuestions = useMemo(() => {
-    const startIndex = currentPage * QUESTIONS_PER_PAGE;
-    const endIndex = startIndex + QUESTIONS_PER_PAGE;
+    // 現在のページまでの質問数を合計して開始インデックスを計算
+    const startIndex = PAGE_CONFIG.slice(0, currentPage).reduce(
+      (acc, config) => acc + config.questionCount,
+      0
+    );
+    const endIndex = startIndex + currentPageQuestionCount;
     return QUESTIONS.slice(startIndex, endIndex).map((question, index) => ({
       text: question,
-      questionIndex: startIndex + index, // 全体での質問インデックス
+      questionIndex: startIndex + index,
     }));
-  }, [currentPage]);
+  }, [currentPage, currentPageQuestionCount]);
 
   // 現在のページの質問がすべて回答済みかチェック
   const isPageCompleted = useMemo(() => {
@@ -66,21 +99,20 @@ export default function mentalHealthCheck() {
     );
   }, [answers, currentQuestions]);
 
-  // 回答選択時の処理
+  // --- (以降のハンドラはほぼ変更なし) ---
+
   const handleSelectOption = (questionIndex: number, value: number) => {
     const newAnswers = [...answers];
     newAnswers[questionIndex] = value;
     setAnswers(newAnswers);
   };
 
-  // 「次へ」ボタン押下時の処理
   const handleNextPress = () => {
     if (!isPageCompleted) {
       Alert.alert('未回答の質問があります', 'このページのすべての質問に回答してください。');
       return;
     }
     if (currentPage < TOTAL_PAGES - 1) {
-      // 【追加】スクロールを一番上に戻す
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
       setCurrentPage(currentPage + 1);
     } else {
@@ -88,16 +120,13 @@ export default function mentalHealthCheck() {
     }
   };
 
-  // 「前に戻る」ボタン押下時の処理
   const handlePrevPress = () => {
     if (currentPage > 0) {
-      // 【追加】スクロールを一番上に戻す
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
       setCurrentPage(currentPage - 1);
     }
   };
 
-  // もう一度試す処理
   const handleRestart = () => {
     setCurrentPage(0);
     setAnswers(Array(QUESTIONS.length).fill(null));
@@ -132,8 +161,8 @@ export default function mentalHealthCheck() {
         <ScrollView
           ref={scrollViewRef}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          {/* プログレスバー */}
           <View style={styles.progressContainer}>
             <Text style={styles.progressText}>
               ページ {currentPage + 1} / {TOTAL_PAGES}
@@ -148,12 +177,16 @@ export default function mentalHealthCheck() {
             </View>
           </View>
 
+          {/* 【追加】ページヘッダー */}
+          <Text style={styles.pageHeader}>{currentPageHeader}</Text>
+
           {/* 質問リスト */}
-          {currentQuestions.map(({ text, questionIndex }) => (
+          {currentQuestions.map(({ text, questionIndex }, index) => (
             <View key={questionIndex} style={styles.questionBlock}>
-              <Text style={styles.questionText}>{text}</Text>
+              <Text style={styles.questionText}>{`Q${index + 1}. ${text}`}</Text>
               <View style={styles.optionsContainer}>
-                {ANSWER_OPTIONS.map((option) => (
+                {/* 【変更】ページごとの回答選択肢を使用 */}
+                {currentAnswerOptions.map((option) => (
                   <TouchableOpacity
                     key={option.value}
                     style={[
@@ -173,8 +206,7 @@ export default function mentalHealthCheck() {
               </View>
             </View>
           ))}
-
-          {/* ボタンエリア */}
+          
           <View style={styles.buttonContainer}>
             {currentPage > 0 && (
               <TouchableOpacity style={styles.prevButton} onPress={handlePrevPress}>
@@ -214,13 +246,16 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: 'white',
     borderRadius: 16,
-    padding: 20,
     marginVertical: 40,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 5,
+    overflow: 'hidden',
+  },
+  scrollContent: {
+    padding: 20,
   },
   progressContainer: {
     marginBottom: 20,
@@ -242,21 +277,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFA500',
     borderRadius: 4,
   },
-  questionBlock: {
+  // 【追加】ページヘッダーのスタイル
+  pageHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
     marginBottom: 24,
-    borderTopWidth: 1,
-    borderTopColor: '#EEEEEE',
-    paddingTop: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFA500',
+    paddingBottom: 10,
+  },
+  questionBlock: {
+    marginBottom: 28,
   },
   questionText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333333',
     marginBottom: 16,
+    lineHeight: 24,
   },
-  optionsContainer: {
-    // 選択肢のレイアウト調整（必要に応じて）
-  },
+  optionsContainer: {},
   optionButton: {
     backgroundColor: '#f7f7f7',
     padding: 14,
