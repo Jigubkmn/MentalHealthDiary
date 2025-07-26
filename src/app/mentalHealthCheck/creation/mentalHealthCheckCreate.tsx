@@ -13,6 +13,7 @@ import checkExistingMentalHealthCheckResult from '../actions/checkExistingMental
 import { questionTexts } from '../../constants/questionTexts';
 import { pageConfig } from '../../constants/pageConfig';
 import Header from './components/Header';
+import AlreadyChecked from './components/AlreadyChecked';
 
 const totalPages = pageConfig.length;
 const lastPage = totalPages - 1;
@@ -105,14 +106,9 @@ export default function mentalHealthCheckCreate() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <Header />
-        {/* 本日はメンタルヘルスチェック完了済み */}
         {isExistingMentalHealth ? (
-          <View style={styles.messageContainer}>
-            <Text style={styles.messageTitle}>本日のチェックは完了しています</Text>
-            <Text style={styles.messageBody}>お疲れ様でした。</Text>
-            <Text style={styles.messageBody}>次回のメンタルヘルスチェックは明日以降に可能です。</Text>
-          </View>
-
+          // 本日はメンタルヘルスチェック完了済み
+          <AlreadyChecked />
         ) : isCompleted ? (
           // 結果画面
           <MentalHealthResult evaluationResult={evaluationResult} />
@@ -165,30 +161,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  messageContainer: {
-    flex: 1,
-    width: '90%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    marginVertical: 20,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  messageTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 16,
-  },
-  messageBody: {
-    fontSize: 16,
-    color: '#666666',
-    textAlign: 'center',
-    lineHeight: 24
   },
   card: {
     flex: 1,
