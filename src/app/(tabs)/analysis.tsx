@@ -15,11 +15,10 @@ import FeelingScoreGraph from '../analysis/components/FeelingScoreGraph';
 export default function analysis() {
   const userId = auth.currentUser?.uid
   const [feelingScoreDates, setFeelingScoreDates] = useState<FeelingScoreType[]>([]);
-  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)  // ログイン情報
-  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null) // 日記を表示しているユーザー情報
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
+  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null)
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const [selectedUserId, setSelectedUserId] = useState<string>('') // 日記を表示しているユーザーID
-  // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
   // 表示用の年月を管理する
   const [displayDate, setDisplayDate] = useState(dayjs());
@@ -151,9 +150,9 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // アイコンとグラフの上端を合わせる
-    justifyContent: 'flex-start', // 左寄せ
-    position: 'relative', // 絶対配置の基準点
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    position: 'relative',
   },
   noDataContainer: {
     height: 220,
