@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView, // FlatListの代わりにScrollViewをインポート
-  TouchableOpacity,
-  Alert,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import Header from '../mentalHealthCheck/list/components/Header';
+import PlusIcon from '../components/Icon/PlusIcon';
+import { useRouter } from 'expo-router';
 
 // --- 表示するダミーデータ ---
 const DUMMY_RESULTS = [
@@ -42,19 +37,19 @@ const DUMMY_RESULTS = [
 ];
 
 export default function mentalHealthCheckList() {
-  // 詳細ボタンが押されたときの処理
+  const router = useRouter();
+
   const handlePressDetail = () => {
     Alert.alert(
       '詳細ページへ遷移',
       `の結果の詳細を表示します。`,
       [{ text: 'OK' }]
     );
-    // 例: navigation.navigate('ResultDetail', { resultId: item.id });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>メンタルヘルスチェック結果一覧</Text>
+      <Header />
       <View style={styles.tableContainer}>
         {/* ScrollViewでコンテンツ全体を囲む */}
         <ScrollView>
@@ -98,6 +93,12 @@ export default function mentalHealthCheckList() {
           })}
         </ScrollView>
       </View>
+      {/* 日記作成ボタン */}
+      <TouchableOpacity style={styles.plusButton} onPress={() => router.push(
+        '/mentalHealthCheck/creation/mentalHealthCheckCreate'
+      )}>
+        <PlusIcon width={30} height={30} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -179,5 +180,21 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  plusButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    width: 50,
+    height: 50,
+    backgroundColor: '#FFA500',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
   },
 });
