@@ -5,53 +5,8 @@ import { auth } from '../../../config';
 import { MentalHealthCheckType } from '../../../../type/mentalHealthCheck';
 import fetchSelectedMentalHealthCheck from './actions/backend/fetchSelectedMentalHealthCheck';
 import Header from './components/Header';
-
-// 質問文の定義（mentalHealthCheck.tsxから流用）
-const questions = Array.from({ length: 23 }, (_, i) => {
-  const topics = [
-    'ひどく疲れた', 'へとへとだ', 'だるい', '気がはりつめている', '不安だ', '落ち着かない',
-    'ゆううつだ', '何をするのも面倒だ', '気分が晴れない', '食欲がない', 'よく眠れない',
-    '非常にたくさんの仕事をしないといけない', '時間内に仕事が処理しきれない', '一生懸命働かなければならない',
-    '自分のベースで仕事ができない', '自分で仕事の手順・やり方を決めることができない', '職場の仕事の方針に自分の意見を反映できない',
-    '上司たちとどのくらい気軽に話ができますか？', '同僚たちとどのくらい気軽に話ができますか？', 'あなたが困った時、上司はどのくらい頼りになりますか？',
-    'あなたが困った時、同僚はどのくらい頼りになりますか？', 'あなたの個人的な話を上司はどのくらい聞いてくれますか？', 'あなたの個人的な話を同僚はどのくらい聞いてくれますか？',
-  ];
-  return topics[i];
-});
-
-// ページごとの設定（mentalHealthCheck.tsxから流用）
-const pageConfig = [
-  {
-    questionGroupHeader: '<設問A>',
-    questionCount: 11,
-    answerOptions: [
-      { text: 'ほとんどなかった', value: 1 },
-      { text: 'ときどきあった', value: 2 },
-      { text: 'しばしばあった', value: 3 },
-      { text: 'ほとんどいつもあった', value: 4 },
-    ],
-  },
-  {
-    questionGroupHeader: '<設問B-1>',
-    questionCount: 6,
-    answerOptions: [
-      { text: 'ちがう', value: 1 },
-      { text: 'ややちがう', value: 2 },
-      { text: 'まあそうだ', value: 3 },
-      { text: 'そうだ', value: 4 },
-    ],
-  },
-  {
-    questionGroupHeader: '<設問B-2>',
-    questionCount: 6,
-    answerOptions: [
-      { text: '全くない', value: 1 },
-      { text: '多少', value: 2 },
-      { text: 'かなり', value: 3 },
-      { text: '非常に', value: 4 },
-    ],
-  },
-];
+import { questionTexts } from '../../constants/questionTexts';
+import { pageConfig } from '../../constants/pageConfig';
 
 export default function MentalHealthCheckHistory() {
   const userId = auth.currentUser?.uid;
@@ -121,7 +76,7 @@ export default function MentalHealthCheckHistory() {
         </View>
 
         <View style={styles.qaListContainer}>
-          {questions.map((questionText, index) => {
+          {questionTexts.map((questionText, index) => {
             let sectionHeaderComponent = null;
 
             if (index === 0) {
