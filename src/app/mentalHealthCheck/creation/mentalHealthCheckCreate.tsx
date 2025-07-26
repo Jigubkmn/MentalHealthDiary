@@ -1,14 +1,14 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
-import MentalHealthResult from '../mentalHealthCheck/components/MentalHealthResult';
-import QuestionList from '../mentalHealthCheck/components/QuestionList';
-import ProgressIndicator from '../mentalHealthCheck/components/ProgressIndicator';
-import PaginationControlButton from '../mentalHealthCheck/components/PaginationControlButton';
+import MentalHealthResult from '../components/MentalHealthResult';
+import QuestionList from '../components/QuestionList';
+import ProgressIndicator from '../components/ProgressIndicator';
+import PaginationControlButton from '../components/PaginationControlButton';
 import dayjs from 'dayjs';
-import { auth } from '../../config';
-import createMentalHealthCheckResult from '../mentalHealthCheck/actions/backend/createMentalHealthCheckResult';
-import getScoreResult from '../mentalHealthCheck/actions/getScoreResult';
-import checkExistingMentalHealthCheckResult from '../mentalHealthCheck/actions/checkExistingMentalHealthCheckResult';
+import { auth } from '../../../config';
+import createMentalHealthCheckResult from '../actions/backend/createMentalHealthCheckResult';
+import getScoreResult from '../actions/getScoreResult';
+import checkExistingMentalHealthCheckResult from '../actions/checkExistingMentalHealthCheckResult';
 
 const questions = Array.from({ length: 23 }, (_, i) => {
   const topics = [
@@ -61,7 +61,7 @@ const pageConfig = [
 const totalPages = pageConfig.length;
 const lastPage = totalPages - 1;
 
-export default function mentalHealthCheck() {
+export default function mentalHealthCheckCreate() {
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);

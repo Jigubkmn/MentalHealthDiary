@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Header from '../diary/list/components/Header';
 import { auth } from '../../config';
 import dayjs from 'dayjs';
-import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
+import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchFeelingScore from '../analysis/actions/backend/fetchFeelingScore';
 import { FeelingScoreType } from '../../../type/feelingScore';
 import { UserInfoType } from '../../../type/userInfo';
