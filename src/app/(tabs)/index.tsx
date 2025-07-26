@@ -6,7 +6,7 @@ import { DiaryType } from '../../../type/diary';
 import PlusIcon from '../components/Icon/PlusIcon';
 import { useRouter } from 'expo-router';
 import dayjs from 'dayjs';
-import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
+import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import { UserInfoType } from '../../../type/userInfo';
 import fetchUserInfo from '../actions/fetchUserInfo';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';

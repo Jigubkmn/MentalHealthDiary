@@ -7,7 +7,7 @@ import { auth } from '../../config';
 import dayjs from 'dayjs';
 import { MentalHealthCheckType } from '../../../type/mentalHealthCheck';
 import fetchMentalHealthChecks from '../mentalHealthCheck/list/actions/backend/fetchMentalHealthChecks';
-import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
+import YearMonthSelectModal from '../components/YearMonthSelectModal';
 
 export default function mentalHealthCheckList() {
   const userId = auth.currentUser?.uid
