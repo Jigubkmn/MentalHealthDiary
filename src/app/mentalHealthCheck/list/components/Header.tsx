@@ -7,17 +7,9 @@ export default function Header() {
   return (
     <>
       <View style={styles.header}>
-        {/* ヘッダー左側 */}
-        <View style={styles.headerLeft}>
-          {/* 左側のスペーサー */}
-        </View>
         {/* 日付タイトル */}
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>メンタルヘルスチェック結果一覧</Text>
-        </View>
-        {/* ヘッダー右側 */}
-        <View style={styles.headerRight}>
-          {/* 左側のスペーサー */}
+          <Text style={styles.headerTitle}>メンタルヘルスチェック一覧</Text>
         </View>
       </View>
     </>
@@ -35,9 +27,6 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: '#ffffff',
   },
-  headerLeft: {
-    width: 60
-  },
   headerCenter: {
     flex: 1,
     flexDirection: 'row',
@@ -50,8 +39,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginHorizontal: 8,
-  },
-  headerRight: {
-    width: 60
   },
 });
