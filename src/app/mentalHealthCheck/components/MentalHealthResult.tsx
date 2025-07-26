@@ -1,12 +1,11 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, SafeAreaView, ScrollView } from 'react-native';
 
 type Props = {
   evaluationResult: string
-  handleRestart: () => void;
 }
 
-export default function MentalHealthResult({ evaluationResult, handleRestart }: Props) {
+export default function MentalHealthResult({ evaluationResult }: Props) {
   let resultTitle = '';
   let resultMessage = '';
 
@@ -30,9 +29,6 @@ export default function MentalHealthResult({ evaluationResult, handleRestart }: 
           <Text style={styles.disclaimer}>
             ※この結果は医学的な診断に代わるものではありません。気分の落ち込みが続く場合や、心配なことがある場合は、専門の医療機関にご相談ください。
           </Text>
-          <TouchableOpacity style={styles.button} onPress={handleRestart}>
-            <Text style={styles.buttonText}>もう一度試す</Text>
-          </TouchableOpacity>
         </ScrollView>
       </View>
     </SafeAreaView>

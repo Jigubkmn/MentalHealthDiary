@@ -99,17 +99,10 @@ export default function mentalHealthCheckCreate() {
     }
   };
 
-  const handleRestart = () => {
-    setCurrentPage(0);
-    setAnswers(Array(questionTexts.length).fill(null));
-    setIsCompleted(false);
-  };
-
   // 結果画面
   if (isCompleted) {
     return <MentalHealthResult
       evaluationResult={evaluationResult}
-      handleRestart={handleRestart}
     />;
   }
 

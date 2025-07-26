@@ -83,7 +83,7 @@ export default function mentalHealthCheckList() {
           })}
         </ScrollView>
       </View>
-      {/* 日記作成ボタン */}
+      {/* 作成ボタン */}
       <TouchableOpacity style={styles.plusButton} onPress={() => router.push(
         '/mentalHealthCheck/creation/mentalHealthCheckCreate'
       )}>
