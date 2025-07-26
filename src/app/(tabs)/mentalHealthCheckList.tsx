@@ -101,7 +101,6 @@ export default function mentalHealthCheckList() {
   );
 }
 
-// --- スタイル定義 (変更なし) ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
