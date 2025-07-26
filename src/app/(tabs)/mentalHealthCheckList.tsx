@@ -9,6 +9,7 @@ import { MentalHealthCheckType } from '../../../type/mentalHealthCheck';
 import fetchMentalHealthChecks from '../mentalHealthCheck/list/actions/backend/fetchMentalHealthChecks';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import TableHeader from '../mentalHealthCheck/list/components/TableHeader';
+import TableBody from '../mentalHealthCheck/list/components/TableBody';
 
 export default function mentalHealthCheckList() {
   const userId = auth.currentUser?.uid
@@ -68,23 +69,16 @@ export default function mentalHealthCheckList() {
                 : styles.evaluationNormal;
 
             return (
-              <View key={mentalHealthCheck.id} style={styles.dataRow}>
-                <Text style={[styles.dataCell, styles.dateCell]}>{mentalHealthCheck.createdAt.format('YYYY/MM/DD')}</Text>
-                <Text style={[styles.dataCell, styles.evaluationCell, evaluationStyle]}>
-                  {mentalHealthCheck.evaluation}
-                </Text>
-                <Text style={[styles.dataCell, styles.scoreCell]}>
-                  {`スコアA: ${mentalHealthCheck.scoreA}\nスコアB: ${mentalHealthCheck.scoreB}`}
-                </Text>
-                <View style={[styles.dataCell, styles.buttonCell]}>
-                  <TouchableOpacity
-                    style={styles.detailButton}
-                    onPress={() => handlePressDetail(mentalHealthCheck.id)}
-                  >
-                    <Text style={styles.detailButtonText}>詳細</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+              <TableBody
+                key={mentalHealthCheck.id}
+                id={mentalHealthCheck.id}
+                createdAt={mentalHealthCheck.createdAt}
+                evaluationStyle={evaluationStyle}
+                evaluation={mentalHealthCheck.evaluation}
+                scoreA={mentalHealthCheck.scoreA}
+                scoreB={mentalHealthCheck.scoreB}
+                handlePressDetail={handlePressDetail}
+              />
             );
           })}
         </ScrollView>
@@ -122,12 +116,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    margin: 16,
-    textAlign: 'center',
-  },
   tableContainer: {
     flex: 1,
     marginHorizontal: 10,
@@ -135,31 +123,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     overflow: 'hidden',
-  },
-  dataRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  dataCell: {
-    padding: 12,
-    textAlign: 'center',
-  },
-  dateCell: {
-    flex: 3,
-  },
-  evaluationCell: {
-    flex: 3.5,
-  },
-  scoreCell: {
-    flex: 3,
-  },
-  buttonCell: {
-    flex: 2.5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   evaluationCritical: {
     color: '#d9534f',
@@ -170,17 +133,6 @@ const styles = StyleSheet.create({
   },
   evaluationNormal: {
     color: '#5cb85c',
-  },
-  detailButton: {
-    backgroundColor: '#ff9800',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-  },
-  detailButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 14,
   },
   plusButton: {
     position: 'absolute',
