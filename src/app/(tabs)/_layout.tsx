@@ -73,7 +73,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="mentalHealthCheck"
+        name="mentalHealthCheckList"
         options={{
           title: "メンタルヘルスチェック一覧",
           headerShown: false,
