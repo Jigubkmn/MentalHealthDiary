@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { MentalHealthCheckType } from '../../../type/mentalHealthCheck';
 import fetchMentalHealthChecks from '../mentalHealthCheck/list/actions/backend/fetchMentalHealthChecks';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
+import TableHeader from '../mentalHealthCheck/list/components/TableHeader';
 
 export default function mentalHealthCheckList() {
   const userId = auth.currentUser?.uid
@@ -56,12 +57,7 @@ export default function mentalHealthCheckList() {
       </View>
       <View style={styles.tableContainer}>
         <ScrollView>
-          <View style={styles.headerRow}>
-            <Text style={[styles.headerCell, styles.dateCell]}>日付</Text>
-            <Text style={[styles.headerCell, styles.evaluationCell]}>評価</Text>
-            <Text style={[styles.headerCell, styles.scoreCell]}>スコア</Text>
-            <View style={[styles.headerCell, styles.buttonCell]} />
-          </View>
+          <TableHeader />
           {mentalHealthCheckLists.map((mentalHealthCheck) => {
             // 評価に応じて文字色を変えるためのスタイルを決定
             const evaluationStyle =
@@ -139,18 +135,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     overflow: 'hidden',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    backgroundColor: '#f0f0f0',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  headerCell: {
-    padding: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
   },
   dataRow: {
     flexDirection: 'row',
