@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Text, SafeAreaView, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
-import Header from '../creation/components/Header';
+import Header from './Header';
 
 type Props = {
   evaluationResult: string

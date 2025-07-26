@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
-import MentalHealthResult from '../components/MentalHealthResult';
+import MentalHealthResult from './components/MentalHealthResult';
 import QuestionList from '../components/QuestionList';
 import ProgressIndicator from '../components/ProgressIndicator';
 import PaginationControlButton from '../components/PaginationControlButton';
