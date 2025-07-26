@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import UserAddIcon from '../../components/Icon/UserAddIcon';
-import SettingIcon from '../../components/Icon/SettingIcon';
 
 type Props = {
   currentAccountId?: string;
