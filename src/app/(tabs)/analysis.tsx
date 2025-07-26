@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import Header from '../diary/list/components/Header';
 import { auth } from '../../config';
 import dayjs from 'dayjs';
@@ -93,7 +93,7 @@ export default function analysis() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="分析レポート"
         userInfo={userInfo}
@@ -125,16 +125,17 @@ export default function analysis() {
         setSelectedYearMonth={setSelectedYearMonth}
         isModalVisible={isModalVisible}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   yearMonthContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   yearMonthText: {
     fontSize: 20,
@@ -143,8 +144,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
-    margin: 20,
-    backgroundColor: 'white',
+    marginHorizontal: 20,
+    backgroundColor: '#F0F0F0',
     borderRadius: 16,
     paddingVertical: 20,
   },
