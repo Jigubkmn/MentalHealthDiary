@@ -55,33 +55,31 @@ export default function mentalHealthCheckList() {
           <Text style={styles.yearMonthText}>{displayDate.format('YYYY年M月')} ↓</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.tableContainer}>
-        <ScrollView>
-          <TableHeader />
-          {mentalHealthCheckLists.map((mentalHealthCheck) => {
-            // 評価に応じて文字色を変えるためのスタイルを決定
-            const evaluationStyle =
-              mentalHealthCheck.evaluation === '要治療'
-                ? styles.evaluationCritical
-                : mentalHealthCheck.evaluation === '要経過観察'
-                ? styles.evaluationWarning
-                : styles.evaluationNormal;
+      <ScrollView style={styles.tableContainer}>
+        <TableHeader />
+        {mentalHealthCheckLists.map((mentalHealthCheck) => {
+          // 評価に応じて文字色を変えるためのスタイルを決定
+          const evaluationStyle =
+            mentalHealthCheck.evaluation === '要治療'
+              ? styles.evaluationCritical
+              : mentalHealthCheck.evaluation === '要経過観察'
+              ? styles.evaluationWarning
+              : styles.evaluationNormal;
 
-            return (
-              <TableBody
-                key={mentalHealthCheck.id}
-                id={mentalHealthCheck.id}
-                createdAt={mentalHealthCheck.createdAt}
-                evaluationStyle={evaluationStyle}
-                evaluation={mentalHealthCheck.evaluation}
-                scoreA={mentalHealthCheck.scoreA}
-                scoreB={mentalHealthCheck.scoreB}
-                handlePressDetail={handlePressDetail}
-              />
-            );
-          })}
-        </ScrollView>
-      </View>
+          return (
+            <TableBody
+              key={mentalHealthCheck.id}
+              id={mentalHealthCheck.id}
+              createdAt={mentalHealthCheck.createdAt}
+              evaluationStyle={evaluationStyle}
+              evaluation={mentalHealthCheck.evaluation}
+              scoreA={mentalHealthCheck.scoreA}
+              scoreB={mentalHealthCheck.scoreB}
+              handlePressDetail={handlePressDetail}
+            />
+          );
+        })}
+      </ScrollView>
       {/* 作成ボタン */}
       <TouchableOpacity style={styles.plusButton} onPress={() => router.push(
         '/mentalHealthCheck/creation/mentalHealthCheckCreate'
@@ -103,10 +101,10 @@ export default function mentalHealthCheckList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
   yearMonthContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   yearMonthText: {
     fontSize: 20,
@@ -116,7 +114,9 @@ const styles = StyleSheet.create({
   },
   tableContainer: {
     flex: 1,
+    backgroundColor: '#F0F0F0',
     marginHorizontal: 10,
+    marginBottom: 30,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
