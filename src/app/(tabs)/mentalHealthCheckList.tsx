@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import Header from '../mentalHealthCheck/list/components/Header';
 import PlusIcon from '../components/Icon/PlusIcon';
 import { useRouter } from 'expo-router';
@@ -30,12 +30,13 @@ export default function mentalHealthCheckList() {
     return unsubscribe;
   }, [displayDate, userId])
 
-  const handlePressDetail = () => {
-    Alert.alert(
-      '詳細ページへ遷移',
-      `の結果の詳細を表示します。`,
-      [{ text: 'OK' }]
-    );
+  const handlePressDetail = (mentalHealthCheckId: string) => {
+    router.push({
+      pathname: `/mentalHealthCheck/show/mentalHealthCheckShow`,
+      params: {
+        mentalHealthCheckId: mentalHealthCheckId,
+      }
+    });
   };
 
   const handleYearMonthPress = () => {
@@ -54,16 +55,13 @@ export default function mentalHealthCheckList() {
         </TouchableOpacity>
       </View>
       <View style={styles.tableContainer}>
-        {/* ScrollViewでコンテンツ全体を囲む */}
         <ScrollView>
-          {/* ヘッダー行を最初に配置 */}
           <View style={styles.headerRow}>
             <Text style={[styles.headerCell, styles.dateCell]}>日付</Text>
             <Text style={[styles.headerCell, styles.evaluationCell]}>評価</Text>
             <Text style={[styles.headerCell, styles.scoreCell]}>スコア</Text>
             <View style={[styles.headerCell, styles.buttonCell]} />
           </View>
-          {/* mapメソッドでデータを繰り返し表示 */}
           {mentalHealthCheckLists.map((mentalHealthCheck) => {
             // 評価に応じて文字色を変えるためのスタイルを決定
             const evaluationStyle =
@@ -85,7 +83,7 @@ export default function mentalHealthCheckList() {
                 <View style={[styles.dataCell, styles.buttonCell]}>
                   <TouchableOpacity
                     style={styles.detailButton}
-                    onPress={() => handlePressDetail()}
+                    onPress={() => handlePressDetail(mentalHealthCheck.id)}
                   >
                     <Text style={styles.detailButtonText}>詳細</Text>
                   </TouchableOpacity>
