@@ -115,11 +115,12 @@ export default function mentalHealthCheckCreate() {
         ) : (
           <>
             <StatusBar barStyle="dark-content" />
-            <View style={styles.card}>
+            <View style={styles.cardContainer}>
               <ScrollView
                 ref={scrollViewRef}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
+                style={styles.card}
               >
                 {/* 進捗バー */}
                 <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
@@ -159,15 +160,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
     alignItems: 'center',
+  },
+  cardContainer: {
+    backgroundColor: '#F0F0F0',
+
   },
   card: {
     flex: 1,
-    width: '90%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     marginVertical: 20,
+    marginHorizontal: 10,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
