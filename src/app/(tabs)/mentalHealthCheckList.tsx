@@ -15,7 +15,6 @@ export default function mentalHealthCheckList() {
   const userId = auth.currentUser?.uid
   const router = useRouter();
   const [mentalHealthCheckLists, setMentalHealthCheckLists] = useState<MentalHealthCheckType[]>([]);
-    // モーダルの表示状態を管理
     const [isModalVisible, setModalVisible] = useState(false);
     // 表示用の年月を管理する
     const [displayDate, setDisplayDate] = useState(dayjs());
