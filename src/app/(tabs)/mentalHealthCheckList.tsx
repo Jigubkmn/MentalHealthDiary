@@ -1,43 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import Header from '../mentalHealthCheck/list/components/Header';
 import PlusIcon from '../components/Icon/PlusIcon';
 import { useRouter } from 'expo-router';
-
-// --- 表示するダミーデータ ---
-const DUMMY_RESULTS = [
-  {
-    id: '1',
-    date: '2025/7/17',
-    evaluation: '要治療',
-    scoreA: 80,
-    scoreB: 75,
-  },
-  {
-    id: '2',
-    date: '2025/6/15',
-    evaluation: '要経過観察',
-    scoreA: 65,
-    scoreB: 70,
-  },
-  {
-    id: '3',
-    date: '2025/5/12',
-    evaluation: '異常なし',
-    scoreA: 40,
-    scoreB: 35,
-  },
-  {
-    id: '4',
-    date: '2025/4/18',
-    evaluation: '異常なし',
-    scoreA: 30,
-    scoreB: 28,
-  },
-];
+import { auth } from '../../config';
+import dayjs from 'dayjs';
+import { MentalHealthCheckType } from '../../../type/mentalHealthCheck';
+import fetchMentalHealthChecks from '../mentalHealthCheck/list/actions/backend/fetchMentalHealthChecks';
+import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
 
 export default function mentalHealthCheckList() {
+  const userId = auth.currentUser?.uid
   const router = useRouter();
+  const [mentalHealthCheckLists, setMentalHealthCheckLists] = useState<MentalHealthCheckType[]>([]);
+    // モーダルの表示状態を管理
+    const [isModalVisible, setModalVisible] = useState(false);
+    // 表示用の年月を管理する
+    const [displayDate, setDisplayDate] = useState(dayjs());
+    // 選択された年月を'YYYY-M'形式の文字列で保持する
+    const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
+
+  useEffect(() => {
+    if (userId === null) return;
+    // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
+    const startOfMonth = displayDate.startOf('month');
+    const endOfMonth = displayDate.add(1, 'month').startOf('month');
+    // 選択されたユーザーの日記一覧を取得
+    const unsubscribe = fetchMentalHealthChecks(setMentalHealthCheckLists, startOfMonth, endOfMonth, userId);
+    return unsubscribe;
+  }, [displayDate, userId])
 
   const handlePressDetail = () => {
     Alert.alert(
@@ -47,9 +38,21 @@ export default function mentalHealthCheckList() {
     );
   };
 
+  const handleYearMonthPress = () => {
+    // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する
+    setSelectedYearMonth(displayDate.format('YYYY-M'));
+    setModalVisible(true);
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header />
+      {/* 年月 */}
+      <View style={styles.yearMonthContainer}>
+        <TouchableOpacity onPress={handleYearMonthPress}>
+          <Text style={styles.yearMonthText}>{displayDate.format('YYYY年M月')} ↓</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.tableContainer}>
         {/* ScrollViewでコンテンツ全体を囲む */}
         <ScrollView>
@@ -61,24 +64,23 @@ export default function mentalHealthCheckList() {
             <View style={[styles.headerCell, styles.buttonCell]} />
           </View>
           {/* mapメソッドでデータを繰り返し表示 */}
-          {DUMMY_RESULTS.map((item) => {
+          {mentalHealthCheckLists.map((mentalHealthCheck) => {
             // 評価に応じて文字色を変えるためのスタイルを決定
             const evaluationStyle =
-              item.evaluation === '要治療'
+              mentalHealthCheck.evaluation === '要治療'
                 ? styles.evaluationCritical
-                : item.evaluation === '要経過観察'
+                : mentalHealthCheck.evaluation === '要経過観察'
                 ? styles.evaluationWarning
                 : styles.evaluationNormal;
 
             return (
-              // 各行に一意の `key` を設定することが重要
-              <View key={item.id} style={styles.dataRow}>
-                <Text style={[styles.dataCell, styles.dateCell]}>{item.date}</Text>
+              <View key={mentalHealthCheck.id} style={styles.dataRow}>
+                <Text style={[styles.dataCell, styles.dateCell]}>{mentalHealthCheck.createdAt.format('YYYY/MM/DD')}</Text>
                 <Text style={[styles.dataCell, styles.evaluationCell, evaluationStyle]}>
-                  {item.evaluation}
+                  {mentalHealthCheck.evaluation}
                 </Text>
                 <Text style={[styles.dataCell, styles.scoreCell]}>
-                  {`スコアA: ${item.scoreA}\nスコアB: ${item.scoreB}`}
+                  {`スコアA: ${mentalHealthCheck.scoreA}\nスコアB: ${mentalHealthCheck.scoreB}`}
                 </Text>
                 <View style={[styles.dataCell, styles.buttonCell]}>
                   <TouchableOpacity
@@ -99,6 +101,14 @@ export default function mentalHealthCheckList() {
       )}>
         <PlusIcon width={30} height={30} color="white" />
       </TouchableOpacity>
+      {/* 年月選択モーダル */}
+      <YearMonthSelectModal
+        setModalVisible={setModalVisible}
+        setDisplayDate={setDisplayDate}
+        selectedYearMonth={selectedYearMonth}
+        setSelectedYearMonth={setSelectedYearMonth}
+        isModalVisible={isModalVisible}
+      />
     </SafeAreaView>
   );
 }
@@ -108,6 +118,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  yearMonthContainer: {
+    backgroundColor: '#ffffff',
+  },
+  yearMonthText: {
+    fontSize: 20,
+    lineHeight: 38,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   title: {
     fontSize: 22,
