@@ -100,68 +100,60 @@ export default function mentalHealthCheckCreate() {
     }
   };
 
-  // 結果画面
-  if (isCompleted) {
-    return <MentalHealthResult
-      evaluationResult={evaluationResult}
-    />;
-  }
-
-  if (isExistingMentalHealth) {
-    return (
-      <>
-      <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container}>
-        <Header />
-        <View style={styles.messageContainer}>
-          <Text style={styles.messageTitle}>本日のチェックは完了しています</Text>
-          <Text style={styles.messageBody}>お疲れ様でした。</Text>
-          <Text style={styles.messageBody}>次回のメンタルヘルスチェックは明日以降に可能です。</Text>
-        </View>
-      </SafeAreaView>
-      </>
-    );
-  }
-
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <Header />
-        <StatusBar barStyle="dark-content" />
-        <View style={styles.card}>
-          <ScrollView
-            ref={scrollViewRef}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
-          >
-            {/* 進捗バー */}
-            <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
-            {/* ページヘッダー */}
-            <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
-            <Text style={styles.pageHeader}>{currentPageHeader}</Text>
-            {/* 質問リスト */}
-            {currentQuestions.map(({ text, questionIndex }, index) => (
-              <QuestionList
-                key={questionIndex}
-                text={text}
-                questionIndex={questionIndex}
-                index={index}
-                currentAnswerOptions={currentAnswerOptions}
-                answers={answers}
-                handleSelectOption={handleSelectOption}
-              />
-            ))}
-            {/* ボタン */}
-            <PaginationControlButton
-              isPageCompleted={isPageCompleted}
-              handleNextPress={handleNextPress}
-              handlePrevPress={handlePrevPress}
-              currentPage={currentPage}
-              lastPage={lastPage}
-            />
-          </ScrollView>
-        </View>
+        {/* 本日はメンタルヘルスチェック完了済み */}
+        {isExistingMentalHealth ? (
+          <View style={styles.messageContainer}>
+            <Text style={styles.messageTitle}>本日のチェックは完了しています</Text>
+            <Text style={styles.messageBody}>お疲れ様でした。</Text>
+            <Text style={styles.messageBody}>次回のメンタルヘルスチェックは明日以降に可能です。</Text>
+          </View>
+
+        ) : isCompleted ? (
+          // 結果画面
+          <MentalHealthResult evaluationResult={evaluationResult} />
+        ) : (
+          <>
+            <StatusBar barStyle="dark-content" />
+            <View style={styles.card}>
+              <ScrollView
+                ref={scrollViewRef}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContent}
+              >
+                {/* 進捗バー */}
+                <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
+                {/* ページヘッダー */}
+                <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
+                <Text style={styles.pageHeader}>{currentPageHeader}</Text>
+                {/* 質問リスト */}
+                {currentQuestions.map(({ text, questionIndex }, index) => (
+                  <QuestionList
+                    key={questionIndex}
+                    text={text}
+                    questionIndex={questionIndex}
+                    index={index}
+                    currentAnswerOptions={currentAnswerOptions}
+                    answers={answers}
+                    handleSelectOption={handleSelectOption}
+                  />
+                ))}
+                {/* ボタン */}
+                <PaginationControlButton
+                  isPageCompleted={isPageCompleted}
+                  handleNextPress={handleNextPress}
+                  handlePrevPress={handlePrevPress}
+                  currentPage={currentPage}
+                  lastPage={lastPage}
+                />
+              </ScrollView>
+            </View>
+          </>
+        )}
       </SafeAreaView>
     </>
   );
@@ -196,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666666',
     textAlign: 'center',
-    lineHeight: 24, // 行間を少し空けると読みやすい
+    lineHeight: 24
   },
   card: {
     flex: 1,
