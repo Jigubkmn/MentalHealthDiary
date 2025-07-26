@@ -30,9 +30,6 @@ export default function Header({ currentAccountId, userId }: Props) {
           style={styles.userAddIcon}>
           <UserAddIcon size={24} color="#FFA500" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <SettingIcon size={24} color="#FFA500" />
-        </TouchableOpacity>
       </View>
     </View>
   )
@@ -50,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   headerLeft: {
-    width: 60,
+    width: 40,
   },
   headerCenter: {
     flex: 1,
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   headerRight: {
-    width: 60,
+    width: 40,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
