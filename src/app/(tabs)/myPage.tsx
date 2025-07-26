@@ -17,18 +17,14 @@ export default function myPage() {
   const userId = auth.currentUser?.uid;
 
   useEffect(() => {
-    // ユーザー情報取得
     if (userId === null) return;
-
     const unsubscribe = fetchUserInfo({
       userId,
       setUserInfo,
     });
-
     return unsubscribe;
   }, [userId])
 
-  // FriendContextのfriendsが更新された時にfriendsDataも更新
   useEffect(() => {
     fetchFriends();
   }, [userId]);
@@ -64,7 +60,6 @@ export default function myPage() {
         <View style={styles.friendListContainer}>
           <Text style={styles.friendListTitle}>友人一覧</Text>
           <View style={styles.friendListWrapper}>
-            {/* 友人一覧 */}
             <View style={styles.friendListInfoContainer}>
               {friendsData.length > 0 ? (
                 friendsData.map((friendData) => (
@@ -127,20 +122,6 @@ const styles = StyleSheet.create({
   friendListWrapper: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
-  },
-  friendListHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-  },
-  friendAddComment: {
-    fontSize: 14,
-    lineHeight: 24,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'center',
   },
   friendListInfoContainer: {
     borderRadius: 10,
