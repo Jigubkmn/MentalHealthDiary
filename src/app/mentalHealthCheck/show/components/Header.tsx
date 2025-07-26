@@ -1,10 +1,14 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native';
 import BackButton from '../../../components/button/BackButton';
+import dayjs from 'dayjs';
 
+type Props = {
+  createdAt?: dayjs.Dayjs;
+}
 
-export default function Header() {
-
+export default function Header({ createdAt }: Props) {
+  const formattedDate = createdAt?.format('YYYY/MM/DD');
   return (
     <View style={styles.header}>
       {/* ヘッダー左側 */}
@@ -13,7 +17,7 @@ export default function Header() {
       </View>
       {/* 日付タイトル */}
       <View style={styles.headerCenter}>
-        <Text style={styles.headerTitle}>メンタルヘルスチェック結果</Text>
+        <Text style={styles.headerDate}>{formattedDate}</Text>
       </View>
       {/* ヘッダー右側 */}
       <View style={styles.headerRight}>
@@ -43,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerTitle: {
+  headerDate: {
     fontSize: 16,
     lineHeight: 30,
     fontWeight: 'bold',
