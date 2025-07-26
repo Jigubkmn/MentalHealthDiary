@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import Header from '../diary/list/components/Header';
 import { auth } from '../../config';
 import dayjs from 'dayjs';
@@ -15,11 +15,10 @@ import FeelingScoreGraph from '../analysis/components/FeelingScoreGraph';
 export default function analysis() {
   const userId = auth.currentUser?.uid
   const [feelingScoreDates, setFeelingScoreDates] = useState<FeelingScoreType[]>([]);
-  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)  // ログイン情報
-  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null) // 日記を表示しているユーザー情報
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
+  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null)
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const [selectedUserId, setSelectedUserId] = useState<string>('') // 日記を表示しているユーザーID
-  // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
   // 表示用の年月を管理する
   const [displayDate, setDisplayDate] = useState(dayjs());
@@ -94,7 +93,7 @@ export default function analysis() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="分析レポート"
         userInfo={userInfo}
@@ -126,16 +125,17 @@ export default function analysis() {
         setSelectedYearMonth={setSelectedYearMonth}
         isModalVisible={isModalVisible}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   yearMonthContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   yearMonthText: {
     fontSize: 20,
@@ -144,16 +144,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
-    margin: 20,
-    backgroundColor: 'white',
+    marginHorizontal: 20,
+    backgroundColor: '#F0F0F0',
     borderRadius: 16,
     paddingVertical: 20,
   },
   chartContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // アイコンとグラフの上端を合わせる
-    justifyContent: 'flex-start', // 左寄せ
-    position: 'relative', // 絶対配置の基準点
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    position: 'relative',
   },
   noDataContainer: {
     height: 220,

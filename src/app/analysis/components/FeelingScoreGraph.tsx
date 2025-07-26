@@ -130,9 +130,9 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
 const styles = StyleSheet.create({
   chartContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // アイコンとグラフの上端を合わせる
-    justifyContent: 'flex-start', // 左寄せ
-    position: 'relative', // 絶対配置の基準点
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
   },
   moodIcon: {
     width: 32,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   absoluteYAxis: {
     position: 'absolute',
     top: 0,
-    left: 20,
+    left: 35,
     width: 32, // アイコンの幅
     height: 220, // グラフの高さと同じ
     zIndex: 1, // グラフの上に表示

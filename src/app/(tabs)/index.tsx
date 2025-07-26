@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView  } from 'react-native'
 import DiaryList from '../diary/list/components/DiaryList'
 import { auth } from '../../config';
 import { DiaryType } from '../../../type/diary';
@@ -17,13 +17,12 @@ import Header from '../diary/list/components/Header';
 export default function home() {
   const userId = auth.currentUser?.uid
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
-  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)  // ログイン情報
-  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null) // 日記を表示しているユーザー情報
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
+  const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null)
   const [selectedUserId, setSelectedUserId] = useState<string>('') // 日記を表示しているユーザーID
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const router = useRouter();
 
-  // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
 
   // 表示用の年月を管理する
@@ -41,7 +40,6 @@ export default function home() {
 
   useEffect(() => {
     if (userId === null || !selectedUserId) return;
-
     // 日記を表示しているユーザー情報を取得
     const unsubscribe = fetchUserInfo({
       userId: selectedUserId,
@@ -91,7 +89,7 @@ export default function home() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="日記一覧"
         userInfo={userInfo}
@@ -139,16 +137,17 @@ export default function home() {
         setSelectedYearMonth={setSelectedYearMonth}
         isModalVisible={isModalVisible}
       />
-    </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   yearMonthContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   yearMonthText: {
     fontSize: 20,

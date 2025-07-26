@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
@@ -25,8 +25,8 @@ export default function DiaryList({ diaryList, userName, userImage, selectedUser
   // 日記更新日時を時間と分に変換
   const formattedTime = formatTimestampToTime({diaryList});
 
+  // 日記詳細画面に遷移
   const handleDiaryPress = () => {
-    // 日記詳細画面に遷移
     router.push({
       pathname: `/diary/show/diaryShow`,
       params: {
@@ -48,53 +48,51 @@ export default function DiaryList({ diaryList, userName, userImage, selectedUser
   }, [diaryList.diaryDate])
 
   return (
-    <SafeAreaView>
-      <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
-        <View style={styles.diaryDateContainer}>
-          <Text style={styles.diaryDay}>{diaryDate}</Text>
+    <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
+      <View style={styles.diaryDateContainer}>
+        <Text style={styles.diaryDay}>{diaryDate}</Text>
+      </View>
+      <View style={styles.diaryContentContainer}>
+        {/* 日記作成者のアイコン画像 */}
+        <View style={styles.diaryUserIconContainer}>
+          <Image
+            source={userImage}
+            style={styles.diaryUserIcon}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+          />
         </View>
-        <View style={styles.diaryContentContainer}>
-          {/* 日記作成者のアイコン画像 */}
-          <View style={styles.diaryUserIconContainer}>
+        <View style={styles.diaryContent}>
+          <View style={styles.diaryTimeContainer}>
+            <Text style={styles.diaryUserName}>{userName}</Text>
             <Image
-              source={userImage}
-              style={styles.diaryUserIcon}
-              contentFit="cover"
+              source={feelingImage}
+              style={styles.feelingImage}
+              contentFit="contain"
               cachePolicy="memory-disk"
             />
+            <Text style={styles.diaryTime}>{formattedTime}</Text>
           </View>
-          <View style={styles.diaryContent}>
-            <View style={styles.diaryTimeContainer}>
-              <Text style={styles.diaryUserName}>{userName}</Text>
-              <Image
-                source={feelingImage}
-                style={styles.feelingImage}
-                contentFit="contain"
-                cachePolicy="memory-disk"
-              />
-              <Text style={styles.diaryTime}>{formattedTime}</Text>
-            </View>
-            {/* 日記内容 */}
-            <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
-              {diaryList.diaryText}
-            </Text>
-          </View>
-          {/* 日記投稿画像 */}
-          <View style={styles.diaryImageContainer}>
-            <Image
-              source={diaryList.diaryImage ? { uri: diaryList.diaryImage } : noImage}
-              style={styles.diaryImage}
-            />
-          </View>
+          {/* 日記内容 */}
+          <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
+            {diaryList.diaryText}
+          </Text>
         </View>
-      </TouchableOpacity>
-    </SafeAreaView>
+        {/* 日記投稿画像 */}
+        <View style={styles.diaryImageContainer}>
+          <Image
+            source={diaryList.diaryImage ? { uri: diaryList.diaryImage } : noImage}
+            style={styles.diaryImage}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   diaryList: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   diaryDateContainer: {
     backgroundColor: '#F0F0F0',
@@ -149,7 +147,6 @@ const styles = StyleSheet.create({
   diaryContentText: {
     fontSize: 14,
     lineHeight: 24,
-    // テキストが折り返されるようにする
     flexWrap: 'wrap',
     flexShrink: 1,
   },

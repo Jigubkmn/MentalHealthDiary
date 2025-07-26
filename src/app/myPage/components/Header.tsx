@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import UserAddIcon from '../../components/Icon/UserAddIcon';
-import SettingIcon from '../../components/Icon/SettingIcon';
 
 type Props = {
   currentAccountId?: string;
@@ -30,9 +29,6 @@ export default function Header({ currentAccountId, userId }: Props) {
           style={styles.userAddIcon}>
           <UserAddIcon size={24} color="#FFA500" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <SettingIcon size={24} color="#FFA500" />
-        </TouchableOpacity>
       </View>
     </View>
   )
@@ -50,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   headerLeft: {
-    width: 60, // 右側のアイコン2つ分の幅（24px + 24px + 8px margin + 余裕）
+    width: 40,
   },
   headerCenter: {
     flex: 1,
@@ -66,7 +62,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   headerRight: {
-    width: 60, // 左側と同じ幅を確保
+    width: 40,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
