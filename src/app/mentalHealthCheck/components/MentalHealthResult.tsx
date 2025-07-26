@@ -1,12 +1,13 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, SafeAreaView, ScrollView } from 'react-native';
+import { Stack } from 'expo-router';
+import Header from '../creation/components/Header';
 
 type Props = {
   evaluationResult: string
-  handleRestart: () => void;
 }
 
-export default function MentalHealthResult({ evaluationResult, handleRestart }: Props) {
+export default function MentalHealthResult({ evaluationResult }: Props) {
   let resultTitle = '';
   let resultMessage = '';
 
@@ -19,30 +20,31 @@ export default function MentalHealthResult({ evaluationResult, handleRestart }: 
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={styles.resultTitle}>{resultTitle}</Text>
-          <View style={styles.resultBox}>
-            <Text style={styles.resultText}>{resultMessage}</Text>
-          </View>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <View style={styles.card}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={styles.resultTitle}>{resultTitle}</Text>
+            <View style={styles.resultBox}>
+              <Text style={styles.resultText}>{resultMessage}</Text>
+            </View>
 
-          <Text style={styles.disclaimer}>
-            ※この結果は医学的な診断に代わるものではありません。気分の落ち込みが続く場合や、心配なことがある場合は、専門の医療機関にご相談ください。
-          </Text>
-          <TouchableOpacity style={styles.button} onPress={handleRestart}>
-            <Text style={styles.buttonText}>もう一度試す</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+            <Text style={styles.disclaimer}>
+              ※この結果は医学的な診断に代わるものではありません。気分の落ち込みが続く場合や、心配なことがある場合は、専門の医療機関にご相談ください。
+            </Text>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },

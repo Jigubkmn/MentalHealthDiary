@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
+import { Stack } from 'expo-router';
 import MentalHealthResult from '../components/MentalHealthResult';
 import QuestionList from '../components/QuestionList';
 import ProgressIndicator from '../components/ProgressIndicator';
@@ -9,64 +10,17 @@ import { auth } from '../../../config';
 import createMentalHealthCheckResult from '../actions/backend/createMentalHealthCheckResult';
 import getScoreResult from '../actions/getScoreResult';
 import checkExistingMentalHealthCheckResult from '../actions/checkExistingMentalHealthCheckResult';
-
-const questions = Array.from({ length: 23 }, (_, i) => {
-  const topics = [
-    'ひどく疲れた', 'へとへとだ', 'だるい', '気がはりつめている', '不安だ', '落ち着かない',
-    'ゆううつだ', '何をするのも面倒だ', '気分が晴れない', '食欲がない', 'よく眠れない',
-    '非常にたくさんの仕事をしないといけない', '時間内に仕事が処理しきれない', '一生懸命働かなければならない',
-    '自分のベースで仕事ができない', '自分で仕事の手順・やり方を決めることができない', '職場の仕事の方針に自分の意見を反映できない',
-    '上司たちとどのくらい気軽に話ができますか？', '同僚たちとどのくらい気軽に話ができますか？', 'あなたが困った時、上司はどのくらい頼りになりますか？',
-    'あなたが困った時、同僚はどのくらい頼りになりますか？', 'あなたの個人的な話を上司はどのくらい聞いてくれますか？', 'あなたの個人的な話を同僚はどのくらい聞いてくれますか？',
-  ];
-  return topics[i];
-});
-
-const pageConfig = [
-  {
-    questionGroupHeader: '<設問A>',
-    header: '最近1ヶ月のあなたの状態についてうかがいます。\n最もあてはまるものを解答してください。',
-    questionCount: 11,
-    answerOptions: [
-      { text: 'ほとんどなかった', value: 1 },
-      { text: 'ときどきあった', value: 2 },
-      { text: 'しばしばあった', value: 3 },
-      { text: 'ほとんどいつもあった', value: 4 },
-    ],
-  },
-  {
-    questionGroupHeader: '<設問B-1>',
-    header: 'あなたの仕事について伺います。\n最もあてはまるものを解答してください。',
-    questionCount: 6,
-    answerOptions: [
-      { text: 'ちがう', value: 1 },
-      { text: 'ややちがう', value: 2 },
-      { text: 'まあそうだ', value: 3 },
-      { text: 'そうだ', value: 4 },
-    ],
-  },
-  {
-    questionGroupHeader: '<設問B-2>',
-    header: 'あなたの上司と同僚について伺います。\n最もあてはまるものを解答してください。',
-    questionCount: 6,
-    answerOptions: [
-      { text: '全くない', value: 1 },
-      { text: '多少', value: 2 },
-      { text: 'かなり', value: 3 },
-      { text: '非常に', value: 4 },
-    ],
-  },
-];
+import { questionTexts } from '../../constants/questionTexts';
+import { pageConfig } from '../../constants/pageConfig';
+import Header from './components/Header';
 
 const totalPages = pageConfig.length;
 const lastPage = totalPages - 1;
 
 export default function mentalHealthCheckCreate() {
   const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
+  const [answers, setAnswers] = useState<(number | null)[]>(Array(questionTexts.length).fill(null));
   const [isCompleted, setIsCompleted] = useState(false);
-  // const [scoreAResult, setScoreAResult] = useState<number | null>(null); // 設問Aの合計
-  // const [scoreBResult, setScoreBResult] = useState<number | null>(null); // 設問B-1とB-2の合計
   const [evaluationResult, setEvaluationResult] = useState<string>(''); // 最終評価
   const [isExistingMentalHealth, setIsExistingMentalHealth] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -89,7 +43,7 @@ export default function mentalHealthCheckCreate() {
       0
     );
     const endIndex = startIndex + currentPageQuestionCount;
-    return questions.slice(startIndex, endIndex).map((question, index) => ({
+    return questionTexts.slice(startIndex, endIndex).map((question, index) => ({
       text: question,
       questionIndex: startIndex + index,
     }));
@@ -132,8 +86,6 @@ export default function mentalHealthCheckCreate() {
       setCurrentPage(currentPage + 1);
     } else {
       const { scoreA, scoreB, evaluation } = getScoreResult(pageConfig[0].questionCount, answers);
-      // setScoreAResult(scoreA);
-      // setScoreBResult(scoreB);
       setEvaluationResult(evaluation);
       setIsCompleted(true);
       if (!userId) return;
@@ -148,83 +100,84 @@ export default function mentalHealthCheckCreate() {
     }
   };
 
-  const handleRestart = () => {
-    setCurrentPage(0);
-    setAnswers(Array(questions.length).fill(null));
-    setIsCompleted(false);
-  };
-
   // 結果画面
   if (isCompleted) {
     return <MentalHealthResult
       evaluationResult={evaluationResult}
-      handleRestart={handleRestart}
     />;
   }
 
   if (isExistingMentalHealth) {
     return (
+      <>
+      <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
+        <Header />
         <View style={styles.messageContainer}>
           <Text style={styles.messageTitle}>本日のチェックは完了しています</Text>
           <Text style={styles.messageBody}>お疲れ様でした。</Text>
           <Text style={styles.messageBody}>次回のメンタルヘルスチェックは明日以降に可能です。</Text>
         </View>
       </SafeAreaView>
+      </>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.card}>
-        <ScrollView
-          ref={scrollViewRef}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* 進捗バー */}
-          <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
-          {/* ページヘッダー */}
-          <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
-          <Text style={styles.pageHeader}>{currentPageHeader}</Text>
-          {/* 質問リスト */}
-          {currentQuestions.map(({ text, questionIndex }, index) => (
-            <QuestionList
-              key={questionIndex}
-              text={text}
-              questionIndex={questionIndex}
-              index={index}
-              currentAnswerOptions={currentAnswerOptions}
-              answers={answers}
-              handleSelectOption={handleSelectOption}
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <StatusBar barStyle="dark-content" />
+        <View style={styles.card}>
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {/* 進捗バー */}
+            <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
+            {/* ページヘッダー */}
+            <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
+            <Text style={styles.pageHeader}>{currentPageHeader}</Text>
+            {/* 質問リスト */}
+            {currentQuestions.map(({ text, questionIndex }, index) => (
+              <QuestionList
+                key={questionIndex}
+                text={text}
+                questionIndex={questionIndex}
+                index={index}
+                currentAnswerOptions={currentAnswerOptions}
+                answers={answers}
+                handleSelectOption={handleSelectOption}
+              />
+            ))}
+            {/* ボタン */}
+            <PaginationControlButton
+              isPageCompleted={isPageCompleted}
+              handleNextPress={handleNextPress}
+              handlePrevPress={handlePrevPress}
+              currentPage={currentPage}
+              lastPage={lastPage}
             />
-          ))}
-          {/* ボタン */}
-          <PaginationControlButton
-            isPageCompleted={isPageCompleted}
-            handleNextPress={handleNextPress}
-            handlePrevPress={handlePrevPress}
-            currentPage={currentPage}
-            lastPage={lastPage}
-          />
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   messageContainer: {
     flex: 1,
     width: '90%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     marginVertical: 20,
     shadowColor: '#000000',
