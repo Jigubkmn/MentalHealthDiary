@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   headerLeft: {
-    width: 60
+    width: 30
   },
   headerCenter: {
     flex: 1,
@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   headerRight: {
-    width: 60
+    width: 30
   },
 });
