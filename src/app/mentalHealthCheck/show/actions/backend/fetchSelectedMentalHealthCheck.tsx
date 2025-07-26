@@ -11,7 +11,7 @@ type Props = {
 
 export default async function fetchSelectedMentalHealthCheck({ mentalHealthCheckId, setSelectedMentalHealthCheckInfo, userId }: Props) {
   try {
-    const ref = doc(db, `users/${userId}/diaries/${mentalHealthCheckId}`);
+    const ref = doc(db, `users/${userId}/mentalHealthChecks/${mentalHealthCheckId}`);
     const snap = await getDoc(ref);
     if (snap.exists()) {
       const data = snap.data();
