@@ -11,6 +11,7 @@ import getScoreResult from '../actions/getScoreResult';
 import checkExistingMentalHealthCheckResult from '../actions/checkExistingMentalHealthCheckResult';
 import { questionTexts } from '../../constants/questionTexts';
 import { pageConfig } from '../../constants/pageConfig';
+import Header from './components/Header';
 
 const totalPages = pageConfig.length;
 const lastPage = totalPages - 1;
@@ -127,6 +128,7 @@ export default function mentalHealthCheckCreate() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
+      <Header />
       <View style={styles.card}>
         <ScrollView
           ref={scrollViewRef}
