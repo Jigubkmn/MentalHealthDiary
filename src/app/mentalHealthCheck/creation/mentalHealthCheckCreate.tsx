@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
+import { Stack } from 'expo-router';
 import MentalHealthResult from '../components/MentalHealthResult';
 import QuestionList from '../components/QuestionList';
 import ProgressIndicator from '../components/ProgressIndicator';
@@ -108,68 +109,75 @@ export default function mentalHealthCheckCreate() {
 
   if (isExistingMentalHealth) {
     return (
+      <>
+      <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
+        <Header />
         <View style={styles.messageContainer}>
           <Text style={styles.messageTitle}>本日のチェックは完了しています</Text>
           <Text style={styles.messageBody}>お疲れ様でした。</Text>
           <Text style={styles.messageBody}>次回のメンタルヘルスチェックは明日以降に可能です。</Text>
         </View>
       </SafeAreaView>
+      </>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <Header />
-      <View style={styles.card}>
-        <ScrollView
-          ref={scrollViewRef}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* 進捗バー */}
-          <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
-          {/* ページヘッダー */}
-          <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
-          <Text style={styles.pageHeader}>{currentPageHeader}</Text>
-          {/* 質問リスト */}
-          {currentQuestions.map(({ text, questionIndex }, index) => (
-            <QuestionList
-              key={questionIndex}
-              text={text}
-              questionIndex={questionIndex}
-              index={index}
-              currentAnswerOptions={currentAnswerOptions}
-              answers={answers}
-              handleSelectOption={handleSelectOption}
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <StatusBar barStyle="dark-content" />
+        <View style={styles.card}>
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {/* 進捗バー */}
+            <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
+            {/* ページヘッダー */}
+            <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
+            <Text style={styles.pageHeader}>{currentPageHeader}</Text>
+            {/* 質問リスト */}
+            {currentQuestions.map(({ text, questionIndex }, index) => (
+              <QuestionList
+                key={questionIndex}
+                text={text}
+                questionIndex={questionIndex}
+                index={index}
+                currentAnswerOptions={currentAnswerOptions}
+                answers={answers}
+                handleSelectOption={handleSelectOption}
+              />
+            ))}
+            {/* ボタン */}
+            <PaginationControlButton
+              isPageCompleted={isPageCompleted}
+              handleNextPress={handleNextPress}
+              handlePrevPress={handlePrevPress}
+              currentPage={currentPage}
+              lastPage={lastPage}
             />
-          ))}
-          {/* ボタン */}
-          <PaginationControlButton
-            isPageCompleted={isPageCompleted}
-            handleNextPress={handleNextPress}
-            handlePrevPress={handlePrevPress}
-            currentPage={currentPage}
-            lastPage={lastPage}
-          />
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   messageContainer: {
     flex: 1,
     width: '90%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     marginVertical: 20,
     shadowColor: '#000000',
