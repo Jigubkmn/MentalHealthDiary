@@ -1,5 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { useLocalSearchParams, Stack } from 'expo-router';
+import { auth } from '../../../config';
+import { MentalHealthCheckType } from '../../../../type/mentalHealthCheck';
+import fetchSelectedMentalHealthCheck from './actions/backend/fetchSelectedMentalHealthCheck';
+import Header from './components/Header';
 
 // 質問文の定義（mentalHealthCheck.tsxから流用）
 const questions = Array.from({ length: 23 }, (_, i) => {
@@ -48,24 +53,25 @@ const pageConfig = [
   },
 ];
 
-// --- ここからが仮データです ---
-// DBから取得したと仮定する、23個の質問に対する回答データ
-// 1から4までのランダムな数値を生成して仮の回答としています。
-const mockAnswers: (number | null)[] = Array.from({ length: 23 }, () => Math.floor(Math.random() * 4) + 1);
-const mockScoreA = 30; // 仮のスコアA
-const mockScoreB = 15; // 仮のスコアB
-const mockDate = "2023年10月27日"; // 仮の実施日
-// --- 仮データはここまで ---
-
 export default function MentalHealthCheckHistory() {
+  const userId = auth.currentUser?.uid;
+  const { mentalHealthCheckId } = useLocalSearchParams<{ mentalHealthCheckId?: string}>();
+  const [selectedMentalHealthCheckInfo, setSelectedMentalHealthCheckInfo] = useState<MentalHealthCheckType>();
 
-  /**
-   * 質問インデックスと回答の値から、対応する回答テキストを取得するヘルパー関数
-   * @param questionIndex - 質問のインデックス (0-22)
-   * @param answerValue - 回答の値 (1-4)
-   * @returns 回答のテキスト（例：「ときどきあった」）
-   */
-  const getAnswerText = (questionIndex: number, answerValue: number | null): string => {
+  const evaluationStyle =
+    selectedMentalHealthCheckInfo?.evaluation === '要治療'
+      ? styles.evaluationCritical
+      : selectedMentalHealthCheckInfo?.evaluation === '要経過観察'
+      ? styles.evaluationWarning
+      : styles.evaluationNormal;
+
+  useEffect(() => {
+    if (userId === null || mentalHealthCheckId === null) return;
+    // メンタルヘルスチェック結果の情報を取得
+    fetchSelectedMentalHealthCheck({ mentalHealthCheckId, setSelectedMentalHealthCheckInfo, userId });
+  }, []);
+
+  const getAnswerText = (questionIndex: number, answerValue?: number): string => {
     if (answerValue === null) {
       return '未回答';
     }
@@ -88,23 +94,28 @@ export default function MentalHealthCheckHistory() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={styles.container}>
+        <Header createdAt={selectedMentalHealthCheckInfo?.createdAt} />
+        <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerTitle}>メンタルヘルスチェック履歴</Text>
-          <Text style={styles.headerDate}>実施日: {mockDate}</Text>
+          <Text style={styles.headerTitle}>メンタルヘルスチェック結果</Text>
         </View>
 
         <View style={styles.scoreSection}>
-          <Text style={styles.scoreTitle}>総合スコア</Text>
+          <View style={styles.scoreTitleContainer}>
+            <Text style={styles.scoreTitle}>総合スコア</Text>
+            <Text style={[styles.evaluationText, evaluationStyle]}>{selectedMentalHealthCheckInfo?.evaluation}</Text>
+          </View>
           <View style={styles.scoreBox}>
             <View style={styles.scoreItem}>
               <Text style={styles.scoreLabel}>設問A (最近1ヶ月の状態)</Text>
-              <Text style={styles.scoreValue}>{mockScoreA}</Text>
+              <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
             </View>
             <View style={styles.scoreItem}>
               <Text style={styles.scoreLabel}>設問B (仕事・対人関係)</Text>
-              <Text style={styles.scoreValue}>{mockScoreB}</Text>
+              <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
             </View>
           </View>
         </View>
@@ -113,7 +124,6 @@ export default function MentalHealthCheckHistory() {
           {questions.map((questionText, index) => {
             let sectionHeaderComponent = null;
 
-            // 各セクションの開始インデックスでヘッダーを生成
             if (index === 0) {
               sectionHeaderComponent = (
                 <Text style={[styles.sectionHeader, { marginTop: 0 }]}>
@@ -135,14 +145,13 @@ export default function MentalHealthCheckHistory() {
             }
 
             return (
-              // keyは一番外側の要素に設定
               <View key={index}>
                 {sectionHeaderComponent}
                 <View style={styles.qaBlock}>
                   <Text style={styles.questionText}>{`Q${index + 1}. ${questionText}`}</Text>
                   <View style={styles.answerContainer}>
                     <Text style={styles.answerText}>
-                      {getAnswerText(index, mockAnswers[index])}
+                      {getAnswerText(index, selectedMentalHealthCheckInfo?.answers[index])}
                     </Text>
                   </View>
                 </View>
@@ -150,19 +159,21 @@ export default function MentalHealthCheckHistory() {
             );
           })}
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     padding: 20,
     paddingBottom: 40,
+    backgroundColor: '#F0F0F0',
   },
   headerContainer: {
     marginBottom: 24,
@@ -172,11 +183,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333333',
-  },
-  headerDate: {
-    fontSize: 14,
-    color: '#666666',
-    marginTop: 4,
   },
   scoreSection: {
     backgroundColor: 'white',
@@ -189,12 +195,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  scoreTitleContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   scoreTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 12,
     textAlign: 'center',
+  },
+  evaluationText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 4,
   },
   scoreBox: {
     flexDirection: 'row',
@@ -233,7 +247,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#FFA500',
     marginBottom: 16,
-    marginTop: 16, // セクション間のスペース
+    marginTop: 16,
   },
   qaBlock: {
     marginBottom: 20,
@@ -253,11 +267,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 14,
-    alignSelf: 'flex-start', // 回答の幅をテキストに合わせる
+    alignSelf: 'flex-start',
   },
   answerText: {
     fontSize: 15,
     fontWeight: 'bold',
     color: '#D48800',
+  },
+  evaluationCritical: {
+    color: '#d9534f',
+  },
+  evaluationWarning: {
+    color: '#f0ad4e',
+  },
+  evaluationNormal: {
+    color: '#5cb85c',
   },
 });
