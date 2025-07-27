@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, ScrollView } from 'react-native';
+import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, ScrollView, Keyboard } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import Feeling from '../components/diary/Feeling';
 import Header from '../diary/creation/components/Header';
@@ -26,7 +26,7 @@ export default function DiaryCreation() {
   };
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <View style={styles.headerArea}>
           <Header
