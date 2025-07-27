@@ -24,7 +24,6 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
       return dayjs().subtract(i, 'day').startOf('day');
     }).reverse(); // 古い日付から新しい日付の順に並べる
 
-    console.log("last7Days", last7Days);
     // 各日付に対応するfeelingScoreを取得
     const feelingScoresArray = last7Days.map(date => {
       const matchingDoc = snapshot.docs.find(doc => {
@@ -34,7 +33,6 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
 
       return matchingDoc ? matchingDoc.data().feelingScore : null;
     });
-    console.log("feelingScoresArray", feelingScoresArray);
 
     // 条件チェック: null以外の数が4個以上で、合計値が-25以下
     const nonNullScores = feelingScoresArray.filter(score => score !== null);
@@ -42,8 +40,8 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
 
     if (nonNullScores.length >= 4 && totalScore <= -25) {
       Alert.alert(
-        'メンタルヘルスチェックの提案',
-        '体調が悪化しているので、1度、メンタルヘルスチェックを行いませんか？',
+        '日記を作成しました',
+        '最近、体調が悪化しているようです。\n1度、メンタルヘルスチェックを行いませんか？',
         [
           {
             text: '実施しない',
@@ -51,7 +49,7 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
             onPress: () => {
               Alert.alert(
                 'かしこまりました',
-                '無理せず、まずはゆっくり休んでくださいね。ご自身の心と体を一番に大切に。'
+                '無理せず、まずはゆっくり休んでくださいね。ご自身の心と体を一番に。'
               );
             }
           },
@@ -62,11 +60,6 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
         ]
       );
     }
-
-    console.log("nonNullScores", nonNullScores );
-    console.log("totalScore", totalScore);
-    console.log("feelingScoresArray", feelingScoresArray);
-
     return feelingScoresArray;
   } catch (error) {
     console.error('feelingScoreの取得に失敗しました:', error);

@@ -6,8 +6,6 @@ import formatDate from '../../../actions/formatData';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
 import BackButton from '../../../components/button/BackButton';
 import createDiary from '../action/backend/createDiary';
-import fetchFeelingScoreForLast7Days from '../action/backend/fetchFeelingScoreForLast7Days';
-
 
 type Props = {
   diaryText: string;
@@ -47,17 +45,16 @@ export default function Header({
   // 日記を保存
   const handleSave = async () => {
     try {
-    createDiary(
-      selectedFeeling,
-      selectedImage,
-      date,
-      diaryText,
-      setDiaryText,
-      setSelectedFeeling,
-      setSelectedImage,
-      userId
-    );
-    fetchFeelingScoreForLast7Days(userId)
+      await createDiary(
+        selectedFeeling,
+        selectedImage,
+        date,
+        diaryText,
+        setDiaryText,
+        setSelectedFeeling,
+        setSelectedImage,
+        userId
+      );
     } catch (error) {
       console.log("error", error);
     }
