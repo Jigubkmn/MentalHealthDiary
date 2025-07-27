@@ -50,8 +50,8 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
             style: 'cancel',
             onPress: () => {
               Alert.alert(
-                'お気をつけください',
-                '体調が悪化しないようにしてください。\n無理をせず、適度な休息を取ることをお勧めします。'
+                'かしこまりました',
+                '無理せず、まずはゆっくり休んでくださいね。ご自身の心と体を一番に大切に。'
               );
             }
           },
