@@ -7,7 +7,7 @@ import ProgressIndicator from '../components/ProgressIndicator';
 import PaginationControlButton from '../components/PaginationControlButton';
 import dayjs from 'dayjs';
 import { auth } from '../../../config';
-import createMentalHealthCheckResult from '../actions/backend/createMentalHealthCheckResult';
+import createMentalHealthCheckResult from './actions/backend/createMentalHealthCheckResult';
 import getScoreResult from '../actions/getScoreResult';
 import checkExistingMentalHealthCheckResult from '../actions/checkExistingMentalHealthCheckResult';
 import { questionTexts } from '../../constants/questionTexts';

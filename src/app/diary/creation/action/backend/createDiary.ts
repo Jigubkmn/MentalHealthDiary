@@ -6,6 +6,7 @@ import formatDate from '../../../../actions/formatData';
 import { useRouter } from 'expo-router';
 import checkExistingDiary from '../checkExistingDiary';
 import feelings from '../../../../constants/feelings';
+import fetchFeelingScoreForLast7Days from './fetchFeelingScoreForLast7Days';
 
 export default async function createDiary(
   selectedFeeling: string | null,
@@ -56,11 +57,11 @@ export default async function createDiary(
       diaryDate: Timestamp.fromDate(date.toDate()),
       updatedAt: Timestamp.fromDate(new Date()),
     });
-
-    Alert.alert("日記を保存しました");
     setDiaryText("");
     setSelectedFeeling(null);
     setSelectedImage(null);
+    // データ保存完了後、feelingScoreチェックを実行
+    await fetchFeelingScoreForLast7Days(userId);
     router.push("/(tabs)");
   } catch (error) {
     console.log("error", error);

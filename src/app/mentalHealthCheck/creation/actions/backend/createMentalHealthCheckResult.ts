@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { db } from '../../../../config';
+import { db } from '../../../../../config';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 export default async function createMentalHealthCheckResult(

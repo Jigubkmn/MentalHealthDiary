@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { db } from '../../../../../config';
 import { doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
+import feelings from '../../../../constants/feelings';
 
 export default async function updateDiary(
   diaryText: string,
@@ -27,6 +28,8 @@ export default async function updateDiary(
   }
 
   try {
+    // 体調のスコアを取得
+    const feelingScore = feelings.find((feeling) => feeling.name === selectedFeeling)?.score;
     const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
     await updateDoc(diaryRef, {
       diaryText: diaryText,
@@ -34,6 +37,13 @@ export default async function updateDiary(
       feeling: selectedFeeling,
       diaryImage: selectedImage,
       updatedAt: Timestamp.fromDate(new Date())
+    });
+
+    const feelingScoresRef = doc(db, `users/${userId}/feelingScores/${diaryId}`);
+    await updateDoc(feelingScoresRef, {
+      feelingScore: feelingScore,
+      diaryDate: Timestamp.fromDate(date.toDate()),
+      updatedAt: Timestamp.fromDate(new Date()),
     });
 
     Alert.alert("日記を更新しました");
