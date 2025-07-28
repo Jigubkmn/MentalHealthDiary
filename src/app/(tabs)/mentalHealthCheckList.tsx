@@ -125,14 +125,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   evaluationCritical: {
-    color: '#d9534f',
+    color: '#D9534F',
     fontWeight: 'bold',
   },
   evaluationWarning: {
-    color: '#f0ad4e',
+    color: '#F0AD4E',
   },
   evaluationNormal: {
-    color: '#5cb85c',
+    color: '#5CB85C',
   },
   plusButton: {
     position: 'absolute',

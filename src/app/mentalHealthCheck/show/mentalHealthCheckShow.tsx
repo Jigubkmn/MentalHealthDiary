@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   qaBlock: {
     marginBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    borderBottomColor: '#D9D9D9',
     paddingBottom: 16,
   },
   questionText: {
@@ -230,12 +230,12 @@ const styles = StyleSheet.create({
     color: '#D48800',
   },
   evaluationCritical: {
-    color: '#d9534f',
+    color: '#D9534F',
   },
   evaluationWarning: {
-    color: '#f0ad4e',
+    color: '#F0AD4E',
   },
   evaluationNormal: {
-    color: '#5cb85c',
+    color: '#5CB85C',
   },
 });
