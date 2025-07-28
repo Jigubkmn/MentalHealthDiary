@@ -15,7 +15,6 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
     const yAxisMax = 10;
     const yAxisMin = -10;
     return {
-      // ダミーデータに合わせて、labelsの最後に空文字を追加
       labels: [ ...allDaysInMonth, '', ''],
       datasets: [
         {
@@ -24,9 +23,7 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
           strokeWidth: 3,
         },
         {
-          // ダミーデータ: Y軸のスケールを固定するための非表示データ
           data: [yAxisMax, yAxisMin],
-          // 線とドットを完全に見えなくする
           withDots: false,
           color: () => `rgba(0, 0, 0, 0)`,
           strokeWidth: 0,
@@ -93,7 +90,6 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
         }}
         formatXLabel={(label) => {
           const day = parseInt(label.split('/')[1], 10);
-          // ダミーデータ用の空ラベルは表示しない
           if (label === '') {
             return '';
           }
@@ -101,7 +97,7 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
           if (day === 1 || day % 5 === 0) {
             return label;
           }
-          return ''; // それ以外は空文字にして非表示
+          return ''; 
         }}
       />
       {/* 絶対配置でY軸アイコンを配置 */}
@@ -126,7 +122,6 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
   )
 }
 
-// スタイル定義
 const styles = StyleSheet.create({
   chartContainer: {
     flexDirection: 'row',
@@ -139,7 +134,7 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 20,
     resizeMode: 'contain',
-    position: 'absolute', // 各アイコンも絶対配置
+    position: 'absolute',
   },
   absoluteYAxis: {
     position: 'absolute',
