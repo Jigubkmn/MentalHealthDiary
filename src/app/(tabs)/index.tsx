@@ -24,14 +24,12 @@ export default function home() {
   const router = useRouter();
 
   const [isModalVisible, setModalVisible] = useState(false);
-
   // 表示用の年月を管理する
   const [displayDate, setDisplayDate] = useState(dayjs());
 
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
-  // selectedUserIdの初期化
   useEffect(() => {
     if (userId && !selectedUserId) {
       setSelectedUserId(userId);
@@ -40,7 +38,6 @@ export default function home() {
 
   useEffect(() => {
     if (userId === null || !selectedUserId) return;
-    // 日記を表示しているユーザー情報を取得
     const unsubscribe = fetchUserInfo({
       userId: selectedUserId,
       setUserInfo: setSelectedUserInfo,
@@ -52,7 +49,6 @@ export default function home() {
 
   useEffect(() => {
     if (userId === null) return;
-    // ログイン情報取得
     const unsubscribe = fetchUserInfo({
       userId,
       setUserInfo,
@@ -66,7 +62,7 @@ export default function home() {
     // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
     const startOfMonth = displayDate.startOf('month');
     const endOfMonth = displayDate.add(1, 'month').startOf('month');
-    // 選択されたユーザーの日記一覧を取得
+    // 日記一覧を取得
     const unsubscribe = fetchDiaries(selectedUserId, setDiaryLists, startOfMonth, endOfMonth);
     return unsubscribe;
   }, [displayDate, selectedUserId])
