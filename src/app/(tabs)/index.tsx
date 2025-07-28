@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 import dayjs from 'dayjs';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import { UserInfoType } from '../../../type/userInfo';
-import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchUserInfo from '../actions/backend/fetchUserInfo';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 import { FriendInfoType } from '../../../type/friend';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';

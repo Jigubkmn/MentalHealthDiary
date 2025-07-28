@@ -7,7 +7,7 @@ import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchFeelingScore from '../analysis/actions/backend/fetchFeelingScore';
 import { FeelingScoreType } from '../../../type/feelingScore';
 import { UserInfoType } from '../../../type/userInfo';
-import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchUserInfo from '../actions/backend/fetchUserInfo';
 import fetchFriends from '../actions/backend/fetchFriends';
 import { FriendInfoType } from '../../../type/friend';
 import FeelingScoreGraph from '../analysis/components/FeelingScoreGraph';

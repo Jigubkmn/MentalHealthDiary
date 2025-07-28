@@ -1,7 +1,7 @@
 import { collection, query, onSnapshot } from 'firebase/firestore'
-import { db } from '../../config'
-import { UserInfoType } from '../../../type/userInfo'
-import { noUserImage } from '../constants/userImage';
+import { db } from '../../../config'
+import { UserInfoType } from '../../../../type/userInfo'
+import { noUserImage } from '../../constants/userImage';
 
 type FetchUserInfoParams = {
   userId: string | undefined
