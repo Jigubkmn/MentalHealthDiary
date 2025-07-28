@@ -38,7 +38,6 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
     return diaryText && diaryText.trim() !== '' && date && selectedFeeling;
   };
 
-  // 日記を更新
   const handleUpdate = async () => {
     updateDiary(
       diaryText,
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
     height: 60,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   headerRight: {
     width: 60,
