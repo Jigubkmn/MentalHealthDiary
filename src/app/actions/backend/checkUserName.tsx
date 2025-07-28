@@ -1,12 +1,9 @@
 import { db } from '../../../config'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 
-// ユーザー名の重複チェック関数
 export default async function checkUserName(newUserName: string): Promise<boolean> {
   try{
     const usersRef = collectionGroup(db, 'userInfo')
-
-    // ユーザー名の重複チェック
     const q = query(usersRef, where('userName', '==', newUserName))
     const querySnapshot = await getDocs(q)
     // true：重複している、false：重複していない
