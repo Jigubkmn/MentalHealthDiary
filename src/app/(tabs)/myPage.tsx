@@ -7,7 +7,7 @@ import { UserInfoType } from '../../../type/userInfo'
 import { FriendInfoType } from '../../../type/friend'
 import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
-import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchUserInfo from '../actions/backend/fetchUserInfo';
 import Divider from '../components/Divider';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 

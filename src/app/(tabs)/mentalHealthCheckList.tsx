@@ -26,7 +26,7 @@ export default function mentalHealthCheckList() {
     // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
     const startOfMonth = displayDate.startOf('month');
     const endOfMonth = displayDate.add(1, 'month').startOf('month');
-    // 選択されたユーザーの日記一覧を取得
+    // メンタルヘルスチェック一覧を取得
     const unsubscribe = fetchMentalHealthChecks(setMentalHealthCheckLists, startOfMonth, endOfMonth, userId);
     return unsubscribe;
   }, [displayDate, userId])

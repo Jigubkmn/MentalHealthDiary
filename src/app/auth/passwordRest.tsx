@@ -7,7 +7,6 @@ import passwordReset from './actions/backend/passwordReset'
 export default function PasswordRest() {
   const [email, setEmail] = useState('')
 
-
   // 必須項目が全て入力されているかチェック
   const isFormValid = (): boolean => {
     return !!(email);
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     marginHorizontal: 24,
-    marginTop: 16,
     paddingVertical: 16,
     paddingHorizontal: 16,
     alignItems: 'center',

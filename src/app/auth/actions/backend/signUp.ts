@@ -25,7 +25,6 @@ export  default async function signUp(
       userImage: '',
       createdAt: Timestamp.fromDate(new Date())
     })
-    // 全て成功した場合
     Alert.alert('会員登録に成功しました')
     router.replace('/(tabs)')
   } catch (error: unknown) {
