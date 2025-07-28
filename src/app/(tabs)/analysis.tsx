@@ -18,14 +18,13 @@ export default function analysis() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const [selectedUserInfo, setSelectedUserInfo] = useState<UserInfoType | null>(null)
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
-  const [selectedUserId, setSelectedUserId] = useState<string>('') // 日記を表示しているユーザーID
+  const [selectedUserId, setSelectedUserId] = useState<string>('')
   const [isModalVisible, setModalVisible] = useState(false);
   // 表示用の年月を管理する
   const [displayDate, setDisplayDate] = useState(dayjs());
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
-  // selectedUserIdの初期化
   useEffect(() => {
     if (userId && !selectedUserId) {
       setSelectedUserId(userId);
