@@ -143,10 +143,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     backgroundColor: '#F0F0F0',
     borderRadius: 16,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   chartContainer: {
     flexDirection: 'row',
