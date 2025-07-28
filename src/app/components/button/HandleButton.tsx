@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-    marginTop: 24,
     marginBottom: 16,
     opacity: 0.5,
   },
@@ -37,7 +36,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-    marginTop: 24,
     marginBottom: 16,
   },
   buttonText: {
