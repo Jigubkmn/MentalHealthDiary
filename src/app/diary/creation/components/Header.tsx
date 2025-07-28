@@ -75,7 +75,7 @@ export default function Header({
       {/* ヘッダー右側 */}
       <TouchableOpacity
         onPress={() => {handleSave()}}
-        style={[!isFormValid() ? styles.disabledButton : styles.headerSaveButton]}
+        style={[isFormValid() ? styles.headerSaveButton : styles.disabledButton]}
         disabled={!isFormValid()}
       >
         <Text style={[styles.headerButtonText, !isFormValid() && styles.disabledButtonText]}>保存</Text>
