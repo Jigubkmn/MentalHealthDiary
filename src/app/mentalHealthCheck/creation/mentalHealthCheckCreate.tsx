@@ -147,6 +147,7 @@ export default function mentalHealthCheckCreate() {
                   currentPage={currentPage}
                   lastPage={lastPage}
                 />
+                <View style={{ height: 60 }} />
               </ScrollView>
             </View>
           </>
@@ -182,7 +183,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   pageGroupHeader: {
-    fontSize: 18,
+    fontSize: 16,
+    lineHeight: 24,
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'center',
