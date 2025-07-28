@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     marginHorizontal: 24,
-    marginTop: 16,
     paddingVertical: 16,
     paddingHorizontal: 16,
     alignItems: 'center',
