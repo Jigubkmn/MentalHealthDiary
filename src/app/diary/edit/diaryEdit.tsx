@@ -17,11 +17,10 @@ export default function DiaryEdit() {
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const userId = auth.currentUser?.uid;
-  const { diaryId } = useLocalSearchParams<{ diaryId?: string }>(); //idだけを取得
+  const { diaryId } = useLocalSearchParams<{ diaryId?: string }>();
   const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
 
   useEffect(() => {
-    // 日記の情報を取得
     fetchSelectedDiary({ userId, diaryId, setSelectedDiaryInfo });
   }, []);
 
