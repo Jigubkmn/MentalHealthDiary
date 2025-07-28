@@ -1,4 +1,3 @@
-
 import { Alert } from 'react-native'
 import { auth } from '../../../../config'
 import { signInWithEmailAndPassword } from 'firebase/auth'
