@@ -42,7 +42,6 @@ export default function DiaryEdit() {
     }
   }, [selectedDiaryInfo?.diaryImage]);
 
-
   // 画像削除
   const handleImageDelete = () => {
     setSelectedImage(null);
