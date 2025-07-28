@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#FFA500',
     padding: 16,
+    marginBottom: 60,
     borderRadius: 8,
     alignItems: 'center',
   },
