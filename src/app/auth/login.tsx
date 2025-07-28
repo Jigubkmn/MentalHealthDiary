@@ -31,7 +31,6 @@ export default function Login() {
               </Text>
               <TextInput
                 style={styles.input}
-                placeholder="メールアドレスを入力してください"
                 onChangeText={(text) => setEmail(text)}
                 value={email}
                 autoCapitalize="none"
@@ -46,7 +45,6 @@ export default function Login() {
               </Text>
               <TextInput
                 style={styles.input}
-                placeholder="半角英数字6文字以上で入力してください"
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 secureTextEntry={true}
