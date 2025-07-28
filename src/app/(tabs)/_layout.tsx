@@ -13,8 +13,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#FFA500', // アクティブなタブの色（オレンジ）
-        tabBarInactiveTintColor: '#8E8E93', // 非アクティブなタブの色
+        tabBarActiveTintColor: '#FFA500',
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
@@ -49,9 +49,7 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: (e) => {
-            // デフォルトの画面遷移をキャンセル
             e.preventDefault();
-            // パラメータを付けて自分で画面遷移を命令する
             router.push({
               pathname: '/diaryCreation',
               params: {
