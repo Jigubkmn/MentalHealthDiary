@@ -53,68 +53,70 @@ export default function MentalHealthCheckHistory() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <Header createdAt={selectedMentalHealthCheckInfo?.createdAt} />
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.scrollContent}>
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>メンタルヘルスチェック結果</Text>
           </View>
 
-          <View style={styles.scoreSection}>
-            <View style={styles.scoreTitleContainer}>
-              <Text style={styles.scoreTitle}>総合スコア</Text>
-              <Text style={[styles.evaluationText, evaluationStyle]}>{selectedMentalHealthCheckInfo?.evaluation}</Text>
-            </View>
-            <View style={styles.scoreBox}>
-              <View style={styles.scoreItem}>
-                <Text style={styles.scoreLabel}>設問A (最近1ヶ月の状態)</Text>
-                <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
+          <ScrollView>
+            <View style={styles.scoreSection}>
+              <View style={styles.scoreTitleContainer}>
+                <Text style={styles.scoreTitle}>総合スコア</Text>
+                <Text style={[styles.evaluationText, evaluationStyle]}>{selectedMentalHealthCheckInfo?.evaluation}</Text>
               </View>
-              <View style={styles.scoreItem}>
-                <Text style={styles.scoreLabel}>設問B (仕事・対人関係)</Text>
-                <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
+              <View style={styles.scoreBox}>
+                <View style={styles.scoreItem}>
+                  <Text style={styles.scoreLabel}>設問A (最近1ヶ月の状態)</Text>
+                  <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
+                </View>
+                <View style={styles.scoreItem}>
+                  <Text style={styles.scoreLabel}>設問B (仕事・対人関係)</Text>
+                  <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
+                </View>
               </View>
             </View>
-          </View>
+            <View style={styles.qaListContainer}>
+              {questionTexts.map((questionText, index) => {
+                let sectionHeaderComponent = null;
 
-          <View style={styles.qaListContainer}>
-            {questionTexts.map((questionText, index) => {
-              let sectionHeaderComponent = null;
+                if (index === 0) {
+                  sectionHeaderComponent = (
+                    <Text style={[styles.sectionHeader, { marginTop: 0 }]}>
+                      {'<設問A>\n最近1ヶ月間のあなたの状態について'}
+                    </Text>
+                  );
+                } else if (index === pageConfig[0].questionCount) {
+                  sectionHeaderComponent = (
+                    <Text style={styles.sectionHeader}>
+                      {'<設問B-1>\nあなたの仕事について'}
+                    </Text>
+                  );
+                } else if (index === pageConfig[0].questionCount + pageConfig[1].questionCount) {
+                  sectionHeaderComponent = (
+                    <Text style={styles.sectionHeader}>
+                      {'<設問B-2>\nあなたの周りの方々について'}
+                    </Text>
+                  );
+                }
 
-              if (index === 0) {
-                sectionHeaderComponent = (
-                  <Text style={[styles.sectionHeader, { marginTop: 0 }]}>
-                    {'<設問A>\n最近1ヶ月間のあなたの状態について'}
-                  </Text>
-                );
-              } else if (index === pageConfig[0].questionCount) {
-                sectionHeaderComponent = (
-                  <Text style={styles.sectionHeader}>
-                    {'<設問B-1>\nあなたの仕事について'}
-                  </Text>
-                );
-              } else if (index === pageConfig[0].questionCount + pageConfig[1].questionCount) {
-                sectionHeaderComponent = (
-                  <Text style={styles.sectionHeader}>
-                    {'<設問B-2>\nあなたの周りの方々について'}
-                  </Text>
-                );
-              }
-
-              return (
-                <View key={index}>
-                  {sectionHeaderComponent}
-                  <View style={styles.qaBlock}>
-                    <Text style={styles.questionText}>{`Q${index + 1}. ${questionText}`}</Text>
-                    <View style={styles.answerContainer}>
-                      <Text style={styles.answerText}>
-                        {getAnswerText(index, selectedMentalHealthCheckInfo?.answers[index])}
-                      </Text>
+                return (
+                  <View key={index}>
+                    {sectionHeaderComponent}
+                    <View style={styles.qaBlock}>
+                      <Text style={styles.questionText}>{`Q${index + 1}. ${questionText}`}</Text>
+                      <View style={styles.answerContainer}>
+                        <Text style={styles.answerText}>
+                          {getAnswerText(index, selectedMentalHealthCheckInfo?.answers[index])}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              );
-            })}
-          </View>
-        </ScrollView>
+                );
+              })}
+            </View>
+            <View style={{ height: 60 }} />
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   scrollContent: {
-    padding: 20,
+    padding: 16,
     backgroundColor: '#F0F0F0',
   },
   headerContainer: {
@@ -136,10 +138,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#000000',
   },
   scoreSection: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -156,8 +158,7 @@ const styles = StyleSheet.create({
   scoreTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
+    color: '#000000',
   },
   evaluationText: {
     fontSize: 18,
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   },
   scoreLabel: {
     fontSize: 14,
-    color: '#555',
+    color: '#000000',
   },
   scoreValue: {
     fontSize: 24,
