@@ -23,52 +23,52 @@ export default function Login() {
         <View style={styles.wrapper}>
           <Text style={styles.title}>ログイン</Text>
           <ScrollView style={styles.bodyContainer}>
-          {/* メールアドレス */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>
-              <Text>メールアドレス</Text>
-              <Text style={styles.required}> ＊</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="メールアドレスを入力してください"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-              autoCapitalize="none"
-              keyboardType="email-address"
+            {/* メールアドレス */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>
+                <Text>メールアドレス</Text>
+                <Text style={styles.required}> ＊</Text>
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="メールアドレスを入力してください"
+                onChangeText={(text) => setEmail(text)}
+                value={email}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+            {/* パスワード */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>
+                <Text>パスワード</Text>
+                <Text style={styles.required}> ＊</Text>
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="半角英数字6文字以上で入力してください"
+                onChangeText={(text) => setPassword(text)}
+                value={password}
+                secureTextEntry={true}
+              />
+            </View>
+            {/* ログインボタン */}
+            <HandleButton
+              buttonText="ログインする"
+              handleButton={handleLogin}
+              isFormValid={isFormValid}
             />
-          </View>
-          {/* パスワード */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>
-              <Text>パスワード</Text>
-              <Text style={styles.required}> ＊</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="半角英数字6文字以上で入力してください"
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              secureTextEntry={true}
+            {/* リンク */}
+            <AuthNavigationLink
+              text="パスワードを忘れた方はこちら"
+              href="/auth/passwordRest"
+              color="#000000"
             />
-          </View>
-          {/* ログインボタン */}
-          <HandleButton
-            buttonText="ログインする"
-            handleButton={handleLogin}
-            isFormValid={isFormValid}
-          />
-          {/* リンク */}
-          <AuthNavigationLink
-            text="パスワードを忘れた方はこちら"
-            href="/auth/passwordRest"
-            color="#000000"
-          />
-          {/* リンク */}
-          <AuthNavigationLink
-            text="ユーザー新規登録はこちら"
-            href="/auth/signUp"
-          />
+            {/* リンク */}
+            <AuthNavigationLink
+              text="ユーザー新規登録はこちら"
+              href="/auth/signUp"
+            />
           </ScrollView>
         </View>
       </TouchableWithoutFeedback>
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     marginHorizontal: 24,
     paddingVertical: 16,
     paddingHorizontal: 16,
