@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
-import Header from '../diary/list/components/Header';
 import { auth } from '../../config';
 import dayjs from 'dayjs';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
@@ -11,6 +10,7 @@ import fetchUserInfo from '../actions/backend/fetchUserInfo';
 import fetchFriends from '../actions/backend/fetchFriends';
 import { FriendInfoType } from '../../../type/friend';
 import FeelingScoreGraph from '../analysis/components/FeelingScoreGraph';
+import Header from '../analysis/components/Header';
 
 export default function analysis() {
   const userId = auth.currentUser?.uid
