@@ -9,7 +9,7 @@ import FriendInfo from '../myPage/components/FriendInfo';
 import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/backend/fetchUserInfo';
 import Divider from '../components/Divider';
-import fetchFriendList from '../myPage/action/backend/fetchFriendList';
+import fetchFriendList from '../actions/backend/fetchFriendList';
 
 export default function myPage() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
