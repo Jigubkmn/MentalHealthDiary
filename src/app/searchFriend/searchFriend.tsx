@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 16,
+    marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,

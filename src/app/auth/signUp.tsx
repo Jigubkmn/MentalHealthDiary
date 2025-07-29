@@ -44,7 +44,6 @@ export default function SignUp() {
     if (confirmPassword) {
       newErrors.confirmPassword = validateConfirmPassword(password, confirmPassword)
     }
-
     setErrors(newErrors)
   }
 
@@ -164,10 +163,10 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
+    borderRadius: 10,
     backgroundColor: '#FFFFFF',
     marginHorizontal: 24,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 16,
+    marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,

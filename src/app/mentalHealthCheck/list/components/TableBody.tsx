@@ -40,12 +40,13 @@ const styles = StyleSheet.create({
   dataRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: '#fff',
+    borderBottomColor: '#D9D9D9',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
   },
   dataCell: {
     padding: 12,
+    fontSize: 12,
     textAlign: 'center',
   },
   dateCell: {
@@ -63,13 +64,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   detailButton: {
-    backgroundColor: '#ff9800',
+    backgroundColor: '#FF9800',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 5,
   },
   detailButtonText: {
-    color: '#ffffff',
+    color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 14,
   },

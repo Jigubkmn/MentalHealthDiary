@@ -97,7 +97,7 @@ export default function FeelingScoreGraph({ allDaysInMonth, chartDataValues }: P
           if (day === 1 || day % 5 === 0) {
             return label;
           }
-          return ''; 
+          return '';
         }}
       />
       {/* 絶対配置でY軸アイコンを配置 */}

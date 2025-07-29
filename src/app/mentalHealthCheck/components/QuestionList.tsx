@@ -53,15 +53,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333333',
-    marginBottom: 16,
+    marginBottom: 8,
     lineHeight: 24,
   },
   optionButton: {
-    backgroundColor: '#f7f7f7',
-    padding: 14,
+    backgroundColor: '#F7F7F7',
+    padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#DDDDDD',
     marginBottom: 10,
   },
   optionButtonSelected: {
@@ -69,8 +69,9 @@ const styles = StyleSheet.create({
     borderColor: '#FFA500',
   },
   optionText: {
-    fontSize: 15,
-    color: '#333',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#000000',
     textAlign: 'center',
   },
   optionTextSelected: {
