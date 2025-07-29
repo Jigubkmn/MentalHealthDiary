@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
     height: 60,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   headerLeft: {
     width: 30
