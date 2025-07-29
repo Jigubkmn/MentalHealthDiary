@@ -33,7 +33,7 @@ export default function Header({
   const today = dayjs(); // "2025-07-06T09:17:23.408Z"
   const [date, setDate] = useState(today); // "2025-07-06T09:16:59.082Z"
   const [selectedDate, setSelectedDate] = useState(""); // 7月6日(日)
- 
+
   useEffect(() => {
   // 日付を文字列に変換する関数：◯月◯日(◯)
     const formattedDate = formatDate(date);
@@ -47,7 +47,6 @@ export default function Header({
 
   // 日記を保存
   const handleSave = async () => {
-    console.log("userInfo", userInfo?.userImage);
     try {
       await createDiary(
         selectedFeeling,
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
     height: 60,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   headerLeft: {
     width: 60,
