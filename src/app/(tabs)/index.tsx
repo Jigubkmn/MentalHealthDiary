@@ -10,10 +10,13 @@ import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 import Header from '../diary/list/components/Header';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
+import { UserInfoType } from '../../../type/userInfo';
+import fetchUserInfo from '../actions/backend/fetchUserInfo';
 
 export default function home() {
   const userId = auth.currentUser?.uid
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]) // 表示するユーザーのuserId
   const router = useRouter();
 
@@ -38,6 +41,16 @@ export default function home() {
     fetchFriends();
   }, [userId]);
 
+  // ログインユーザー情報を取得
+  useEffect(() => {
+    if (userId === null) return;
+    const unsubscribe = fetchUserInfo({
+      userId,
+      setUserInfo,
+    });
+    return unsubscribe;
+  }, [userId])
+
   const fetchFriends = async () => {
     try {
       const data = await fetchFriendList(userId);
@@ -60,7 +73,7 @@ export default function home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header/>
+      <Header userImage={userInfo?.userImage}/>
       {/* 年月 */}
       <View style={styles.yearMonthContainer}>
         <TouchableOpacity onPress={handleYearMonthPress}>
