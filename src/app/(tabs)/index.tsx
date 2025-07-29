@@ -13,6 +13,7 @@ import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 import { FriendInfoType } from '../../../type/friend';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 import Header from '../diary/list/components/Header';
+import { noUserImage } from '../constants/userImage';
 
 export default function home() {
   const userId = auth.currentUser?.uid
@@ -107,7 +108,7 @@ export default function home() {
               key={diaryList.id}
               diaryList={diaryList}
               userName={selectedUserInfo?.userName}
-              userImage={selectedUserInfo?.userImage}
+              userImage={selectedUserInfo?.userImage || noUserImage}
               selectedUserId={selectedUserId}
             />
           )

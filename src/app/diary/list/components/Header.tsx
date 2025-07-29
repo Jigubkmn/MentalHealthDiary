@@ -4,6 +4,7 @@ import { Image } from 'expo-image'
 import { FriendInfoType } from '../../../../../type/friend';
 import { UserInfoType } from '../../../../../type/userInfo';
 import UserSelectionModal from './UserSelectionModal';
+import { noUserImage } from '../../../constants/userImage';
 
 type Props = {
   title: string
@@ -32,7 +33,7 @@ export default function Header({ title, userInfo, selectedUserInfo, friendsData,
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={handleUserIconPress}>
             <Image
-              source={selectedUserInfo?.userImage || userInfo?.userImage}
+              source={selectedUserInfo?.userImage || noUserImage}
               style={styles.userIcon}
               contentFit="cover"
               cachePolicy="memory-disk"
