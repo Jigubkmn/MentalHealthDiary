@@ -12,7 +12,7 @@ type Props = {
 export default async function fetchSelectedDiary({ userId, diaryId, setSelectedDiaryInfo }: Props) {
   if (userId === null || diaryId === null) return;
     try {
-      const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
+      const diaryRef = doc(db, `diaries/${diaryId}`);
       const diarySnap = await getDoc(diaryRef);
       if (diarySnap.exists()) {
         const data = diarySnap.data();
@@ -23,6 +23,9 @@ export default async function fetchSelectedDiary({ userId, diaryId, setSelectedD
           feeling: data.feeling || null,
           diaryImage: data.diaryImage,
           updatedAt: data.updatedAt.toDate(),
+          userId: data.userId,
+          userName: data.userName,
+          userImage: data.userImage,
         };
         setSelectedDiaryInfo(diary);
       } else {
