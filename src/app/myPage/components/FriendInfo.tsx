@@ -65,6 +65,10 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
     setStatusStyle(statusStyle);
   }, [status]);
 
+  const isStatusApproval = () => {
+    return status === 'approval' || status === 'block';
+  };
+
   return (
     <View style={styles.friendInfo}>
       <View style={styles.friendMainInfo}>
@@ -116,8 +120,11 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
           setIsBlocked,
           setIsNotificationEnabled,
           setIsViewEnabled
-          )}
-          style={styles.actionButton}>
+        )}
+          style={[styles.actionButton, { opacity: isStatusApproval() ? 1 : 0.5 }]}
+          disabled={!isStatusApproval()}
+        >
+            {/* メモメモ */}
           <BlockIcon size={24} color="#000000" />
           <Text style={styles.blockButtonText}>{isBlocked ? 'ブロック解除' : 'ブロック'}</Text>
         </TouchableOpacity>
