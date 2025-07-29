@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 import Header from '../diary/list/components/Header';
+import { FriendInfoType } from '../../../type/friend';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 import { UserInfoType } from '../../../type/userInfo';
 import fetchUserInfo from '../actions/backend/fetchUserInfo';
@@ -17,6 +18,7 @@ export default function home() {
   const userId = auth.currentUser?.uid
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([]);
   const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]) // 表示するユーザーのuserId
   const router = useRouter();
 
@@ -38,11 +40,6 @@ export default function home() {
   }, [displayDate, visibleUserIds])
 
   useEffect(() => {
-    fetchFriends();
-  }, [userId]);
-
-  // ログインユーザー情報を取得
-  useEffect(() => {
     if (userId === null) return;
     const unsubscribe = fetchUserInfo({
       userId,
@@ -51,19 +48,21 @@ export default function home() {
     return unsubscribe;
   }, [userId])
 
-  const fetchFriends = async () => {
-    try {
-      const data = await fetchFriendList(userId);
-      // ログインユーザーとフレンドのuserIdを設定
-      const userIds = [userId, ...data.map(friend => friend.friendUsersId)].filter((id): id is string => id !== undefined);
+  useEffect(() => {
+    if (userId === null) return;
+    // フレンド情報をリアルタイム監視
+    const unsubscribe = fetchFriendList(userId, setFriendsData);
+    return unsubscribe;
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      const userIds = [userId, ...friendsData.map(friend => friend.friendUsersId)].filter((id): id is string => id !== undefined);
       setVisibleUserIds(userIds);
-      console.log('友人情報の取得に成功しました');
-    } catch (error) {
-      console.error('友人情報の取得に失敗しました:', error);
-      // エラー時はログインユーザーのみ表示
-      setVisibleUserIds(userId ? [userId] : []);
+    } else {
+      setVisibleUserIds([]);
     }
-  }
+  }, [friendsData, userId]);
 
   const handleYearMonthPress = () => {
     // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する

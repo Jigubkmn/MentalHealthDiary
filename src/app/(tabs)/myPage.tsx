@@ -26,19 +26,11 @@ export default function myPage() {
   }, [userId])
 
   useEffect(() => {
-    fetchFriends();
+    if (userId === null) return;
+    // フレンド情報をリアルタイム監視
+    const unsubscribe = fetchFriendList(userId, setFriendsData);
+    return unsubscribe;
   }, [userId]);
-
-  const fetchFriends = async () => {
-    try {
-      const data = await fetchFriendList(userId);
-      setFriendsData(data);
-      console.log('友人情報の取得に成功しました');
-    } catch (error) {
-      console.error('友人情報の取得に失敗しました:', error);
-      setFriendsData([]);
-    }
-  }
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {
