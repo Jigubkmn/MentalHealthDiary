@@ -19,7 +19,7 @@ export default async function deleteDiary(userId?: string, diaryId?: string) {
           style: 'destructive',
           onPress: async () => {
             try {
-              const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
+              const diaryRef = doc(db, `diaries/${diaryId}`);
               const feelingScoreRef = doc(db, `users/${userId}/feelingScores/${diaryId}`);
               await deleteDoc(diaryRef);
               await deleteDoc(feelingScoreRef);
