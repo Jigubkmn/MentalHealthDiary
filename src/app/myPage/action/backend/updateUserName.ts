@@ -16,7 +16,6 @@ export default async function updateUserName(
       userName: userName,
     });
 
-    // Update diaries collection - update userName for all diaries belonging to this user
     const diariesRef = collection(db, "diaries");
     const diariesQuery = query(diariesRef, where("userId", "==", userId));
     const diariesSnapshot = await getDocs(diariesQuery);
