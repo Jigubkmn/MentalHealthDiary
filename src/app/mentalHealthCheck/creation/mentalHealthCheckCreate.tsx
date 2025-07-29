@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    alignItems: 'center',
   },
   bodyContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#F0F0F0',
   },
   card: {

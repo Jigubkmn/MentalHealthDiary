@@ -14,12 +14,9 @@ export default function AlreadyChecked() {
 const styles = StyleSheet.create({
   messageContainer: {
     flex: 1,
-    width: '90%',
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    marginVertical: 20,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
+    margin: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

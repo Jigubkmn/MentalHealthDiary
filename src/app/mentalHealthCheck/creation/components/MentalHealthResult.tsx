@@ -12,9 +12,12 @@ export default function MentalHealthResult({ evaluationResult }: Props) {
   if (evaluationResult === '要治療') {
     resultTitle = evaluationResult;
     resultMessage = '診断結果から、あなたは現在、心身に大きな負担がかかっている可能性があります。このまま一人で抱え込まず、できるだけ早く専門家へ相談することをお勧めします。\nお近くの精神科・心療内科、または公的な相談窓口にご相談ください。';
+  } else if (evaluationResult === '要経過観察') {
+    resultTitle = evaluationResult;
+    resultMessage = '診断結果から、あなたは現在、一定のストレスを抱えている状態のようです。今のところ深刻な問題はありませんが、ストレスが溜まり始めているサインかもしれません。\n意識的に休息を取ったり、気分転換になる活動を取り入れたりして、ご自身の心の状態に注意を払ってみましょう。';
   } else {
-    resultTitle = 'お疲れ様でした';
-    resultMessage = 'あなたは現在、ある程度のストレスを感じているようですが、今のところ深刻な状態ではないようです。\n日々の生活の中で意識的にリラックスする時間を作ったり、自分の好きなことをする時間を大切にしたりすることが、今後の心の健康につながります。';
+    resultTitle = '異常なし';
+    resultMessage = 'お疲れ様です。現在のあなたの心の状態は、良好なようです。\n日々のストレスにうまく対処できている証拠ですね。\nこれからも、リラックスする時間や好きなことを楽しむ時間を大切にして、素晴らしい毎日をお過ごしください。';
   }
 
   return (
