@@ -8,7 +8,6 @@ export default async function updateBlockStatus(
   isBlocked: boolean,
   setStatus: (status: string) => void,
   setIsBlocked: (isBlocked: boolean) => void,
-  setIsNotificationEnabled: (isNotificationEnabled: boolean) => void,
   setIsViewEnabled: (isViewEnabled: boolean) => void
 ) {
   try {
@@ -29,7 +28,6 @@ export default async function updateBlockStatus(
     }
     setStatus(updateStatus);
     setIsBlocked(!isBlocked);
-    setIsNotificationEnabled(isBlocked);
     setIsViewEnabled(isBlocked);
   } catch (error) {
     console.error('友人のステータス更新に失敗しました:', error);

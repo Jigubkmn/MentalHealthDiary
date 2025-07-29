@@ -7,7 +7,6 @@ import Divider from '../../components/Divider';
 import DeleteIcon from '../../components/Icon/DeleteIcon';
 import BlockIcon from '../../components/Icon/Block';
 import getStatusStyle from '../action/getStatusStyle';
-import saveNotifyOnDiary from '../action/backend/saveNotifyOnDiary';
 import saveShowDiary from '../action/backend/saveShowDiary';
 import updateStatus from '../action/backend/updateBlockStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
@@ -21,18 +20,11 @@ type FriendInfoProps = {
 }
 
 export default function FriendInfo({ friendData, userId, onFriendDeleted }: FriendInfoProps) {
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(friendData.notifyOnDiary);
   const [isViewEnabled, setIsViewEnabled] = useState(friendData.showDiary);
   const [status, setStatus] = useState(friendData.status);
   const [statusStyle, setStatusStyle] = useState(getStatusStyle(friendData.status));
   const [isBlocked, setIsBlocked] = useState(false);
   const [friendDocumentId, setFriendDocumentId] = useState<string | null>(null);
-
-  const toggleNotification = async () => {
-    const newValue = !isNotificationEnabled;
-    setIsNotificationEnabled(newValue);
-    saveNotifyOnDiary(userId, friendData.friendId, newValue, setIsNotificationEnabled, isNotificationEnabled);
-  };
 
   const toggleView = async () => {
     const newValue = !isViewEnabled;
@@ -85,18 +77,6 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
           </Text>
         </View>
       </View>
-      {/* 通知設定用トグルスイッチ */}
-      <View style={styles.settingContainer}>
-        <Text style={styles.settingText}>{`${friendData.userName}さんの日記を通知する`}</Text>
-        <Switch
-          trackColor={{ false: '#FFFFFF', true: '#0080FF' }}
-          thumbColor={'#FFFFFF'}
-          ios_backgroundColor="#D9D9D9"
-          onValueChange={toggleNotification}
-          value={isNotificationEnabled}
-          style={styles.switch}
-        />
-      </View>
       {/* 表示設定用トグルスイッチ */}
       <View style={styles.settingContainer}>
         <Text style={styles.settingText}>{`${friendData.userName}さんの日記を表示する`}</Text>
@@ -118,7 +98,6 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
           isBlocked,
           setStatus,
           setIsBlocked,
-          setIsNotificationEnabled,
           setIsViewEnabled
         )}
           style={[styles.actionButton, { opacity: isStatusApproval() ? 1 : 0.5 }]}

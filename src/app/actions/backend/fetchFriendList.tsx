@@ -43,7 +43,6 @@ export default function fetchFriendList(
             friendUsersId: friendUserInfoId,
             friendId: friendDoc.id,
             status: friendData.status,
-            notifyOnDiary: friendData.notifyOnDiary,
             showDiary: friendData.showDiary,
             userImage: userInfoData.userImage || '',
             userName: userInfoData.userName || '',
