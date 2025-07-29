@@ -1,6 +1,6 @@
 import { collection, collectionGroup, query, getDocs, onSnapshot } from 'firebase/firestore';
-import { db } from '../../../../config';
-import { FriendInfoType } from '../../../../../type/friend';
+import { db } from '../../../config';
+import { FriendInfoType } from '../../../../type/friend';
 
 export default function fetchFriendList(
   userId: string | undefined,

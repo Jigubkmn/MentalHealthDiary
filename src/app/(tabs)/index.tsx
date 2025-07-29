@@ -10,7 +10,7 @@ import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 import Header from '../diary/list/components/Header';
 import { FriendInfoType } from '../../../type/friend';
-import fetchFriendList from '../myPage/action/backend/fetchFriendList';
+import fetchFriendList from '../actions/backend/fetchFriendList';
 import { UserInfoType } from '../../../type/userInfo';
 import fetchUserInfo from '../actions/backend/fetchUserInfo';
 

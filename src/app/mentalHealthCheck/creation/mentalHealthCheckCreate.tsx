@@ -147,7 +147,7 @@ export default function mentalHealthCheckCreate() {
                     currentPage={currentPage}
                     lastPage={lastPage}
                   />
-                  <View style={{ height: 60 }} />
+                  <View style={{ height: 10 }} />
                 </ScrollView>
             </>
           )}

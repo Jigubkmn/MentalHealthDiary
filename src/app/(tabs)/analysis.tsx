@@ -7,10 +7,10 @@ import fetchFeelingScore from '../analysis/actions/backend/fetchFeelingScore';
 import { FeelingScoreType } from '../../../type/feelingScore';
 import { UserInfoType } from '../../../type/userInfo';
 import fetchUserInfo from '../actions/backend/fetchUserInfo';
-import fetchFriends from '../actions/backend/fetchFriends';
 import { FriendInfoType } from '../../../type/friend';
 import FeelingScoreGraph from '../analysis/components/FeelingScoreGraph';
 import Header from '../analysis/components/Header';
+import fetchFriendList from '../actions/backend/fetchFriendList';
 
 export default function analysis() {
   const userId = auth.currentUser?.uid
@@ -38,7 +38,7 @@ export default function analysis() {
       userId: selectedUserId,
       setUserInfo: setSelectedUserInfo,
     });
-    fetchFriends(setFriendsData, userId);
+    fetchFriendList(userId, setFriendsData);
     return unsubscribe;
   }, [selectedUserId])
 
@@ -49,7 +49,7 @@ export default function analysis() {
       userId,
       setUserInfo,
     });
-    fetchFriends(setFriendsData, userId);
+    fetchFriendList(userId, setFriendsData);
     return unsubscribe;
   }, [userId])
 
