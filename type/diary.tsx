@@ -2,9 +2,12 @@ import dayjs from 'dayjs';
 
 export type DiaryType = {
   id: string;
-  diaryText: string;
   diaryDate: dayjs.Dayjs;
+  diaryImage: string | null;
+  diaryText: string;
   feeling: string;
   updatedAt: Date;
-  diaryImage: string | null;
+  userId: string;
+  userName: string;
+  userImage: string;
 }

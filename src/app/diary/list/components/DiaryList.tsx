@@ -1,28 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
-import { noImage } from '../../../constants/userImage';
+import { noImage, noUserImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
 import formatTimestampToTime from '../../../actions/formatTimestampToTime';
-import formatDate from '../../../actions/formatData';
-import dayjs from 'dayjs';
 
 type Props = {
   diaryList: DiaryType
-  userName?: string
-  userImage?: string
-  selectedUserId?: string
 }
 
-export default function DiaryList({ diaryList, userName, userImage, selectedUserId } :Props) {
-  const [diaryDate, setDiaryDate] = useState("");
+export default function DiaryList({ diaryList } :Props) {
   const router = useRouter();
 
   // 体調の画像を取得
   const feelingImage = feelings.find((feeling) => feeling.name === diaryList.feeling)?.image;
-  // 日記更新日時を時間と分に変換
+  // 時間と分に変換
   const formattedTime = formatTimestampToTime({diaryList});
 
   // 日記詳細画面に遷移
@@ -32,31 +26,21 @@ export default function DiaryList({ diaryList, userName, userImage, selectedUser
       params: {
         diaryId: diaryList.id,
         isTouchFeelingButton: 'false',
-        selectedUserId: selectedUserId
+        selectedUserId: diaryList.userId
       }
     });
   };
 
-  useEffect(() => {
-    // 日付を文字列に変換する関数：◯月◯日(◯)
-    if (diaryList.diaryDate) {
-      // Timestampをdayjsオブジェクトに変換
-      const dayjsDate = dayjs(diaryList.diaryDate.toDate());
-      const formattedDate = formatDate(dayjsDate);
-      setDiaryDate(formattedDate);
-    }
-  }, [diaryList.diaryDate])
-
   return (
     <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
       <View style={styles.diaryDateContainer}>
-        <Text style={styles.diaryDay}>{diaryDate}</Text>
+        <Text style={styles.diaryDay}>{formattedTime}</Text>
       </View>
       <View style={styles.diaryContentContainer}>
         {/* 日記作成者のアイコン画像 */}
         <View style={styles.diaryUserIconContainer}>
           <Image
-            source={userImage}
+            source={diaryList.userImage || noUserImage}
             style={styles.diaryUserIcon}
             contentFit="cover"
             cachePolicy="memory-disk"
@@ -64,14 +48,13 @@ export default function DiaryList({ diaryList, userName, userImage, selectedUser
         </View>
         <View style={styles.diaryContent}>
           <View style={styles.diaryTimeContainer}>
-            <Text style={styles.diaryUserName}>{userName}</Text>
+            <Text style={styles.diaryUserName}>{diaryList.userName}</Text>
             <Image
               source={feelingImage}
               style={styles.feelingImage}
               contentFit="contain"
               cachePolicy="memory-disk"
             />
-            <Text style={styles.diaryTime}>{formattedTime}</Text>
           </View>
           {/* 日記内容 */}
           <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">

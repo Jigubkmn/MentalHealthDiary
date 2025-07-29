@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import dayjs from 'dayjs';
-import { auth } from '../../../../config';
-import formatDate from '../../../actions/formatData';
+import formatWeekDate from '../../../actions/formatWeekData';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
 import BackButton from '../../../components/button/BackButton';
 import createDiary from '../action/backend/createDiary';
+import { UserInfoType } from '../../../../../type/userInfo';
 
 type Props = {
   diaryText: string;
@@ -15,6 +15,8 @@ type Props = {
   setSelectedImage: (image: string | null) => void;
   isShowBackButton: boolean;
   selectedImage: string | null;
+  userInfo: UserInfoType | null;
+  userId?: string;
 }
 
 export default function Header({
@@ -24,16 +26,17 @@ export default function Header({
   setSelectedFeeling,
   setSelectedImage,
   isShowBackButton,
-  selectedImage
+  selectedImage,
+  userInfo,
+  userId
 }: Props) {
   const today = dayjs(); // "2025-07-06T09:17:23.408Z"
   const [date, setDate] = useState(today); // "2025-07-06T09:16:59.082Z"
   const [selectedDate, setSelectedDate] = useState(""); // 7月6日(日)
-  const userId = auth.currentUser?.uid;
 
   useEffect(() => {
   // 日付を文字列に変換する関数：◯月◯日(◯)
-    const formattedDate = formatDate(date);
+    const formattedDate = formatWeekDate(date);
     setSelectedDate(formattedDate);
   }, [date])
 
@@ -53,6 +56,8 @@ export default function Header({
         setDiaryText,
         setSelectedFeeling,
         setSelectedImage,
+        userInfo?.userName || '',
+        userInfo?.userImage || '',
         userId
       );
     } catch (error) {
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
     height: 60,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   headerLeft: {
     width: 60,
