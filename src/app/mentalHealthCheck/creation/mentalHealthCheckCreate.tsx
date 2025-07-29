@@ -105,53 +105,53 @@ export default function mentalHealthCheckCreate() {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
-        <Header />
-        {isExistingMentalHealth ? (
-          // 本日はメンタルヘルスチェック完了済み
-          <AlreadyChecked />
-        ) : isCompleted ? (
-          // 結果画面
-          <MentalHealthResult evaluationResult={evaluationResult} />
-        ) : (
-          <>
-            <StatusBar barStyle="dark-content" />
-            <View style={styles.cardContainer}>
-              <ScrollView
-                ref={scrollViewRef}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
-                style={styles.card}
-              >
-                {/* 進捗バー */}
-                <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
-                {/* ページヘッダー */}
-                <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
-                <Text style={styles.pageHeader}>{currentPageHeader}</Text>
-                {/* 質問リスト */}
-                {currentQuestions.map(({ text, questionIndex }, index) => (
-                  <QuestionList
-                    key={questionIndex}
-                    text={text}
-                    questionIndex={questionIndex}
-                    index={index}
-                    currentAnswerOptions={currentAnswerOptions}
-                    answers={answers}
-                    handleSelectOption={handleSelectOption}
+        <View style={styles.bodyContainer}>
+          <Header />
+          {isExistingMentalHealth ? (
+            // 本日はメンタルヘルスチェック完了済み
+            <AlreadyChecked />
+          ) : isCompleted ? (
+            // 結果画面
+            <MentalHealthResult evaluationResult={evaluationResult} />
+          ) : (
+            <>
+              <StatusBar barStyle="dark-content" />
+                <ScrollView
+                  ref={scrollViewRef}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={styles.scrollContent}
+                  style={styles.card}
+                >
+                  {/* 進捗バー */}
+                  <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
+                  {/* ページヘッダー */}
+                  <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
+                  <Text style={styles.pageHeader}>{currentPageHeader}</Text>
+                  {/* 質問リスト */}
+                  {currentQuestions.map(({ text, questionIndex }, index) => (
+                    <QuestionList
+                      key={questionIndex}
+                      text={text}
+                      questionIndex={questionIndex}
+                      index={index}
+                      currentAnswerOptions={currentAnswerOptions}
+                      answers={answers}
+                      handleSelectOption={handleSelectOption}
+                    />
+                  ))}
+                  {/* ボタン */}
+                  <PaginationControlButton
+                    isPageCompleted={isPageCompleted}
+                    handleNextPress={handleNextPress}
+                    handlePrevPress={handlePrevPress}
+                    currentPage={currentPage}
+                    lastPage={lastPage}
                   />
-                ))}
-                {/* ボタン */}
-                <PaginationControlButton
-                  isPageCompleted={isPageCompleted}
-                  handleNextPress={handleNextPress}
-                  handlePrevPress={handlePrevPress}
-                  currentPage={currentPage}
-                  lastPage={lastPage}
-                />
-                <View style={{ height: 60 }} />
-              </ScrollView>
-            </View>
-          </>
-        )}
+                  <View style={{ height: 60 }} />
+                </ScrollView>
+            </>
+          )}
+        </View>
       </SafeAreaView>
     </>
   );
@@ -163,9 +163,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
   },
-  cardContainer: {
+  bodyContainer: {
+    flex: 1,
     backgroundColor: '#F0F0F0',
-
   },
   card: {
     flex: 1,

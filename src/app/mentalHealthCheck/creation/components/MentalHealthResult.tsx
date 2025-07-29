@@ -36,10 +36,9 @@ export default function MentalHealthResult({ evaluationResult }: Props) {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    width: '90%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    marginVertical: 40,
+    margin: 16,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
-    color: '#333',
+    color: '#000000',
   },
   resultBox: {
     backgroundColor: '#FFFBEA',
@@ -63,17 +62,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 16,
-    marginBottom: 24,
+    alignItems: 'flex-start',
   },
   resultText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginVertical: 8,
-    color: '#555',
+    fontSize: 16,
+    color: '#555555',
   },
   disclaimer: {
     fontSize: 12,
-    color: '#888',
+    color: '#888888',
     textAlign: 'center',
     marginVertical: 16,
     lineHeight: 18,
