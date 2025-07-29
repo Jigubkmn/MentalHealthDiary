@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
@@ -6,15 +6,12 @@ import { DiaryType } from '../../../../../type/diary';
 import { noImage, noUserImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
 import formatTimestampToTime from '../../../actions/formatTimestampToTime';
-import formatDate from '../../../actions/formatData';
-import dayjs from 'dayjs';
 
 type Props = {
   diaryList: DiaryType
 }
 
 export default function DiaryList({ diaryList } :Props) {
-  const [diaryDate, setDiaryDate] = useState("");
   const router = useRouter();
 
   // 体調の画像を取得
@@ -34,20 +31,10 @@ export default function DiaryList({ diaryList } :Props) {
     });
   };
 
-  useEffect(() => {
-    // 日付を文字列に変換する関数：◯月◯日(◯)
-    if (diaryList.diaryDate) {
-      // Timestampをdayjsオブジェクトに変換
-      const dayjsDate = dayjs(diaryList.diaryDate.toDate());
-      const formattedDate = formatDate(dayjsDate);
-      setDiaryDate(formattedDate);
-    }
-  }, [diaryList.diaryDate])
-
   return (
     <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
       <View style={styles.diaryDateContainer}>
-        <Text style={styles.diaryDay}>{diaryDate}</Text>
+        <Text style={styles.diaryDay}>{formattedTime}</Text>
       </View>
       <View style={styles.diaryContentContainer}>
         {/* 日記作成者のアイコン画像 */}
@@ -68,7 +55,6 @@ export default function DiaryList({ diaryList } :Props) {
               contentFit="contain"
               cachePolicy="memory-disk"
             />
-            <Text style={styles.diaryTime}>{formattedTime}</Text>
           </View>
           {/* 日記内容 */}
           <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
