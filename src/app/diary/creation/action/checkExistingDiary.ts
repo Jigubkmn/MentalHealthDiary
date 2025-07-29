@@ -9,9 +9,11 @@ export default async function checkExistingDiary(userId: string, date: dayjs.Day
     const startOfDay = date.startOf('day').toDate();
     const endOfDay = date.endOf('day').toDate();
 
-    const diaryRef = collection(db, `users/${userId}/diaries`);
+    // diariesコレクションから該当ユーザーの日記を検索
+    const diaryRef = collection(db, 'diaries');
     const q = query(
       diaryRef,
+      where('userId', '==', userId),
       where('diaryDate', '>=', Timestamp.fromDate(startOfDay)),
       where('diaryDate', '<=', Timestamp.fromDate(endOfDay))
     );
