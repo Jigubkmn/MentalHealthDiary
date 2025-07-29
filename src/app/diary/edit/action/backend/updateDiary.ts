@@ -30,7 +30,7 @@ export default async function updateDiary(
   try {
     // 体調のスコアを取得
     const feelingScore = feelings.find((feeling) => feeling.name === selectedFeeling)?.score;
-    const diaryRef = doc(db, `users/${userId}/diaries/${diaryId}`);
+    const diaryRef = doc(db, `diaries/${diaryId}`);
     await updateDoc(diaryRef, {
       diaryText: diaryText,
       diaryDate: Timestamp.fromDate(date.toDate()),
