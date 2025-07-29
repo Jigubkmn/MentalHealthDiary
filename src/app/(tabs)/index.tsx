@@ -9,10 +9,12 @@ import dayjs from 'dayjs';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
 import Header from '../diary/list/components/Header';
+import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 
 export default function home() {
   const userId = auth.currentUser?.uid
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
+  const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]) // 表示するユーザーのuserId
   const router = useRouter();
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -27,10 +29,28 @@ export default function home() {
     // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
     const startOfMonth = displayDate.startOf('month');
     const endOfMonth = displayDate.add(1, 'month').startOf('month');
-    // 日記一覧を取得
-    const unsubscribe = fetchDiaries(setDiaryLists, startOfMonth, endOfMonth);
+    // 日記一覧を取得（ログインユーザーとフレンドの日記のみ）
+    const unsubscribe = fetchDiaries(setDiaryLists, startOfMonth, endOfMonth, visibleUserIds);
     return unsubscribe;
-  }, [displayDate])
+  }, [displayDate, visibleUserIds])
+
+  useEffect(() => {
+    fetchFriends();
+  }, [userId]);
+
+  const fetchFriends = async () => {
+    try {
+      const data = await fetchFriendList(userId);
+      // ログインユーザーとフレンドのuserIdを設定
+      const userIds = [userId, ...data.map(friend => friend.friendUsersId)].filter((id): id is string => id !== undefined);
+      setVisibleUserIds(userIds);
+      console.log('友人情報の取得に成功しました');
+    } catch (error) {
+      console.error('友人情報の取得に失敗しました:', error);
+      // エラー時はログインユーザーのみ表示
+      setVisibleUserIds(userId ? [userId] : []);
+    }
+  }
 
   const handleYearMonthPress = () => {
     // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する

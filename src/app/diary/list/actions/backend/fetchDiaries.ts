@@ -7,14 +7,40 @@ export default function fetchDiaries(
   setDiaryLists: (diaryLists: DiaryType[]) => void,
   startOfMonth: dayjs.Dayjs,
   endOfMonth: dayjs.Dayjs,
+  visibleUserIds?: string[]
 ) {
   const ref = collection(db, `diaries`)
-  const q = query(ref, orderBy('diaryDate', 'desc'), where('diaryDate', '>=', startOfMonth.toDate()), where('diaryDate', '<', endOfMonth.toDate()))
+
+  let q;
+  if (visibleUserIds && visibleUserIds.length > 0) {
+    q = query(
+      ref,
+      orderBy('diaryDate', 'desc'),
+      where('diaryDate', '>=', startOfMonth.toDate()),
+      where('diaryDate', '<', endOfMonth.toDate()),
+      where('userId', 'in', visibleUserIds)
+    );
+  } else {
+    q = query(
+      ref,
+      orderBy('diaryDate', 'desc'),
+      where('diaryDate', '>=', startOfMonth.toDate()),
+      where('diaryDate', '<', endOfMonth.toDate())
+    );
+  }
+
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const remoteDiaryList: DiaryType[] = []
     snapshot.docs.forEach((doc) => {
       const { diaryDate, diaryImage,diaryText, feeling, updatedAt, userId, userName, userImage } = doc.data();
-      remoteDiaryList.push({ id: doc.id, diaryDate, diaryImage, diaryText, feeling, updatedAt, userId, userName, userImage })
+
+      if (visibleUserIds && visibleUserIds.length > 1) {
+        if (visibleUserIds.includes(userId)) {
+          remoteDiaryList.push({ id: doc.id, diaryDate, diaryImage, diaryText, feeling, updatedAt, userId, userName, userImage })
+        }
+      } else {
+        remoteDiaryList.push({ id: doc.id, diaryDate, diaryImage, diaryText, feeling, updatedAt, userId, userName, userImage })
+      }
     })
     setDiaryLists(remoteDiaryList)
   })
