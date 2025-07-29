@@ -16,6 +16,8 @@ export default async function createDiary(
   setDiaryText: (text: string) => void,
   setSelectedFeeling: (feeling: string | null) => void,
   setSelectedImage: (image: string | null) => void,
+  userName: string | null,
+  userImage: string | null,
   userId?: string
 ) {
   const router = useRouter();
@@ -39,13 +41,15 @@ export default async function createDiary(
   try {
     // 体調のスコアを取得
     const feelingScore = feelings.find((feeling) => feeling.name === selectedFeeling)?.score;
-    const diariesRef = collection(db, `users/${userId}/diaries`);
+    const diariesRef = collection(db, `diaries`);
     // 日記を保存してIDを取得
     const diaryDocRef = await addDoc(diariesRef, {
       diaryText,
       diaryDate: Timestamp.fromDate(date.toDate()),
       feeling: selectedFeeling,
       diaryImage: selectedImage,
+      userName,
+      userImage,
       userId,
       updatedAt: Timestamp.fromDate(new Date()),
     });
