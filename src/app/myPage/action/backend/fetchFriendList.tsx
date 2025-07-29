@@ -2,7 +2,7 @@ import { collection, collectionGroup, query, getDocs } from 'firebase/firestore'
 import { db } from '../../../../config';
 import { FriendInfoType } from '../../../../../type/friend';
 
-export default async function fetchFriendList(userId?: string): Promise<FriendInfoType[]> {
+export default async function fetchFriendList(userId?: string): Promise<string[]> {
   try {
     const friendsRef = collection(db, `users/${userId}/friends`);
     const friendsQuery = query(friendsRef);
@@ -44,7 +44,8 @@ export default async function fetchFriendList(userId?: string): Promise<FriendIn
         friendsData.push(friendInfo);
       }
     }
-    return friendsData;
+    const userIds = [userId, ...friendsData.map(friend => friend.friendUsersId)].filter((id): id is string => id !== undefined);
+    return userIds;
   } catch (error) {
     console.error('フレンド情報の取得に失敗しました:', error);
     throw error;
