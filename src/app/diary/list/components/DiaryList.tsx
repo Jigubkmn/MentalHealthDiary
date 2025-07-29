@@ -16,7 +16,7 @@ export default function DiaryList({ diaryList } :Props) {
 
   // 体調の画像を取得
   const feelingImage = feelings.find((feeling) => feeling.name === diaryList.feeling)?.image;
-  // 日記更新日時を時間と分に変換
+  // 時間と分に変換
   const formattedTime = formatTimestampToTime({diaryList});
 
   // 日記詳細画面に遷移

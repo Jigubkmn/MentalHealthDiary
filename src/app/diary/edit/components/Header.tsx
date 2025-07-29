@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import dayjs from 'dayjs';
 import BackButton from '../../../components/button/BackButton';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
-import formatDate from '../../../actions/formatData';
 import updateDiary from '../action/backend/updateDiary';
+import formatWeekData from '../../../actions/formatWeekData';
 
 type Props = {
   userId: string;
@@ -29,7 +29,7 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
 
   useEffect(() => {
     // 日付を文字列に変換する関数：◯月◯日(◯)
-    const formattedDate = formatDate(date);
+    const formattedDate = formatWeekData(date);
     setSelectedDate(formattedDate);
   }, [date]);
 
