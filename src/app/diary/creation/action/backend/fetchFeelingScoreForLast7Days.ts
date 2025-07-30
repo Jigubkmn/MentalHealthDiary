@@ -1,10 +1,10 @@
 import { db } from '../../../../../config';
-import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 
-export default async function fetchFeelingScoreForLast7Days(userId?: string) {
+export default async function fetchFeelingScoreForLast7Days(userId?: string, diaryDate?: Timestamp) {
   try {
     const router = useRouter();
     const sixDaysAgo = dayjs().subtract(6, 'day').startOf('day');
@@ -38,7 +38,11 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string) {
     const nonNullScores = feelingScoresArray.filter(score => score !== null);
     const totalScore = nonNullScores.reduce((sum, score) => sum + score, 0);
 
-    if (nonNullScores.length >= 4 && totalScore <= -25) {
+    // 作成した日とdiaryDateが同じかどうかを確認
+    const isToday = dayjs(diaryDate?.toDate()).isSame(dayjs(), 'day');
+
+    // メンタルヘルスチェック条件を満たしているかチェック
+    if (nonNullScores.length >= 4 && totalScore <= -25 &&  isToday) {
       Alert.alert(
         '日記を作成しました',
         '最近、体調が悪化しているようです。\n1度、メンタルヘルスチェックを行いませんか？',
