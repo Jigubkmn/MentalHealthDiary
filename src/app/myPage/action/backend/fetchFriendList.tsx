@@ -1,6 +1,6 @@
 import { collection, collectionGroup, query, getDocs, onSnapshot } from 'firebase/firestore';
-import { db } from '../../../config';
-import { FriendInfoType } from '../../../../type/friend';
+import { db } from '../../../../config';
+import { FriendInfoType } from '../../../../../type/friend';
 
 export default function fetchFriendList(
   userId: string | undefined,
@@ -10,7 +10,6 @@ export default function fetchFriendList(
     setFriendsData([]);
     return () => {}; // 空のアンサブスクライブ関数を返す
   }
-
   try {
     const friendsRef = collection(db, `users/${userId}/friends`);
     const friendsQuery = query(friendsRef);
@@ -22,10 +21,7 @@ export default function fetchFriendList(
       for (const friendDoc of friendsSnapshot.docs) {
         const friendData = friendDoc.data();
         const friendUserInfoId = friendData.friendId; // userInfoドキュメントのID
-        // showDiaryがtrueの友人のみを処理
-        if (friendData.showDiary !== true) {
-          continue;
-        }
+
         // friendIdに対応するユーザーのuserInfoを取得
         const usersRef = collectionGroup(db, 'userInfo');
         const q = query(usersRef);
