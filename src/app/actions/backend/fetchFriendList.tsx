@@ -23,7 +23,7 @@ export default function fetchFriendList(
         const friendData = friendDoc.data();
         const friendUserInfoId = friendData.friendId; // userInfoドキュメントのID
         // showDiaryがtrueの友人のみを処理
-        if (friendData.showDiary !== true) {
+        if ((friendData.showDiary !== true) || (friendData.status !== 'approval')) {
           continue;
         }
         // friendIdに対応するユーザーのuserInfoを取得
