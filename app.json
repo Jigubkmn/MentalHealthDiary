@@ -14,9 +14,9 @@
       "backgroundColor": "#FFFFFF"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.Jigubkmn.MentalHealthDiary",
-      "buildNumber": "1"
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
