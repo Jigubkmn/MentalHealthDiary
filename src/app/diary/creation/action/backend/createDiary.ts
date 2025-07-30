@@ -65,7 +65,7 @@ export default async function createDiary(
     setSelectedFeeling(null);
     setSelectedImage(null);
     // データ保存完了後、feelingScoreチェックを実行
-    await fetchFeelingScoreForLast7Days(userId);
+    await fetchFeelingScoreForLast7Days(userId, Timestamp.fromDate(date.toDate()));
     router.push("/(tabs)");
   } catch (error) {
     console.log("error", error);
