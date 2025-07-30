@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MentalHealthDiary",
+    "name": "メンタルヘルス日記",
     "slug": "MentalHealthDiary",
     "version": "1.0.0",
     "scheme": "MentalHealthDiary",
@@ -9,12 +9,14 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/Icon-1024.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.Jigubkmn.MentalHealthDiary",
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
