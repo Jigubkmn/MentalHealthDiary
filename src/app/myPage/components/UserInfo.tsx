@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { noUserImage } from '../../constants/userImage';
 import EditIcon from '../../components/Icon/EditIcon';
 import { UserInfoType } from '../../../../type/userInfo';
 import UserLogout from '../../actions/handleLogout';
-import handleImageSelect from '../../actions/handleImageSelect';
 import UserEditContents from './UserEditContents';
-import { db } from '../../../config';
-import { doc, updateDoc } from 'firebase/firestore'
 import { validateAccountId, validateUserName } from '../../../../utils/validation';
+import Divider from '../../components/Divider';
+import updateUserImage from '../action/backend/updateUserImage';
+import updateAccountId from '../action/backend/updateAccountId';
+import updateUserName from '../action/backend/updateUserName';
 
 type UserInfoProps = {
-  userInfos: UserInfoType | null
+  userInfo: UserInfoType | null
   userId?: string
-  userInfoId: string
 }
 
-export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProps) {
+export default function UserInfo({ userInfo, userId }: UserInfoProps) {
   const [isAccountIdEdit, setIsAccountIdEdit] = useState(false);
   const [accountId, setAccountId] = useState('');
   const [isUserNameEdit, setIsUserNameEdit] = useState(false);
   const [userName, setUserName] = useState('');
-  const [userImage, setUserImage] = useState<string | null>(userInfos?.userImage || noUserImage);
+  const [userImage, setUserImage] = useState<string | null>(userInfo?.userImage || noUserImage);
   const [errors, setErrors] = useState({ accountId: '', userName: '' })
 
   useEffect(() => {
-    setAccountId(userInfos?.accountId || '')
-  }, [userInfos?.accountId]);
+    setAccountId(userInfo?.accountId || '')
+  }, [userInfo?.accountId]);
 
   useEffect(() => {
-    setUserName(userInfos?.userName || '')
-  }, [userInfos?.userName]);
+    setUserName(userInfo?.userName || '')
+  }, [userInfo?.userName]);
 
   useEffect(() => {
-    if (userInfos?.userImage) {
-      setUserImage(userInfos.userImage)
+    if (userInfo?.userImage) {
+      setUserImage(userInfo.userImage)
     }
-  }, [userInfos?.userImage]);
+  }, [userInfo?.userImage]);
 
   useEffect(() => {
     setIsAccountIdEdit(false)
@@ -49,21 +49,9 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     UserLogout();
   }
 
-  const handleAccountIdUpdate = async (userUpdateInfo: string | undefined) => {
-    if (!userUpdateInfo || !userId || !userInfoId) return;
-    handleValidateAccountId()
-    if (errors.accountId) return;
-    try {
-      const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
-      await updateDoc(userRef, {
-        accountId: userUpdateInfo,
-      });
-      setIsAccountIdEdit(false)
-      Alert.alert("ユーザーIDの更新に成功しました");
-    } catch (error) {
-      console.log("error", error);
-      Alert.alert("ユーザーIDの更新に失敗しました");
-    }
+  // アカウントID更新
+  const handleUpdateAccountId = async () => {
+    updateAccountId(accountId, errors.accountId, setIsAccountIdEdit, userId);
   }
 
   // ユーザーIDのバリデーション
@@ -72,21 +60,9 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     setErrors({ ...errors, accountId: errorMessage })
   }
 
-  const handleUserNameUpdate = async (userUpdateInfo: string | undefined) => {
-    if (!userUpdateInfo || !userId || !userInfoId) return;
-    handleValidateUserName()
-    if (errors.userName) return;
-    try {
-      const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
-      await updateDoc(userRef, {
-        userName: userUpdateInfo,
-      });
-      setIsUserNameEdit(false)
-      Alert.alert("ユーザー名の更新に成功しました");
-    } catch (error) {
-      console.log("error", error);
-      Alert.alert("ユーザー名の更新に失敗しました");
-    }
+  // ユーザー名更新
+  const handleUpdateUserName = async () => {
+    updateUserName(userName, errors.userName, setIsUserNameEdit, userId);
   }
 
   // ユーザー名のバリデーション
@@ -95,23 +71,6 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
     const errorMessage = await validateUserName(userName)
     setErrors({ ...errors, userName: errorMessage })
   }
-
-  // ユーザー画像を更新
-  const ImageSelect = async () => {
-    const newUserImage = await handleImageSelect();
-    if (!newUserImage) return;
-    try {
-      const userRef = doc(db, `users/${userId}/userInfo/${userInfoId}`);
-      await updateDoc(userRef, {
-        userImage: newUserImage,
-      });
-      Alert.alert("ユーザー画像を更新しました");
-      setUserImage(newUserImage);
-    } catch (error) {
-      console.log("error", error);
-      Alert.alert("ユーザー画像の更新に失敗しました");
-    }
-  };
 
   return (
     <View style={styles.userInfoContainer}>
@@ -124,37 +83,39 @@ export default function UserInfo({ userInfos, userId, userInfoId }: UserInfoProp
             contentFit="cover"
             cachePolicy="memory-disk"
           />
-          <TouchableOpacity style={styles.editIconOverlay} onPress={() => ImageSelect()}>
+          <TouchableOpacity
+            style={styles.editIconOverlay}
+            onPress={() => updateUserImage(userId || '', setUserImage)}>
             <EditIcon size={24} color="#FFA500" />
           </TouchableOpacity>
         </View>
         {/* ユーザーID */}
         <UserEditContents
           userTitle="ユーザーID"
-          userContent={userInfos?.accountId}
+          userContent={userInfo?.accountId}
           isUserContentEdit={isAccountIdEdit}
           setIsContentEdit={setIsAccountIdEdit}
           userUpdateContent={accountId}
           setUserUpdateContent={setAccountId}
-          handleUserInfoUpdate={handleAccountIdUpdate}
+          handleUserInfoUpdate={handleUpdateAccountId}
           errorText={errors.accountId}
           handleValidateUserContent={handleValidateAccountId}
         />
         {/* ユーザー名 */}
         <UserEditContents
           userTitle="ユーザー名"
-          userContent={userInfos?.userName}
+          userContent={userInfo?.userName}
           isUserContentEdit={isUserNameEdit}
           setIsContentEdit={setIsUserNameEdit}
           userUpdateContent={userName}
           setUserUpdateContent={setUserName}
-          handleUserInfoUpdate={handleUserNameUpdate}
+          handleUserInfoUpdate={handleUpdateUserName}
           errorText={errors.userName}
           handleValidateUserContent={handleValidateUserName}
         />
       </View>
       {/* 区切り線 */}
-      <View style={styles.divider} />
+      <Divider />
       {/* ログアウトボタン */}
       <TouchableOpacity style={styles.logoutButton} onPress={() => {handleLogout()}}>
         <Text style={styles.logoutButtonText}>ログアウト</Text>
@@ -214,11 +175,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     color: '#ffffff',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    marginVertical: 8,
-    width: '100%',
   },
 })

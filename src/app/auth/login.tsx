@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Text, StyleSheet, TextInput, Alert, TouchableWithoutFeedback, ScrollView } from 'react-native'
-import { auth } from '../../config'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { router } from 'expo-router'
+import { SafeAreaView, View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import AuthNavigationLink from './components/Link'
 import HandleButton from '../components/button/HandleButton'
+import login from './actions/backend/login'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -16,17 +14,6 @@ export default function Login() {
   };
 
   const handleLogin = () => {
-    const login = (email: string, password: string) => {
-      signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("userCredential", userCredential.user.uid);
-        router.push("/(tabs)")
-      })
-      .catch((error) => {
-        console.log("error", error)
-        Alert.alert("ログイン処理を失敗しました");
-      })
-    }
     login(email, password)
   }
 
@@ -36,57 +23,54 @@ export default function Login() {
         <View style={styles.wrapper}>
           <Text style={styles.title}>ログイン</Text>
           <ScrollView style={styles.bodyContainer}>
-          {/* メールアドレス */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>
-              <Text>メールアドレス</Text>
-              <Text style={styles.required}> ＊</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="メールアドレスを入力してください"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-              autoCapitalize="none"
-              keyboardType="email-address"
+            {/* メールアドレス */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>
+                <Text>メールアドレス</Text>
+                <Text style={styles.required}> ＊</Text>
+              </Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setEmail(text)}
+                value={email}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+            {/* パスワード */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>
+                <Text>パスワード</Text>
+                <Text style={styles.required}> ＊</Text>
+              </Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setPassword(text)}
+                value={password}
+                secureTextEntry={true}
+              />
+            </View>
+            {/* ログインボタン */}
+            <HandleButton
+              buttonText="ログインする"
+              handleButton={handleLogin}
+              isFormValid={isFormValid}
             />
-          </View>
-          {/* パスワード */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>
-              <Text>パスワード</Text>
-              <Text style={styles.required}> ＊</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="半角英数字6文字以上で入力してください"
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              secureTextEntry={true}
+            {/* リンク */}
+            <AuthNavigationLink
+              text="パスワードを忘れた方はこちら"
+              href="/auth/passwordRest"
+              color="#000000"
             />
-          </View>
-          {/* ログインボタン */}
-          <HandleButton
-            buttonText="ログインする"
-            handleButton={handleLogin}
-            isFormValid={isFormValid}
-          />
-          {/* リンク */}
-          <AuthNavigationLink
-            text="パスワードを忘れた方はこちら"
-            href="/auth/passwordRest"
-            color="#000000"
-          />
-          {/* リンク */}
-          <AuthNavigationLink
-            text="ユーザー新規登録はこちら"
-            href="/auth/signUp"
-          />
+            {/* リンク */}
+            <AuthNavigationLink
+              text="ユーザー新規登録はこちら"
+              href="/auth/signUp"
+            />
           </ScrollView>
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
-
   )
 }
 
@@ -98,10 +82,9 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     marginHorizontal: 24,
-    marginTop: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -119,7 +102,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 16,
+    marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,

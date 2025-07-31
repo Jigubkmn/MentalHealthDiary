@@ -5,21 +5,38 @@ import { Image } from 'expo-image'
 import Header from './components/Header';
 import { UserInfoType } from '../../../type/userInfo';
 import HandleButton from '../components/button/HandleButton';
+import Divider from '../components/Divider';
 import fetchFriend from './actions/fetchFriend';
 import addFriend from './actions/addFriend';
-import { auth } from '../../config';
+import { useLocalSearchParams } from 'expo-router';
+import fetchFriendAccountId from '../actions/backend/fetchFriendAccountId';
 
 export default function searchFriend() {
   const [userImage, setUserImage] = useState<string | null>(noUserImage);
   const [accountId, setAccountId] = useState('')
   const [searchResult, setSearchResult] = useState<UserInfoType | null>(null)
   const [isSearching, setIsSearching] = useState(false)
-  // ログインユーザーのIDを取得
-  const currentUserId = auth.currentUser?.uid;
+  const [friendsAccountId, setFriendsAccountId] = useState<string[]>([])
+  const [friendUsersId, setFriendUsersId] = useState<string>('') // friendのusersのid
+  const [friendUserInfosId, setFriendUserInfosId] = useState<string>('') // friendのuserInfosのid
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { currentAccountId, userId } = useLocalSearchParams<{ currentAccountId?: string, userId?: string }>();
 
   useEffect(() => {
     setUserImage(noUserImage)
-  }, []);
+    // 友人アカウントIDを取得
+    const fetchAccountIds = async () => {
+      if (userId) {
+        try {
+          const accountIds = await fetchFriendAccountId(userId);
+          setFriendsAccountId(accountIds);
+        } catch (error) {
+          console.error('友人アカウントIDの取得に失敗しました:', error);
+        }
+      }
+    };
+    fetchAccountIds();
+  }, [userId]);
 
   // 必須項目が全て入力されているかチェック
   const isFormValid = (): boolean => {
@@ -28,12 +45,28 @@ export default function searchFriend() {
 
   // 友人を検索する関数
   const searchFriend = () => {
-    fetchFriend({accountId, currentUserId, setSearchResult, setUserImage, setIsSearching});
+    fetchFriend({
+      accountId,
+      userId,
+      friendsAccountId,
+      setSearchResult,
+      setUserImage,
+      setIsSearching,
+      setErrorMessage,
+      setFriendUsersId,
+      setFriendUserInfosId
+    });
   };
 
   // 友人を登録する関数
   const addFriendButton = () => {
-    addFriend({ currentUserId, searchResult});
+    addFriend({
+      userId,
+      friendUsersId,
+      accountId,
+      currentAccountId,
+      friendUserInfosId: friendUserInfosId,
+    });
   };
 
   return (
@@ -61,7 +94,7 @@ export default function searchFriend() {
           />
 
           {/* 区切り線 */}
-          <View style={styles.divider} />
+          <Divider />
 
           {/* 検索結果 */}
           <View style={styles.searchResultContainer}>
@@ -86,7 +119,7 @@ export default function searchFriend() {
               </>
             ) : (
               <Text style={styles.noResultText}>
-                {isSearching && 'ユーザーが見つかりません'}
+                {isSearching && errorMessage}
               </Text>
             )}
           </View>
@@ -106,7 +139,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 16,
+    marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,
@@ -158,12 +191,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
   },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    marginVertical: 8,
-    width: '100%',
-  },
   searchResultContainer: {
     flexDirection: 'column',
     alignItems: 'center',
@@ -198,5 +225,12 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#666666',
     textAlign: 'center',
-  }
+  },
+  errorMessage: {
+    fontSize: 14,
+    lineHeight: 24,
+    color: '#FF0000',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
 });

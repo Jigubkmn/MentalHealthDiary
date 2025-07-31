@@ -1,98 +1,81 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
-import { noImage } from '../../../constants/userImage';
+import { noImage, noUserImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
 import formatTimestampToTime from '../../../actions/formatTimestampToTime';
-import formatDate from '../../../actions/formatData';
-import dayjs from 'dayjs';
 
 type Props = {
   diaryList: DiaryType
-  userName?: string
-  userImage?: string
 }
 
-export default function DiaryList({ diaryList, userName, userImage } :Props) {
-  const [diaryDate, setDiaryDate] = useState("");
+export default function DiaryList({ diaryList } :Props) {
   const router = useRouter();
 
   // 体調の画像を取得
   const feelingImage = feelings.find((feeling) => feeling.name === diaryList.feeling)?.image;
-  // 日記更新日時を時間と分に変換
+  // 時間と分に変換
   const formattedTime = formatTimestampToTime({diaryList});
 
+  // 日記詳細画面に遷移
   const handleDiaryPress = () => {
-    // 日記詳細画面に遷移
     router.push({
       pathname: `/diary/show/diaryShow`,
       params: {
         diaryId: diaryList.id,
-        isTouchFeelingButton: 'false'
+        isTouchFeelingButton: 'false',
+        selectedUserId: diaryList.userId
       }
     });
   };
 
-  useEffect(() => {
-    // 日付を文字列に変換する関数：◯月◯日(◯)
-    if (diaryList.diaryDate) {
-      // Timestampをdayjsオブジェクトに変換
-      const dayjsDate = dayjs(diaryList.diaryDate.toDate());
-      const formattedDate = formatDate(dayjsDate);
-      setDiaryDate(formattedDate);
-    }
-  }, [diaryList.diaryDate])
-
   return (
-    <SafeAreaView>
-      <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
-        <View style={styles.diaryDateContainer}>
-          <Text style={styles.diaryDay}>{diaryDate}</Text>
+    <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
+      <View style={styles.diaryDateContainer}>
+        <Text style={styles.diaryDay}>{formattedTime}</Text>
+      </View>
+      <View style={styles.diaryContentContainer}>
+        {/* 日記作成者のアイコン画像 */}
+        <View style={styles.diaryUserIconContainer}>
+          <Image
+            source={diaryList.userImage || noUserImage}
+            style={styles.diaryUserIcon}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+          />
         </View>
-        <View style={styles.diaryContentContainer}>
-          {/* 日記作成者のアイコン画像 */}
-          <View style={styles.diaryUserIconContainer}>
+        <View style={styles.diaryContent}>
+          <View style={styles.diaryTimeContainer}>
+            <Text style={styles.diaryUserName}>{diaryList.userName}</Text>
             <Image
-              source={userImage}
-              style={styles.diaryUserIcon}
-              contentFit="cover"
+              source={feelingImage}
+              style={styles.feelingImage}
+              contentFit="contain"
               cachePolicy="memory-disk"
             />
           </View>
-          <View style={styles.diaryContent}>
-            <View style={styles.diaryTimeContainer}>
-              <Text style={styles.diaryUserName}>{userName}</Text>
-              <Image
-                source={feelingImage}
-                style={styles.feelingImage}
-                contentFit="contain"
-                cachePolicy="memory-disk"
-              />
-              <Text style={styles.diaryTime}>{formattedTime}</Text>
-            </View>
-            {/* 日記内容 */}
-            <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
-              {diaryList.diaryText}
-            </Text>
-          </View>
-          {/* 日記投稿画像 */}
-          <View style={styles.diaryImageContainer}>
-            <Image
-              source={diaryList.selectedImage ? { uri: diaryList.selectedImage } : noImage}
-              style={styles.diaryImage}
-            />
-          </View>
+          {/* 日記内容 */}
+          <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
+            {diaryList.diaryText}
+          </Text>
         </View>
-      </TouchableOpacity>
-    </SafeAreaView>
+        {/* 日記投稿画像 */}
+        <View style={styles.diaryImageContainer}>
+          <Image
+            source={diaryList.diaryImage ? { uri: diaryList.diaryImage } : noImage}
+            style={styles.diaryImage}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   diaryList: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   diaryDateContainer: {
     backgroundColor: '#F0F0F0',
@@ -147,7 +130,6 @@ const styles = StyleSheet.create({
   diaryContentText: {
     fontSize: 14,
     lineHeight: 24,
-    // テキストが折り返されるようにする
     flexWrap: 'wrap',
     flexShrink: 1,
   },
