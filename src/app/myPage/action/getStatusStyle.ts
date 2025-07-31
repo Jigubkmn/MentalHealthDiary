@@ -4,7 +4,13 @@ export default function getStatusStyle(status: string): StatusStyle {
   switch (status) {
     case 'block':
       return {
-        text: 'ブロック',
+        text: 'ブロック中',
+        backgroundColor: '#8D8D8D',
+        textColor: '#FFFFFF'
+      };
+    case 'unavailable':
+      return {
+        text: '閲覧不可',
         backgroundColor: '#8D8D8D',
         textColor: '#FFFFFF'
       };
