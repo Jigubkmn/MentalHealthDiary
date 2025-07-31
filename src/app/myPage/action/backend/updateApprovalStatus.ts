@@ -14,12 +14,8 @@ export default async function updateApprovalStatus(
     if (userId === null) return;
     const friendRef = doc(db, `users/${userId}/friends/${friendData.friendId}`);
     const currentUserRef = doc(db, `users/${friendData.friendUsersId}/friends/${friendDocumentId}`);
-    await updateDoc(friendRef, {
-      status: 'approval',
-    });
-    await updateDoc(currentUserRef, {
-      status: 'approval',
-    });
+    await updateDoc(friendRef, { status: 'approval'});
+    await updateDoc(currentUserRef, { status: 'approval'});
     Alert.alert('友人を承認しました');
     setStatus('approval');
   } catch (error) {
