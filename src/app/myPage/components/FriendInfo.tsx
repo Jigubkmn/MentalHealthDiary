@@ -117,7 +117,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
           <Text style={styles.blockButtonText}>{isBlocked ? 'ブロック解除' : 'ブロック'}</Text>
         </TouchableOpacity>
         {/* 削除ボタン */}
-        <TouchableOpacity onPress={() => ConfirmationDeleteFriendModal(userId, friendData, friendDocumentId,  onFriendDeleted)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => ConfirmationDeleteFriendModal(userId, friendData.friendId, friendData.friendUsersId, friendDocumentId, onFriendDeleted)} style={styles.actionButton}>
           <DeleteIcon size={24} color="#FF0000" />
           <Text style={styles.deleteButtonText}>削除</Text>
         </TouchableOpacity>
