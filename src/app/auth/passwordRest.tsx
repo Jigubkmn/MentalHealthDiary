@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TextInput, Alert, TouchableWithoutFeedback } from 'react-native'
-import { getAuth, sendPasswordResetEmail } from 'firebase/auth'
-import { router } from 'expo-router'
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native'
 import AuthNavigationLink from './components/Link'
 import HandleButton from '../components/button/HandleButton'
+import passwordReset from './actions/backend/passwordReset'
 
 export default function PasswordRest() {
   const [email, setEmail] = useState('')
-
 
   // 必須項目が全て入力されているかチェック
   const isFormValid = (): boolean => {
@@ -15,20 +13,8 @@ export default function PasswordRest() {
   };
 
   // パスワードリセット
-  const handlePasswordRest = () => {
-    const passwordRest = async (email: string) => {
-      const auth = getAuth();
-      sendPasswordResetEmail(auth, email)
-      .then(() => {
-        Alert.alert("パスワード再度設定メールを送信しました");
-        setEmail('');
-        router.push("/auth/login");
-      })
-      .catch((error) => {
-        console.log("error", error);
-      })
-    }
-    passwordRest(email)
+  const handlePasswordReset = () => {
+    passwordReset(email, setEmail)
   }
 
   return (
@@ -55,7 +41,7 @@ export default function PasswordRest() {
             {/* 登録ボタン */}
             <HandleButton
               buttonText="送信する"
-              handleButton={handlePasswordRest}
+              handleButton={handlePasswordReset}
               isFormValid={isFormValid}
             />
             {/* リンク */}
@@ -82,10 +68,9 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     marginHorizontal: 24,
-    marginTop: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -108,7 +93,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 16,
+    marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,

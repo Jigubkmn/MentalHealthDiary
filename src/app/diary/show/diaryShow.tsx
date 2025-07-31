@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import Feeling from '../../components/diary/Feeling';
 import { DiaryType } from '../../../../type/diary';
-import { auth, db } from '../../../config';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { auth } from '../../../config';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import Header from './components/Header';
-import handleBack from '../../actions/handleBack';
 import dayjs from 'dayjs';
-import fetchSelectedDiary from '../../actions/fetchSelectedDiary';
+import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 
 
 export default function diaryShow() {
   const [selectedDiaryInfo, setSelectedDiaryInfo] = useState<DiaryType | null>(null);
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
   const userId = auth.currentUser?.uid;
-  const { diaryId } = useLocalSearchParams<{ diaryId?: string }>(); //idだけを取得
+  const { diaryId, selectedUserId } = useLocalSearchParams<{ diaryId?: string, selectedUserId?: string }>(); //idだけを取得
   const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
 
   useEffect(() => {
     // 日記の情報を取得
-    fetchSelectedDiary({ userId, diaryId, setSelectedDiaryInfo });
+    fetchSelectedDiary({ userId: selectedUserId, diaryId, setSelectedDiaryInfo });
   }, []);
 
   useEffect(() => {
@@ -30,41 +28,17 @@ export default function diaryShow() {
     setSelectedFeeling(feelingName);
   }, [selectedDiaryInfo?.feeling]);
 
-  const handleDelete = async () => {
-    if (!userId || !diaryId) return;
-    Alert.alert(
-      '日記を削除',
-      'この日記を削除しますか？\nこの操作は取り消せません。',
-      [
-        {
-          text: 'キャンセル',
-          style: 'cancel',
-        },
-        {
-          text: '削除',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const diaryRef = doc(db, `users/${userId}/diary/${diaryId}`);
-              await deleteDoc(diaryRef);
-              console.log('日記を削除しました');
-              handleBack();
-            } catch (error) {
-              console.error('日記の削除に失敗しました:', error);
-              Alert.alert('エラー', '日記の削除に失敗しました。');
-            }
-          },
-        },
-      ]
-    );
-  };
-
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <View style={styles.headerArea}>
-          <Header diaryId={selectedDiaryInfo?.id || ''} diaryDate={selectedDiaryInfo?.diaryDate || dayjs()} onDelete={handleDelete} />
+          <Header
+            userId={userId}
+            diaryId={selectedDiaryInfo?.id || ''}
+            diaryDate={selectedDiaryInfo?.diaryDate || dayjs()}
+            selectedUserId={selectedUserId}
+          />
           <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={() => {}} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
         </View>
         {selectedDiaryInfo && (
@@ -81,12 +55,10 @@ export default function diaryShow() {
             </View>
             {/* 画像表示部分 */}
             <View style={styles.selectedImageContainer}>
-              {selectedDiaryInfo.selectedImage ? (
+              {selectedDiaryInfo.diaryImage ? (
                 <Image
-                  source={{ uri: selectedDiaryInfo.selectedImage }}
+                  source={{ uri: selectedDiaryInfo.diaryImage }}
                   style={styles.selectedImage}
-                  contentFit="contain"
-                  cachePolicy="memory-disk"
                 />
               ) : (
                 <Text style={styles.ImageText}>写真を選択していません</Text>

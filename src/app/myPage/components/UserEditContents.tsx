@@ -1,6 +1,6 @@
 import React from 'react'
 import EditIcon from '../../components/Icon/EditIcon';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 
 type UserEditContentsProps = {
   userTitle: string
@@ -32,7 +32,7 @@ export default function UserEditContents({
   };
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.userContentsContainer}>
         <View style={styles.userContentsTitle}>
           <Text style={styles.userTitle}>{userTitle}</Text>

@@ -3,6 +3,8 @@ import { Tabs, useRouter } from 'expo-router'
 import UserIcon from '../components/Icon/UserIcon'
 import HomeIcon from '../components/Icon/HomeIcon'
 import DiaryCreationIcon from '../components/Icon/DiaryCreationIcon'
+import AnalysisIcon from '../components/Icon/AnalysisIcon'
+import HeartIcon from '../components/Icon/HeartIcon'
 
 export default function TabLayout() {
 
@@ -11,8 +13,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#FFA500', // アクティブなタブの色（オレンジ）
-        tabBarInactiveTintColor: '#8E8E93', // 非アクティブなタブの色
+        tabBarActiveTintColor: '#FFA500',
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
@@ -30,6 +32,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "日記一覧",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <HomeIcon size={size} color={color} />
           ),
@@ -46,9 +49,7 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: (e) => {
-            // デフォルトの画面遷移をキャンセル
             e.preventDefault();
-            // パラメータを付けて自分で画面遷移を命令する
             router.push({
               pathname: '/diaryCreation',
               params: {
@@ -57,6 +58,26 @@ export default function TabLayout() {
               }
             });
           },
+        }}
+      />
+      <Tabs.Screen
+        name="analysis"
+        options={{
+          title: "分析レポート",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <AnalysisIcon width={size} height={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="mentalHealthCheckList"
+        options={{
+          title: "メンタルヘルスチェック一覧",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <HeartIcon size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen

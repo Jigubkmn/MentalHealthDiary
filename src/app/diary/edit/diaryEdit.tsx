@@ -6,7 +6,7 @@ import Header from '../edit/components/Header';
 import { DiaryType } from '../../../../type/diary';
 import { auth } from '../../../config';
 import { useLocalSearchParams } from 'expo-router';
-import fetchSelectedDiary from '../../actions/fetchSelectedDiary';
+import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 import dayjs from 'dayjs';
 import DiaryText from '../../components/diary/DiaryText';
 import DiaryImage from '../../components/diary/DiaryImage';
@@ -17,11 +17,10 @@ export default function DiaryEdit() {
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const userId = auth.currentUser?.uid;
-  const { diaryId } = useLocalSearchParams<{ diaryId?: string }>(); //idだけを取得
+  const { diaryId } = useLocalSearchParams<{ diaryId?: string }>();
   const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
 
   useEffect(() => {
-    // 日記の情報を取得
     fetchSelectedDiary({ userId, diaryId, setSelectedDiaryInfo });
   }, []);
 
@@ -34,16 +33,14 @@ export default function DiaryEdit() {
   useEffect(() => {
     if (selectedDiaryInfo) {
       setDiaryText(selectedDiaryInfo?.diaryText);
-      setSelectedImage(selectedDiaryInfo.selectedImage);
     }
   }, [selectedDiaryInfo?.diaryText]);
 
   useEffect(() => {
     if (selectedDiaryInfo) {
-      setSelectedImage(selectedDiaryInfo?.selectedImage);
+      setSelectedImage(selectedDiaryInfo?.diaryImage);
     }
-  }, [selectedDiaryInfo?.selectedImage]);
-
+  }, [selectedDiaryInfo?.diaryImage]);
 
   // 画像削除
   const handleImageDelete = () => {

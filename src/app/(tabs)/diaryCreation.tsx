@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, ScrollView, Keyboard } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { auth } from '../../config';
 import Feeling from '../components/diary/Feeling';
 import Header from '../diary/creation/components/Header';
 import DiaryText from '../components/diary/DiaryText';
 import DiaryImage from '../components/diary/DiaryImage';
+import { UserInfoType } from '../../../type/userInfo';
+import fetchUserInfo from '../actions/backend/fetchUserInfo';
 
 export default function DiaryCreation() {
+  const userId = auth.currentUser?.uid
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const { isShowBackButton } = useLocalSearchParams<{ isShowBackButton?: string }>();
   const [diaryText, setDiaryText] = useState('');
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
@@ -14,10 +19,16 @@ export default function DiaryCreation() {
   const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       setDiaryText('');
       setSelectedFeeling(null);
       setSelectedImage(null);
+      if (userId === null) return;
+      const unsubscribe = fetchUserInfo({
+        userId: userId,
+        setUserInfo: setUserInfo,
+      });
+      return unsubscribe;
     }, [])
   );
 
@@ -26,7 +37,7 @@ export default function DiaryCreation() {
   };
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <View style={styles.headerArea}>
           <Header
@@ -37,6 +48,8 @@ export default function DiaryCreation() {
             setSelectedImage={setSelectedImage}
             isShowBackButton={isShowBackButton === 'true'}
             selectedImage={selectedImage}
+            userInfo={userInfo}
+            userId={userId}
           />
           <Feeling selectedFeeling={selectedFeeling} setSelectedFeeling={setSelectedFeeling} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
         </View>
@@ -54,7 +67,7 @@ export default function DiaryCreation() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   headerArea: {
     backgroundColor: '#FFFFFF',

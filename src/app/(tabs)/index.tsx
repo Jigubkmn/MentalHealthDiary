@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView  } from 'react-native'
 import DiaryList from '../diary/list/components/DiaryList'
-import { auth, db } from '../../config';
-import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
+import { auth } from '../../config';
 import { DiaryType } from '../../../type/diary';
 import PlusIcon from '../components/Icon/PlusIcon';
 import { useRouter } from 'expo-router';
 import dayjs from 'dayjs';
-import YearMonthSelectModal from '../diary/list/components/YearMonthSelectModal';
+import YearMonthSelectModal from '../components/YearMonthSelectModal';
+import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
+import Header from '../diary/list/components/Header';
+import { FriendInfoType } from '../../../type/friend';
+import fetchFriendList from '../actions/backend/fetchFriendList';
 import { UserInfoType } from '../../../type/userInfo';
-import fetchUserInfo from '../actions/fetchUserInfo';
+import fetchUserInfo from '../actions/backend/fetchUserInfo';
 
 export default function home() {
-  const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
-  const [userInfos, setUserInfos] = useState<UserInfoType | null>(null)
-  const [userInfoId, setUserInfoId] = useState<string>('')
   const userId = auth.currentUser?.uid
+  const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
+  const [friendsData, setFriendsData] = useState<FriendInfoType[]>([]);
+  const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]) // 表示するユーザーのuserId
   const router = useRouter();
-  console.log("userInfoId", userInfoId)
 
-  // モーダルの表示状態を管理
   const [isModalVisible, setModalVisible] = useState(false);
-
   // 表示用の年月を管理する
   const [displayDate, setDisplayDate] = useState(dayjs());
 
@@ -29,36 +30,39 @@ export default function home() {
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
 
   useEffect(() => {
-    // ユーザー情報取得
     if (userId === null) return;
+    // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
+    const startOfMonth = displayDate.startOf('month');
+    const endOfMonth = displayDate.add(1, 'month').startOf('month');
+    // 日記一覧を取得（ログインユーザーとフレンドの日記のみ）
+    const unsubscribe = fetchDiaries(setDiaryLists, startOfMonth, endOfMonth, visibleUserIds);
+    return unsubscribe;
+  }, [displayDate, visibleUserIds])
 
+  useEffect(() => {
+    if (userId === null) return;
     const unsubscribe = fetchUserInfo({
       userId,
-      setUserInfos,
-      setUserInfoId
+      setUserInfo,
     });
-
     return unsubscribe;
   }, [userId])
 
   useEffect(() => {
     if (userId === null) return;
-    // 選択された月の開始日時と終了日時（翌月の開始日時）を計算
-    const startOfMonth = displayDate.startOf('month').toDate();
-    const endOfMonth = displayDate.add(1, 'month').startOf('month').toDate();
-
-    const ref = collection(db, `users/${userId}/diary`)
-    const q = query(ref, orderBy('diaryDate', 'desc'), where('diaryDate', '>=', startOfMonth), where('diaryDate', '<', endOfMonth))
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const remoteDiaryList: DiaryType[] = []
-      snapshot.docs.forEach((doc) => {
-        const { diaryText, diaryDate, feeling, updatedAt, selectedImage } = doc.data();
-        remoteDiaryList.push({ id: doc.id, diaryText, diaryDate, feeling, updatedAt, selectedImage })
-      })
-      setDiaryLists(remoteDiaryList)
-    })
+    // フレンド情報をリアルタイム監視
+    const unsubscribe = fetchFriendList(userId, setFriendsData);
     return unsubscribe;
-  }, [displayDate])
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      const userIds = [userId, ...friendsData.map(friend => friend.friendUsersId)].filter((id): id is string => id !== undefined);
+      setVisibleUserIds(userIds);
+    } else {
+      setVisibleUserIds([]);
+    }
+  }, [friendsData, userId]);
 
   const handleYearMonthPress = () => {
     // モーダルを開くときに、現在の表示年月をピッカーの初期値に設定する
@@ -67,7 +71,8 @@ export default function home() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Header userImage={userInfo?.userImage}/>
       {/* 年月 */}
       <View style={styles.yearMonthContainer}>
         <TouchableOpacity onPress={handleYearMonthPress}>
@@ -81,8 +86,6 @@ export default function home() {
             <DiaryList
               key={diaryList.id}
               diaryList={diaryList}
-              userName={userInfos?.userName}
-              userImage={userInfos?.userImage}
             />
           )
         }):
@@ -107,16 +110,17 @@ export default function home() {
         setSelectedYearMonth={setSelectedYearMonth}
         isModalVisible={isModalVisible}
       />
-    </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   yearMonthContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   yearMonthText: {
     fontSize: 20,
