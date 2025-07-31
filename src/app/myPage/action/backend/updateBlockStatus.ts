@@ -5,6 +5,8 @@ import { doc, updateDoc } from 'firebase/firestore'
 export default async function updateBlockStatus(
   userId: string,
   friendId: string,
+  friendUsersId: string,
+  friendDocumentId: string | null,
   isBlocked: boolean,
   setStatus: (status: string) => void,
   setIsBlocked: (isBlocked: boolean) => void,
@@ -12,21 +14,28 @@ export default async function updateBlockStatus(
 ) {
   try {
     if (userId === null) return;
-    const updateStatus = isBlocked ? 'approval' : 'block'
+    const friendUpdateStatus = isBlocked ? 'approval' : 'block'
+    const currentUserUpdateStatus = isBlocked ? 'approval' : 'unavailable'
     const friendRef = doc(db, `users/${userId}/friends/${friendId}`);
+    const currentUserRef = doc(db, `users/${friendUsersId}/friends/${friendDocumentId}`);
+    // ログインユーザーの友人情報を更新
     await updateDoc(friendRef, {
-      status: updateStatus,
+      status: friendUpdateStatus,
       blocked: !isBlocked,
-      notifyOnDiary: isBlocked,
       showDiary: isBlocked,
     });
-    // blockはステータス変更前
+    // 友人の友人情報を更新
+    await updateDoc(currentUserRef, {
+      status: currentUserUpdateStatus,
+      blocked: !isBlocked,
+      showDiary: isBlocked,
+    });
     if (isBlocked) {
       Alert.alert("友人のブロックを解除しました");
     } else {
       Alert.alert("友人をブロックしました");
     }
-    setStatus(updateStatus);
+    setStatus(friendUpdateStatus);
     setIsBlocked(!isBlocked);
     setIsViewEnabled(isBlocked);
   } catch (error) {
