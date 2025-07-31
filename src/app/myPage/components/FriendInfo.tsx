@@ -8,7 +8,7 @@ import DeleteIcon from '../../components/Icon/DeleteIcon';
 import BlockIcon from '../../components/Icon/Block';
 import getStatusStyle from '../action/getStatusStyle';
 import saveShowDiary from '../action/backend/saveShowDiary';
-import updateStatus from '../action/backend/updateBlockStatus';
+import updateBlockStatus from '../action/backend/updateBlockStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
 import ConfirmationDeleteFriendModal from '../action/ConfirmationDeleteFriendModal';
 import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
@@ -42,7 +42,15 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
         setFriendDocumentId(data || null);
         // myPage.tsxにいる時のみ承認確認モーダルを表示
         if (friendData.status === 'awaitingApproval') {
-          ApprovalConfirmationModal(userId, friendData, data || null, onFriendDeleted, setStatus);
+          ApprovalConfirmationModal(
+            userId,
+            friendData.friendId,
+            friendData.friendUsersId,
+            friendData.userName,
+            data || null,
+            onFriendDeleted,
+            setStatus
+          );
         }
       } catch (error) {
         console.error('フレンドドキュメントIDの取得に失敗しました', error);
@@ -92,9 +100,11 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
       <Divider marginHorizontal={0} />
       <View style={styles.actionContainer}>
         {/* ブロックボタン */}
-        <TouchableOpacity onPress={() => updateStatus(
+        <TouchableOpacity onPress={() => updateBlockStatus(
           userId,
           friendData.friendId,
+          friendData.friendUsersId,
+          friendDocumentId,
           isBlocked,
           setStatus,
           setIsBlocked,
