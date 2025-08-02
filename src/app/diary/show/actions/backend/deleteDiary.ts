@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { db } from '../../../../../config';
 import { doc, deleteDoc } from 'firebase/firestore';
-import handleBack from '../../../../actions/handleBack';
+import { router } from 'expo-router';
 
 
 export default async function deleteDiary(userId?: string, diaryId?: string) {
@@ -24,7 +24,7 @@ export default async function deleteDiary(userId?: string, diaryId?: string) {
               await deleteDoc(diaryRef);
               await deleteDoc(feelingScoreRef);
               console.log('日記を削除しました');
-              handleBack();
+              router.back();
             } catch (error) {
               console.error('日記の削除に失敗しました:', error);
               Alert.alert('エラー', '日記の削除に失敗しました。');
