@@ -1,16 +1,6 @@
 import { db } from '../../config'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 
-// ランダムなアカウントIDを生成する関数
-function generateRandomAccountId(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < 15; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return result
-}
-
 // 重複しないアカウントIDを生成する関数
 export default async function getRandomAccountId(): Promise<string> {
   let newAccountId: string
@@ -20,7 +10,12 @@ export default async function getRandomAccountId(): Promise<string> {
 
   // isDuplicateがtrueである限り（＝IDが重複している間）ループを続ける
   do {
-    newAccountId = generateRandomAccountId()
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let result = ''
+    for (let i = 0; i < 15; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    newAccountId = result
     const q = query(usersRef, where('accountId', '==', newAccountId))
     const querySnapshot = await getDocs(q)
     isDuplicate = !querySnapshot.empty
