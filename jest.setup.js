@@ -1,0 +1,1 @@
+// Basic Jest setup for React Native
