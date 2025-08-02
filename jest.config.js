@@ -10,6 +10,8 @@ module.exports = {
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/__tests__/**',
+    '!src/app/components/Icon/**',
+    '!src/app/\\(tabs\\)/**',
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };
