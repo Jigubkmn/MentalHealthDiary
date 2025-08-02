@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import { DiaryType } from '../../../type/diary';
 
-export default function formatData({diaryList}: {diaryList: DiaryType}) {
-  if (diaryList.diaryDate && typeof diaryList.diaryDate === 'object' && 'seconds' in diaryList.diaryDate) {
+export default function formatData({diaryList}: {diaryList: DiaryType | null}) {
+  if (diaryList?.diaryDate && typeof diaryList.diaryDate === 'object' && 'seconds' in diaryList.diaryDate) {
     // Firestoreのタイムスタンプ形式の場合
     const timestamp = diaryList.diaryDate as unknown as { seconds: number; nanoseconds: number };
     const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
