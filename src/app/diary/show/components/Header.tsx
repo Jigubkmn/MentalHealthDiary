@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import dayjs from 'dayjs';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
 import BackButton from '../../../components/button/BackButton';
 import EditIcon from '../../../components/Icon/EditIcon';
 import DeleteIcon from '../../../components/Icon/DeleteIcon';
-import formatDate from '../../../actions/formatData';
+import formatData from '../../../actions/formatData';
 import deleteDiary from '../actions/backend/deleteDiary';
+import { DiaryType } from '../../../../../type/diary';
+import dayjs from 'dayjs';
 
 type Props = {
   userId?: string;
   diaryId: string;
-  diaryDate: dayjs.Dayjs;
+  diaryInfo: DiaryType | null;
   selectedUserId?: string;
 }
 
-export default function Header({ userId, diaryId, diaryDate, selectedUserId }: Props) {
+export default function Header({ userId, diaryId, diaryInfo, selectedUserId }: Props) {
   const router = useRouter();
-  const [date, setDate] = useState(diaryDate);  // diaryDate："2025-07-06T09:21:43.658Z"
+  const [date, setDate] = useState(diaryInfo?.diaryDate || dayjs());  // diaryDate："2025-07-06T09:21:43.658Z"
   const [selectedDate, setSelectedDate] = useState('');
 
   const isButtonVisible = selectedUserId === userId;
 
   useEffect(() => {
     // diaryDateが変更されたらdateも更新
-    setDate(diaryDate);
-  }, [diaryDate]);
+    setDate(diaryInfo?.diaryDate || dayjs());
+  }, [diaryInfo?.diaryDate]);
 
   useEffect(() => {
     // 日付を文字列に変換する関数：◯月◯日(◯)
-    const formattedDate = formatDate(date);
+    const formattedDate = formatData({diaryList: diaryInfo || null});
     setSelectedDate(formattedDate);
   }, [date]);
 

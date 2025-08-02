@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
 import { noImage, noUserImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
-import formatTimestampToTime from '../../../actions/formatTimestampToTime';
+import formatData from '../../../actions/formatData';
 
 type Props = {
   diaryList: DiaryType
@@ -16,8 +16,8 @@ export default function DiaryList({ diaryList } :Props) {
 
   // 体調の画像を取得
   const feelingImage = feelings.find((feeling) => feeling.name === diaryList.feeling)?.image;
-  // 時間と分に変換
-  const formattedTime = formatTimestampToTime({diaryList});
+  // ◯月◯日
+  const formattedTime = formatData({diaryList});
 
   // 日記詳細画面に遷移
   const handleDiaryPress = () => {

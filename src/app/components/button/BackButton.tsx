@@ -1,11 +1,11 @@
 import React from 'react'
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native'
-import handleBack from '../../actions/handleBack';
+import { router } from "expo-router";
 
 export default function BackButton() {
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={handleBack}>
+      <TouchableOpacity onPress={() => router.back()}>
         <Text style={styles.headerButtonText}>戻る</Text>
       </TouchableOpacity>
     </View>
