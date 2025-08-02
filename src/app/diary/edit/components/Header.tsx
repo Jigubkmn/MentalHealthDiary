@@ -28,9 +28,14 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
   }, [diaryDate]);
 
   useEffect(() => {
-    // 日付を文字列に変換する関数：◯月◯日(◯)
-    const formattedDate = formatWeekData(date);
-    setSelectedDate(formattedDate);
+    if (date && date.isValid()) {
+      // 日付を文字列に変換する関数：◯月◯日(◯)
+      const formattedDate = formatWeekData(date);
+      setSelectedDate(formattedDate);
+    } else {
+      // 無効な場合は、ローディング表示にする
+      setSelectedDate('...');
+    }
   }, [date]);
 
   // 必須項目が全て入力されているかチェック
