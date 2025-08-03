@@ -1,6 +1,6 @@
 import { Alert } from 'react-native'
-import deleteFriend from './backend/deleteFriend'
-import updateApprovalStatus from './backend/updateApprovalStatus';
+import deleteFriend from '../action/backend/deleteFriend'
+import updateApprovalStatus from '../action/backend/updateApprovalStatus';
 
 
 export default function ApprovalConfirmationModal(

@@ -11,7 +11,7 @@ import saveShowDiary from '../action/backend/saveShowDiary';
 import updateBlockStatus from '../action/backend/updateBlockStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
 import ConfirmationDeleteFriendModal from './ConfirmationDeleteFriendModal';
-import ApprovalConfirmationModal from '../action/ApprovalConfirmationModal';
+import ApprovalConfirmationModal from './ApprovalConfirmationModal';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
