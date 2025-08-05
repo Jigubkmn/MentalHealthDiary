@@ -1,6 +1,5 @@
 import { db } from '../../../config';
 import { doc, getDoc } from 'firebase/firestore';
-import dayjs from 'dayjs';
 import { DiaryType } from '../../../../type/diary';
 
 type Props = {
@@ -19,7 +18,7 @@ export default async function fetchSelectedDiary({ userId, diaryId, setSelectedD
         const diary: DiaryType = {
           id: diarySnap.id,
           diaryText: data.diaryText,
-          diaryDate: dayjs(data.diaryDate.toDate()),
+          diaryDate: data.diaryDate,
           feeling: data.feeling || null,
           diaryImage: data.diaryImage,
           updatedAt: data.updatedAt.toDate(),

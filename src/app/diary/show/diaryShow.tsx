@@ -6,7 +6,6 @@ import { DiaryType } from '../../../../type/diary';
 import { auth } from '../../../config';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import Header from './components/Header';
-import dayjs from 'dayjs';
 import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 
 
@@ -36,7 +35,7 @@ export default function diaryShow() {
           <Header
             userId={userId}
             diaryId={selectedDiaryInfo?.id || ''}
-            diaryDate={selectedDiaryInfo?.diaryDate || dayjs()}
+            diaryInfo={selectedDiaryInfo || null}
             selectedUserId={selectedUserId}
           />
           <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={() => {}} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
