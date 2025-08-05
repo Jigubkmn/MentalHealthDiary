@@ -1,15 +1,19 @@
 import { Alert } from "react-native";
 import { db } from "../../../../config";
 import { doc, updateDoc } from "firebase/firestore";
+import { validateAccountId } from "../../../../../utils/validation";
 
 export default async function updateAccountId(
   accountId: string,
-  errorAccountId: string,
+  errors: { accountId: string; userName: string },
+  setErrors: (errors: { accountId: string; userName: string }) => void,
   setIsAccountIdEdit: (isAccountIdEdit: boolean) => void,
   userId?: string,
 ) {
   if (!accountId || !userId) return;
-  if (errorAccountId) return;
+  const errorMessage = await validateAccountId(accountId)
+  setErrors({ ...errors, accountId: errorMessage })
+  if (errorMessage) return;
   try {
     const userRef = doc(db, `users/${userId}/userInfo/${userId}`);
     await updateDoc(userRef, {
