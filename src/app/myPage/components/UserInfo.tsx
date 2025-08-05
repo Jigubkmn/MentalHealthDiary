@@ -6,11 +6,11 @@ import EditIcon from '../../components/Icon/EditIcon';
 import { UserInfoType } from '../../../../type/userInfo';
 import UserLogout from '../../actions/handleLogout';
 import UserEditContents from './UserEditContents';
-import { validateAccountId, validateUserName } from '../../../../utils/validation';
 import Divider from '../../components/Divider';
 import updateUserImage from '../action/backend/updateUserImage';
 import updateAccountId from '../action/backend/updateAccountId';
 import updateUserName from '../action/backend/updateUserName';
+import { validateAccountId, validateUserName } from '../../../../utils/validation';
 
 type UserInfoProps = {
   userInfo: UserInfoType | null
@@ -51,24 +51,23 @@ export default function UserInfo({ userInfo, userId }: UserInfoProps) {
 
   // アカウントID更新
   const handleUpdateAccountId = async () => {
-    updateAccountId(accountId, errors.accountId, setIsAccountIdEdit, userId);
+    updateAccountId(accountId, errors, setErrors, setIsAccountIdEdit, userId);
   }
 
   // ユーザーIDのバリデーション
-  const handleValidateAccountId = async () => {
-    const errorMessage = await validateAccountId(accountId)
+  const handleValidateAccountId = async (text: string) => {
+    const errorMessage = await validateAccountId(text)
     setErrors({ ...errors, accountId: errorMessage })
   }
 
   // ユーザー名更新
   const handleUpdateUserName = async () => {
-    updateUserName(userName, errors.userName, setIsUserNameEdit, userId);
+    updateUserName(userName, errors, setErrors, setIsUserNameEdit, userId);
   }
 
   // ユーザー名のバリデーション
-  const handleValidateUserName = async () => {
-    if (!userName) return;
-    const errorMessage = await validateUserName(userName)
+  const handleValidateUserName = async (text: string) => {
+    const errorMessage = await validateUserName(text)
     setErrors({ ...errors, userName: errorMessage })
   }
 
