@@ -14,7 +14,16 @@ export default defineConfig([
       "@typescript-eslint/no-require-imports": "error"
     }
   },
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], languageOptions: { globals: globals.browser } },
+  {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest
+      }
+    }
+  },
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
 ]);

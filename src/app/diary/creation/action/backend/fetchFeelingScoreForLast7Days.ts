@@ -63,6 +63,8 @@ export default async function fetchFeelingScoreForLast7Days(userId?: string, dia
           }
         ]
       );
+    }else {
+      Alert.alert('日記の作成に成功しました');
     }
     return feelingScoresArray;
   } catch (error) {

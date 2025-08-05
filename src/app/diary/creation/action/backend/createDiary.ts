@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 import checkExistingDiary from '../checkExistingDiary';
 import feelings from '../../../../constants/feelings';
 import fetchFeelingScoreForLast7Days from './fetchFeelingScoreForLast7Days';
-import formatWeekData from '../../../../actions/formatWeekData';
+import formatToday from '../../../../actions/formatToday';
 
 export default async function createDiary(
   selectedFeeling: string | null,
@@ -34,7 +34,7 @@ export default async function createDiary(
   // 同じ日付のデータが既に存在するかチェック
   const hasExistingDiary = await checkExistingDiary(userId, date);
   if (hasExistingDiary) {
-    Alert.alert("エラー", `${formatWeekData(date)}の日記は既に存在します。`);
+    Alert.alert("エラー", `${formatToday(date)}の日記は既に存在します。`);
     return;
   }
 

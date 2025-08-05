@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import dayjs from 'dayjs';
-import formatWeekDate from '../../../actions/formatWeekData';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
 import BackButton from '../../../components/button/BackButton';
 import createDiary from '../action/backend/createDiary';
 import { UserInfoType } from '../../../../../type/userInfo';
+import formatToday from '../../../actions/formatToday';
 
 type Props = {
   diaryText: string;
@@ -36,7 +36,7 @@ export default function Header({
 
   useEffect(() => {
   // 日付を文字列に変換する関数：◯月◯日(◯)
-    const formattedDate = formatWeekDate(date);
+    const formattedDate = formatToday(date);
     setSelectedDate(formattedDate);
   }, [date])
 

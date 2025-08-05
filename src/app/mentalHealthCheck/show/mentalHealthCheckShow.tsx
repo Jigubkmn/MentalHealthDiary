@@ -66,11 +66,13 @@ export default function MentalHealthCheckHistory() {
               </View>
               <View style={styles.scoreBox}>
                 <View style={styles.scoreItem}>
-                  <Text style={styles.scoreLabel}>設問A (最近1ヶ月の状態)</Text>
+                  <Text style={styles.scoreLabel}>{"<設問A>"}</Text>
+                  <Text style={styles.scoreLabel}>最近1ヶ月の状態</Text>
                   <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
                 </View>
                 <View style={styles.scoreItem}>
-                  <Text style={styles.scoreLabel}>設問B (仕事・対人関係)</Text>
+                  <Text style={styles.scoreLabel}>{"<設問B>"}</Text>
+                  <Text style={styles.scoreLabel}>{"(仕事・対人関係)"}</Text>
                   <Text style={styles.scoreValue}>{selectedMentalHealthCheckInfo?.scoreA}</Text>
                 </View>
               </View>
