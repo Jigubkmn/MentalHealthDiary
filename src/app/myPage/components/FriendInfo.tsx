@@ -38,7 +38,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
 
     const fetchFriendDocument = async () => {
       try {
-        const data = await fetchFriendDocumentId(friendData.friendUsersId);
+        const data = await fetchFriendDocumentId(friendData.friendUsersId, userId);
         setFriendDocumentId(data || null);
         // myPage.tsxにいる時のみ承認確認モーダルを表示
         if (friendData.status === 'awaitingApproval') {
