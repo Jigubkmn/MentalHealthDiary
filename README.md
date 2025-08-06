@@ -53,8 +53,8 @@
 ## 使用技術
 | カテゴリ | 技術 |
 | :--- | :--- |
-| フロントエンド | JavaScript、TailwindCSS、DaisyUI |
-| バックエンド | Firebase |
+| フロントエンド | TypeScript 5.8.3、React.js 19.0.0、ReactNative 0.79.5 |
+| バックエンド | Firebase 11.9.1 |
 | db | Firestore Database |
 
 
