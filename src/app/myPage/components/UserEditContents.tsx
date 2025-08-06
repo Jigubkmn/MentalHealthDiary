@@ -11,7 +11,7 @@ type UserEditContentsProps = {
   setUserUpdateContent: (accountId: string) => void;
   handleUserInfoUpdate: (accountId: string | undefined) => void;
   errorText?: string;
-  handleValidateUserContent: () => void;
+  handleValidateUserContent: (text: string) => void;
 }
 
 export default function UserEditContents({
@@ -48,9 +48,10 @@ export default function UserEditContents({
               style={styles.userInputContent}
               value={userUpdateContent}
               onChangeText={(text) => {
-                setUserUpdateContent(text)}}
+                setUserUpdateContent(text);
+                handleValidateUserContent(text);
+              }}
               autoCapitalize="none"
-              onBlur={() => handleValidateUserContent()}
             />
             {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
             <View style={styles.editButtonContainer}>
