@@ -38,7 +38,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
 
     const fetchFriendDocument = async () => {
       try {
-        const data = await fetchFriendDocumentId(friendData.friendUsersId);
+        const data = await fetchFriendDocumentId(friendData.friendUsersId, userId);
         setFriendDocumentId(data || null);
         // myPage.tsxにいる時のみ承認確認モーダルを表示
         if (friendData.status === 'awaitingApproval') {
@@ -60,10 +60,14 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
   }, []);
 
   useEffect(() => {
-    const statusStyle = getStatusStyle(status);
+    const statusStyle = getStatusStyle(friendData.status);
     // statusのスタイルを取得
     setStatusStyle(statusStyle);
-  }, [status]);
+    setStatus(friendData.status);
+    const isStatusBlocked = friendData.status === 'block';
+    setIsBlocked(isStatusBlocked);
+    setIsViewEnabled(friendData.showDiary)
+  }, [friendData.status]);
 
   const isStatusApproval = () => {
     return status === 'approval' || status === 'block';
