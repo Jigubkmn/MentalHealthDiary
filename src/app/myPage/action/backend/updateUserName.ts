@@ -1,15 +1,19 @@
 import { Alert } from "react-native";
 import { db } from "../../../../config";
 import { doc, updateDoc, collection, query, where, getDocs, writeBatch } from "firebase/firestore";
+import { validateUserName } from "../../../../../utils/validation";
 
 export default async function updateUserName(
   userName: string,
-  errorUserName: string,
+  errors: { accountId: string; userName: string },
+  setErrors: (errors: { accountId: string; userName: string }) => void,
   setIsUserNameEdit: (isUserNameEdit: boolean) => void,
   userId?: string,
 ) {
   if (!userName || !userId) return;
-  if (errorUserName) return;
+  const errorMessage = await validateUserName(userName)
+  setErrors({ ...errors, userName: errorMessage })
+  if (errorMessage) return;
   try {
     const userRef = doc(db, `users/${userId}/userInfo/${userId}`);
     await updateDoc(userRef, {

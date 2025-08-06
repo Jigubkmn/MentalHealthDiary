@@ -16,7 +16,11 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.Jigubkmn.MentalHealthDiary",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "画像を選択するために、写真ライブラリへのアクセスが必要です。"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -30,6 +34,12 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "60fc5230-361c-4258-8a97-952a7faa1636"
+      }
+    }
   }
 }
