@@ -1,4 +1,4 @@
-import { collection, collectionGroup, query, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, doc, query, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '../../../../config';
 import { FriendInfoType } from '../../../../../type/friend';
 
@@ -22,34 +22,31 @@ export default function fetchFriendList(
         const friendData = friendDoc.data();
         const friendUserInfoId = friendData.friendId; // userInfoドキュメントのID
 
-        // friendIdに対応するユーザーのuserInfoを取得
-        const usersRef = collectionGroup(db, 'userInfo');
-        const q = query(usersRef);
-        const querySnapshot = await getDocs(q);
+        try {
+          // friendIdに対応するユーザーのuserInfoを取得
+          const userInfoRef = doc(db, `users/${friendUserInfoId}/userInfo/${friendUserInfoId}`);
+          const userInfoDoc = await getDoc(userInfoRef);
 
-        // friendIdと一致するuserInfoドキュメントを検索
-        let userInfoData = null;
-        for (const doc of querySnapshot.docs) {
-          if (doc.id === friendUserInfoId) {
-            userInfoData = doc.data();
-            break;
+          if (userInfoDoc.exists()) {
+            const userInfoData = userInfoDoc.data();
+
+            // データをまとめてオブジェクトに
+            const friendInfo: FriendInfoType = {
+              friendUsersId: friendUserInfoId,
+              friendId: friendDoc.id,
+              status: friendData.status,
+              showDiary: friendData.showDiary,
+              userImage: userInfoData.userImage || '',
+              userName: userInfoData.userName || '',
+            };
+
+            friendsData.push(friendInfo);
           }
-        }
-
-        if (userInfoData) {
-          // データをまとめてオブジェクトに
-          const friendInfo: FriendInfoType = {
-            friendUsersId: friendUserInfoId,
-            friendId: friendDoc.id,
-            status: friendData.status,
-            showDiary: friendData.showDiary,
-            userImage: userInfoData.userImage || '',
-            userName: userInfoData.userName || '',
-          };
-
-          friendsData.push(friendInfo);
+        } catch (error) {
+          console.error(`友人 ${friendUserInfoId} の情報取得に失敗しました:`, error);
         }
       }
+
       // フレンドデータを設定
       setFriendsData(friendsData);
       console.log('友人情報の取得に成功しました');
@@ -58,6 +55,7 @@ export default function fetchFriendList(
       // エラー時は空配列を設定
       setFriendsData([]);
     });
+
     return unsubscribe;
   } catch (error) {
     console.error('フレンド情報の取得に失敗しました:', error);
