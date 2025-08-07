@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native'
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import {
   validateUserName,
   validateEmail,
@@ -59,8 +59,8 @@ export default function SignUp() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.wrapper}>
           <Text style={styles.title}>ユーザー新規登録</Text>
           <ScrollView style={styles.bodyContainer}>
@@ -151,8 +151,8 @@ export default function SignUp() {
             />
           </ScrollView>
         </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   )
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, ScrollView, Keyboard } from 'react-native'
 import AuthNavigationLink from './components/Link'
 import HandleButton from '../components/button/HandleButton'
 import login from './actions/backend/login'
@@ -18,8 +18,8 @@ export default function Login() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.wrapper}>
           <Text style={styles.title}>ログイン</Text>
           <ScrollView style={styles.bodyContainer}>
@@ -69,8 +69,8 @@ export default function Login() {
             />
           </ScrollView>
         </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   )
 }
 
