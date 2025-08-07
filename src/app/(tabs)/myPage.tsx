@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native'
 import Header from '../myPage/components/Header'
 import { router } from 'expo-router';
 import { auth } from '../../config';
@@ -37,6 +37,30 @@ export default function myPage() {
     setFriendsData(currentFriends =>
       currentFriends.filter(friend => friend.friendId !== deletedFriendId)
     );
+  };
+
+  // お問い合わせフォームを開く関数
+  const handleContactPress = () => {
+    const inquiryUrl = `https://forms.gle/W2vZjxfpzcxbpfHt9`;
+
+    Linking.openURL(inquiryUrl).catch(() => {
+      Alert.alert(
+        'メールアプリが見つかりません',
+        'メールアプリがインストールされていないか、設定されていません。\n\n直接以下のメールアドレスにお問い合わせください：\nbkmn.31519@gmail.com'
+      );
+    });
+  };
+
+  // プライバシーポリシーページを開く関数
+  const handlePrivacyPolicyPress = () => {
+    const privacyPolicyUrl = 'https://jigubkmn.github.io/privacyPolicy/';
+
+    Linking.openURL(privacyPolicyUrl).catch(() => {
+      Alert.alert(
+        'ページを開けませんでした',
+        'ブラウザでページを開くことができませんでした。しばらく時間をおいてから再度お試しください。'
+      );
+    });
   };
 
   return (
@@ -85,6 +109,24 @@ export default function myPage() {
               <Text style={styles.buttonText}>友人を登録</Text>
             </TouchableOpacity>
           </View>
+        </View>
+        {/* お問い合わせフォームのリンク */}
+        <View style={styles.linkContainer}>
+          <TouchableOpacity
+            onPress={handleContactPress}
+            style={styles.linkButton}
+          >
+            <Text style={styles.linkButtonText}>お問い合わせ</Text>
+          </TouchableOpacity>
+        </View>
+        {/* プライバシーポリシーページへのリンク */}
+        <View style={styles.linkContainer}>
+          <TouchableOpacity
+            onPress={handlePrivacyPolicyPress}
+            style={styles.linkButton}
+          >
+            <Text style={styles.linkButtonText}>プライバシーポリシー</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -142,5 +184,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     textAlign: 'center',
+  },
+  linkContainer: {
+    marginVertical: 8,
+  },
+  linkButton: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  linkButtonText: {
+    fontSize: 16,
+    lineHeight: 30,
+    color: '#333333',
+    fontWeight: '500',
   },
 })
