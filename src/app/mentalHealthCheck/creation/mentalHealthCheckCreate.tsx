@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Alert, StatusBar, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert, ScrollView } from 'react-native';
 import MentalHealthResult from './components/MentalHealthResult';
 import QuestionList from '../components/QuestionList';
 import ProgressIndicator from '../components/ProgressIndicator';
@@ -111,42 +111,39 @@ export default function mentalHealthCheckCreate() {
           // 結果画面
           <MentalHealthResult evaluationResult={evaluationResult} />
         ) : (
-          <>
-            <StatusBar barStyle="dark-content" />
-              <ScrollView
-                ref={scrollViewRef}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
-                style={styles.card}
-              >
-                {/* 進捗バー */}
-                <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
-                {/* ページヘッダー */}
-                <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
-                <Text style={styles.pageHeader}>{currentPageHeader}</Text>
-                {/* 質問リスト */}
-                {currentQuestions.map(({ text, questionIndex }, index) => (
-                  <QuestionList
-                    key={questionIndex}
-                    text={text}
-                    questionIndex={questionIndex}
-                    index={index}
-                    currentAnswerOptions={currentAnswerOptions}
-                    answers={answers}
-                    handleSelectOption={handleSelectOption}
-                  />
-                ))}
-                {/* ボタン */}
-                <PaginationControlButton
-                  isPageCompleted={isPageCompleted}
-                  handleNextPress={handleNextPress}
-                  handlePrevPress={handlePrevPress}
-                  currentPage={currentPage}
-                  lastPage={lastPage}
-                />
-                <View style={{ height: 10 }} />
-              </ScrollView>
-          </>
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+            style={styles.card}
+          >
+            {/* 進捗バー */}
+            <ProgressIndicator currentPage={currentPage} totalPages={totalPages} />
+            {/* ページヘッダー */}
+            <Text style={styles.pageGroupHeader}>{currentPageQuestionGroupHeader}</Text>
+            <Text style={styles.pageHeader}>{currentPageHeader}</Text>
+            {/* 質問リスト */}
+            {currentQuestions.map(({ text, questionIndex }, index) => (
+              <QuestionList
+                key={questionIndex}
+                text={text}
+                questionIndex={questionIndex}
+                index={index}
+                currentAnswerOptions={currentAnswerOptions}
+                answers={answers}
+                handleSelectOption={handleSelectOption}
+              />
+            ))}
+            {/* ボタン */}
+            <PaginationControlButton
+              isPageCompleted={isPageCompleted}
+              handleNextPress={handleNextPress}
+              handlePrevPress={handlePrevPress}
+              currentPage={currentPage}
+              lastPage={lastPage}
+            />
+            <View style={{ height: 10 }} />
+          </ScrollView>
         )}
       </View>
     </SafeAreaView>
