@@ -3,7 +3,6 @@ import { auth } from '../../../../config';
 import { signOut } from 'firebase/auth';
 import { router } from 'expo-router';
 
-// 1日後に移動
 export default function userLogout() {
   signOut(auth)
     .then(() => {
