@@ -1,7 +1,7 @@
 import { Alert } from 'react-native'
 import { auth, db } from '../../../../config';
 import { deleteUser } from 'firebase/auth';
-import { doc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, deleteDoc, collection, query, where, getDocs, collectionGroup } from 'firebase/firestore';
 import { router } from 'expo-router';
 
 export default async function userDelete() {
@@ -24,16 +24,21 @@ export default async function userDelete() {
     // 日記削除完了するまで待機
     await Promise.all(diaryDeletePromises);
 
-    // 友人の友人(ログインユーザー)を削除
-    // const friendsQuery = query(collection(db, `users/${currentUserId}/friends`), where('friendId', '==', currentUserId));
-    // const friendsSnapshot = await getDocs(friendsQuery);
-    // const friendDeletePromises = friendsSnapshot.docs.map(async (friendDoc) => {
-    //   const friendId = friendDoc.id;
-    //   // 友人を削除
-    //   await deleteDoc(doc(db, 'friends', friendId));
-    // });
-    // // 友人削除完了するまで待機
-    // await Promise.all(friendDeletePromises);
+    // 1. すべてのusersのfriendsサブコレクションから、削除対象ユーザーへの参照を検索
+    const allFriendsQuery = query(collectionGroup(db, 'friends'), where('friendId', '==', currentUserId));
+    const allFriendsSnapshot = await getDocs(allFriendsQuery);
+    // 2. 見つかった友人関係を削除
+    if (!allFriendsSnapshot.empty) {
+        const mutualFriendDeletePromises = allFriendsSnapshot.docs.map(async (friendDoc) => {
+            try {
+                await deleteDoc(friendDoc.ref);
+                console.log(`友人関係を削除しました: ${friendDoc.ref.path}`);
+            } catch (error) {
+                console.log(`友人関係の削除に失敗しました: ${friendDoc.ref.path}`, error);
+            }
+        });
+        await Promise.all(mutualFriendDeletePromises);
+    }
 
     // 'friends' サブコレクション内の全ドキュメントを削除
     const friendsCollectionRef = collection(db, 'users', currentUserId, 'friends');
@@ -70,13 +75,21 @@ export default async function userDelete() {
     // すべてのサブコレクションを削除した後、親ドキュメントを削除
     await deleteDoc(doc(db, 'users', currentUserId));
 
-    // 成功時の処理（Firebase認証削除前に実行）
-    router.replace("/auth/login");
-
     // 最後にFirebaseのユーザーアカウントを削除
     await deleteUser(user);
 
-    Alert.alert("アカウント削除完了", "アカウントとすべてのデータが正常に削除されました");
+    // 成功時の処理を修正
+    Alert.alert(
+      "アカウント削除完了",
+      "アカウントとすべてのデータが正常に削除されました",
+      [
+        {
+          text: "OK",
+          // OKボタンが押されたら、ログイン画面に遷移する
+          onPress: () => router.replace("/auth/login"),
+        },
+      ]
+    );
 
   } catch (error) {
     console.log("error", error);
