@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { router } from 'expo-router';
-import UserLogout from '../handleLogout';
+import UserLogout from '../../myPage/action/backend/userLogout';
 
 // モックの設定
 jest.mock('react-native', () => ({

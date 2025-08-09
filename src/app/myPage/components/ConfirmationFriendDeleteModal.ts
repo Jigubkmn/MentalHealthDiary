@@ -1,7 +1,7 @@
 import { Alert } from 'react-native'
 import deleteFriend from '../action/backend/deleteFriend';
 
-export default async function ConfirmationDeleteFriendModal(
+export default async function ConfirmationFriendDeleteModal(
   userId: string,
   friendId: string,
   friendUsersId: string,

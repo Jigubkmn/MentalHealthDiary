@@ -10,6 +10,8 @@ import UserInfo from '../myPage/components/UserInfo';
 import fetchUserInfo from '../actions/backend/fetchUserInfo';
 import Divider from '../components/Divider';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
+import userLogout from '../myPage/action/backend/userLogout';
+import ConfirmationUserDeleteModal from '../myPage/components/ConfirmationUserDeleteModal';
 
 export default function myPage() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
@@ -111,23 +113,27 @@ export default function myPage() {
           </View>
         </View>
         {/* お問い合わせフォームのリンク */}
-        <View style={styles.linkContainer}>
-          <TouchableOpacity
-            onPress={handleContactPress}
-            style={styles.linkButton}
-          >
-            <Text style={styles.linkButtonText}>お問い合わせ</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={handleContactPress}
+          style={styles.linkButton}
+        >
+          <Text style={styles.linkButtonText}>お問い合わせ</Text>
+        </TouchableOpacity>
         {/* プライバシーポリシーページへのリンク */}
-        <View style={styles.linkContainer}>
-          <TouchableOpacity
-            onPress={handlePrivacyPolicyPress}
-            style={styles.linkButton}
-          >
-            <Text style={styles.linkButtonText}>プライバシーポリシー</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={handlePrivacyPolicyPress}
+          style={styles.linkButton}
+        >
+          <Text style={styles.linkButtonText}>プライバシーポリシー</Text>
+        </TouchableOpacity>
+        {/* ログアウト */}
+        <TouchableOpacity style={styles.logoutButton} onPress={() => {userLogout();}}>
+          <Text style={styles.buttonText}>ログアウト</Text>
+        </TouchableOpacity>
+        {/* アカウント削除 */}
+        <TouchableOpacity style={styles.deleteAccountButton} onPress={() => {ConfirmationUserDeleteModal()}}>
+          <Text style={styles.buttonText}>アカウント削除</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   linkContainer: {
-    marginVertical: 8,
+    marginBottom: 16,
   },
   linkButton: {
     height: 48,
@@ -196,11 +202,38 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    marginTop: 8,
   },
   linkButtonText: {
     fontSize: 16,
     lineHeight: 30,
     color: '#333333',
     fontWeight: '500',
+  },
+  logoutButton: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(141, 141, 141, 0.6)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    marginTop: 16,
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    lineHeight: 30,
+    color: '#ffffff',
+    fontWeight: '500',
+  },
+  deleteAccountButton: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    marginVertical: 8,
   },
 })
