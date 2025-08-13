@@ -20,7 +20,8 @@ export default async function handleImageSelect(
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       aspect: [1, 1],
-      quality: 0.8,
+      quality: 0.6, // 品質を下げて容量を削減（0.1-1.0）
+      allowsEditing: true,
     });
 
     if (!result.canceled && result.assets[0]) {
