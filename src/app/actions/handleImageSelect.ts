@@ -1,8 +1,12 @@
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
+import uploadImageToFirebase from './uploadImageToFirebase';
 
 // 画像選択ボタンの処理
-export default async function handleImageSelect(): Promise<string | null> {
+export default async function handleImageSelect(
+  userId?: string,
+  folder: 'userImages' | 'diaryImages' = 'diaryImages'
+): Promise<string | null> {
   try {
     // カメラロールへのアクセス許可をリクエスト
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -20,7 +24,34 @@ export default async function handleImageSelect(): Promise<string | null> {
     });
 
     if (!result.canceled && result.assets[0]) {
-      return result.assets[0].uri;
+      const localUri = result.assets[0].uri;
+
+      // Firebase Storageにアップロードする場合
+      if (userId) {
+        try {
+          // ファイル名を生成（ユーザーID + タイムスタンプ + 拡張子）
+          const timestamp = Date.now();
+          const fileName = `${userId}_${timestamp}.jpg`;
+
+          // Firebase Storageにアップロード
+          const cloudUrl = await uploadImageToFirebase(localUri, folder, fileName);
+
+          if (cloudUrl) {
+            console.log('handleImageSelect: アップロード成功、クラウドURLを返します:', cloudUrl);
+            return cloudUrl;
+          } else {
+            console.warn('Firebase Storageアップロードに失敗、ローカルURIを使用します');
+            return localUri;
+          }
+        } catch (error) {
+          console.error('クラウドアップロードエラー:', error);
+          Alert.alert('警告', 'クラウドアップロードに失敗しました。ローカル保存を使用します。');
+          return localUri;
+        }
+      }
+
+      // userIdが指定されていない場合はローカルURIを返す
+      return localUri;
     }
 
     // 画像が選択されなかった場合

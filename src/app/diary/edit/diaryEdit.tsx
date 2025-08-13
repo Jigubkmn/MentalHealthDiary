@@ -69,7 +69,7 @@ export default function DiaryEdit() {
           {/* 今日の出来事 */}
           <DiaryText diaryText={diaryText} setDiaryText={setDiaryText} />
           {/* 今日の出来事の画像 */}
-          <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
+          <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} userId={userId} />
         </ScrollView>
       </SafeAreaView>
     </>
