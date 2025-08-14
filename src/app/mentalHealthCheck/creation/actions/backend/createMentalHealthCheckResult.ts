@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import { db } from '../../../../../config';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default async function createMentalHealthCheckResult(
   answers: (number | null)[],
@@ -17,7 +17,7 @@ export default async function createMentalHealthCheckResult(
       evaluation,
       scoreA,
       scoreB,
-      createdAt: Timestamp.fromDate(new Date())
+      createdAt: serverTimestamp()
     });
 
     console.log("メンタルヘルスチェック結果を保存しました");
