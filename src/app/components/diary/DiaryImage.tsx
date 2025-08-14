@@ -4,17 +4,19 @@ import { Image } from 'expo-image';
 import XIcon from '../Icon/XIcon';
 import AddImageIcon from '../Icon/AddImageIcon';
 import handleImageSelect from '../../actions/handleImageSelect';
+import { noImage } from '../../constants/userImage';
 
 type Props = {
   handleImageDelete: () => void;
   selectedImage: string | null;
   setSelectedImage: (image: string) => void;
+  userId?: string;
 }
 
-export default function DiaryImage({ handleImageDelete, selectedImage, setSelectedImage }: Props) {
-
+export default function DiaryImage({ handleImageDelete, selectedImage, setSelectedImage, userId}: Props) {
+  
   const ImageSelect = async () => {
-    const newUserImage = await handleImageSelect();
+    const newUserImage = await handleImageSelect(userId, 'diaryImages');
     if (!newUserImage) return;
     setSelectedImage(newUserImage);
   };
@@ -30,9 +32,14 @@ export default function DiaryImage({ handleImageDelete, selectedImage, setSelect
         </TouchableOpacity>
       </View>
       {/* 画像表示部分 */}
-      <TouchableOpacity style={styles.selectedImageContainer} onPress={() => ImageSelect()}>
+      <TouchableOpacity style={styles.selectedImageContainer} onPress={() => ImageSelect() }>
           {selectedImage ? (
-            <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+            <Image
+              source={selectedImage ? { uri: selectedImage } : noImage}
+              style={styles.selectedImage}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
           ) : (
             <View style={styles.addImageContainer}>
                 <AddImageIcon size={48} color="#000000" />
@@ -77,8 +84,8 @@ const styles = StyleSheet.create({
     height: 300,
   },
   selectedImage: {
-    width: '100%',
-    height: '100%',
+    width: 300,
+    height: 300,
     borderRadius: 8,
   },
   addImageContainer: {
