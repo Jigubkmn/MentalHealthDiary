@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { router } from 'expo-router'
 import { auth, db } from '../../../../config'
 import { AuthError } from 'firebase/auth'
-import { doc, setDoc, Timestamp } from 'firebase/firestore'
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth'
 import getRandomAccountId from '../../../actions/getRandomAccountId'
 
@@ -23,7 +23,7 @@ export  default async function signUp(
       userName,
       accountId: accountId,
       userImage: '',
-      createdAt: Timestamp.fromDate(new Date())
+      createdAt: serverTimestamp()
     })
     Alert.alert('会員登録に成功しました')
     router.replace('/(tabs)')
