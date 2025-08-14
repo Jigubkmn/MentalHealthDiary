@@ -7,7 +7,7 @@ export default async function updateUserImage(
   userId: string,
   setUserImage: (image: string) => void
 ) {
-  const newUserImage = await handleImageSelect();
+  const newUserImage = await handleImageSelect(userId, 'userImages');
   if (!newUserImage) return;
   try {
     const userRef = doc(db, `users/${userId}/userInfo/${userId}`);
