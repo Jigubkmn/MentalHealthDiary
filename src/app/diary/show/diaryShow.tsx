@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import Feeling from '../../components/diary/Feeling';
 import { DiaryType } from '../../../../type/diary';
 import { auth } from '../../../config';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import Header from './components/Header';
 import fetchSelectedDiary from '../../actions/backend/fetchSelectedDiary';
 
@@ -28,46 +28,43 @@ export default function diaryShow() {
   }, [selectedDiaryInfo?.feeling]);
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerArea}>
-          <Header
-            userId={userId}
-            diaryId={selectedDiaryInfo?.id || ''}
-            diaryInfo={selectedDiaryInfo || null}
-            selectedUserId={selectedUserId}
-          />
-          <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={() => {}} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
-        </View>
-        {selectedDiaryInfo && (
-          <ScrollView style={styles.contentArea}>
-            {/* 今日の出来事 */}
-            <View style={styles.textInputContainer}>
-              <Text style={styles.textInputTitle}>今日の出来事</Text>
-              <Text style={styles.textInput}>{selectedDiaryInfo.diaryText}</Text>
-            </View>
-          {/* 今日の出来事の画像 */}
-          <View style={styles.imageContainer}>
-            <View style={styles.imageTitleContainer}>
-              <Text style={styles.textInputTitle}>今日の画像</Text>
-            </View>
-            {/* 画像表示部分 */}
-            <View style={styles.selectedImageContainer}>
-              {selectedDiaryInfo.diaryImage ? (
-                <Image
-                  source={{ uri: selectedDiaryInfo.diaryImage }}
-                  style={styles.selectedImage}
-                />
-              ) : (
-                <Text style={styles.ImageText}>写真を選択していません</Text>
-              )}
-            </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerArea}>
+        <Header
+          userId={userId}
+          diaryId={selectedDiaryInfo?.id || ''}
+          diaryInfo={selectedDiaryInfo || null}
+          selectedUserId={selectedUserId}
+        />
+        <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={() => {}} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
+      </View>
+      {selectedDiaryInfo && (
+        <ScrollView style={styles.contentArea}>
+          {/* 今日の出来事 */}
+          <View style={styles.textInputContainer}>
+            <Text style={styles.textInputTitle}>今日の出来事</Text>
+            <Text style={styles.textInput}>{selectedDiaryInfo.diaryText}</Text>
           </View>
-          </ScrollView>
-        )}
-      </SafeAreaView>
-    </>
+        {/* 今日の出来事の画像 */}
+        <View style={styles.imageContainer}>
+          <View style={styles.imageTitleContainer}>
+            <Text style={styles.textInputTitle}>今日の画像</Text>
+          </View>
+          {/* 画像表示部分 */}
+          <View style={styles.selectedImageContainer}>
+            {selectedDiaryInfo.diaryImage ? (
+              <Image
+                source={{ uri: selectedDiaryInfo.diaryImage }}
+                style={styles.selectedImage}
+              />
+            ) : (
+              <Text style={styles.ImageText}>写真を選択していません</Text>
+            )}
+          </View>
+        </View>
+        </ScrollView>
+      )}
+    </SafeAreaView>
   )
 }
 
