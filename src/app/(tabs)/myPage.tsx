@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native'
 import Header from '../myPage/components/Header'
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { auth } from '../../config';
 import { UserInfoType } from '../../../type/userInfo'
 import { FriendInfoType } from '../../../type/friend'
@@ -12,27 +12,53 @@ import Divider from '../components/Divider';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 import userLogout from '../myPage/action/backend/userLogout';
 import ConfirmationUserDeleteModal from '../myPage/components/ConfirmationUserDeleteModal';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function myPage() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([])
   const userId = auth.currentUser?.uid;
 
-  useEffect(() => {
-    if (userId === null) return;
-    const unsubscribe = fetchUserInfo({
-      userId,
-      setUserInfo,
-    });
-    return unsubscribe;
-  }, [userId])
+  // タブがフォーカスされたときのみ実行
+  useFocusEffect(
+    useCallback(() => {
 
-  useEffect(() => {
-    if (userId === null) return;
-    // フレンド情報をリアルタイム監視
-    const unsubscribe = fetchFriendList(userId, setFriendsData);
-    return unsubscribe;
-  }, [userId]);
+      let userInfoUnsubscribe: (() => void) | null = null;
+      let friendListUnsubscribe: (() => void) | null = null;
+
+      // 認証状態監視
+      const authUnsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user && user.uid) {
+          // ログイン中：ユーザー情報とフレンドリストを監視
+          userInfoUnsubscribe = fetchUserInfo({
+            userId: user.uid,
+            setUserInfo,
+          });
+          friendListUnsubscribe = fetchFriendList(user.uid, setFriendsData);
+        } else {
+          // ログアウト時：すべてのリスナーをクリーンアップ
+          if (userInfoUnsubscribe) {
+            userInfoUnsubscribe();
+            userInfoUnsubscribe = null;
+          }
+          if (friendListUnsubscribe) {
+            friendListUnsubscribe();
+            friendListUnsubscribe = null;
+          }
+          // データをクリア
+          setUserInfo(null);
+          setFriendsData([]);
+        }
+      });
+
+      return () => {
+        // タブがアンフォーカスされたときのクリーンアップ
+        if (userInfoUnsubscribe) userInfoUnsubscribe();
+        if (friendListUnsubscribe) friendListUnsubscribe();
+        authUnsubscribe();
+      };
+    }, [])
+  );
 
   // 友人削除後にstateを更新するコールバック関数
   const handleFriendDeleted = (deletedFriendId: string) => {
