@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView  } from 'react-native'
 import DiaryList from '../diary/list/components/DiaryList'
 import { auth } from '../../config';
 import { DiaryType } from '../../../type/diary';
 import PlusIcon from '../components/Icon/PlusIcon';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import dayjs from 'dayjs';
 import YearMonthSelectModal from '../components/YearMonthSelectModal';
 import fetchDiaries from '../diary/list/actions/backend/fetchDiaries';
@@ -19,7 +19,7 @@ export default function home() {
   const [diaryLists, setDiaryLists] = useState<DiaryType[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
   const [friendsData, setFriendsData] = useState<FriendInfoType[]>([]);
-  const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]) // 表示するユーザーのuserId
+  const [visibleUserIds, setVisibleUserIds] = useState<string[]>([])
   const router = useRouter();
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -28,6 +28,27 @@ export default function home() {
 
   // 選択された年月を'YYYY-M'形式の文字列で保持する
   const [selectedYearMonth, setSelectedYearMonth] = useState(displayDate.format('YYYY-M'));
+
+  // タブがフォーカスされたときのみ実行
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+
+      // ユーザー情報を取得
+      const userInfoUnsubscribe = fetchUserInfo({
+        userId,
+        setUserInfo,
+      });
+
+      // フレンド情報をリアルタイム監視
+      const friendListUnsubscribe = fetchFriendList(userId, setFriendsData);
+
+      return () => {
+        userInfoUnsubscribe();
+        friendListUnsubscribe();
+      };
+    }, [userId])
+  );
 
   useEffect(() => {
     if (userId === null) return;
@@ -38,22 +59,6 @@ export default function home() {
     const unsubscribe = fetchDiaries(setDiaryLists, startOfMonth, endOfMonth, visibleUserIds);
     return unsubscribe;
   }, [displayDate, visibleUserIds])
-
-  useEffect(() => {
-    if (userId === null) return;
-    const unsubscribe = fetchUserInfo({
-      userId,
-      setUserInfo,
-    });
-    return unsubscribe;
-  }, [userId])
-
-  useEffect(() => {
-    if (userId === null) return;
-    // フレンド情報をリアルタイム監視
-    const unsubscribe = fetchFriendList(userId, setFriendsData);
-    return unsubscribe;
-  }, [userId]);
 
   useEffect(() => {
     if (userId) {
