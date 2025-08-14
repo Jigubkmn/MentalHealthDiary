@@ -12,6 +12,7 @@ import Divider from '../components/Divider';
 import fetchFriendList from '../myPage/action/backend/fetchFriendList';
 import userLogout from '../myPage/action/backend/userLogout';
 import ConfirmationUserDeleteModal from '../myPage/components/ConfirmationUserDeleteModal';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function myPage() {
   const [userInfo, setUserInfo] = useState<UserInfoType | null>(null)
@@ -28,10 +29,28 @@ export default function myPage() {
   }, [userId])
 
   useEffect(() => {
-    if (userId === null) return;
-    // フレンド情報をリアルタイム監視
-    const unsubscribe = fetchFriendList(userId, setFriendsData);
-    return unsubscribe;
+    let friendListUnsubscribe: (() => void) | null = null;
+
+    // 認証状態監視
+    const authUnsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && userId) {
+        // ログイン中：フレンドリストを監視
+        friendListUnsubscribe = fetchFriendList(userId, setFriendsData);
+      } else {
+        // ログアウト時：リスナーをクリーンアップしてフレンドリストをクリア
+        if (friendListUnsubscribe) {
+          friendListUnsubscribe();
+          friendListUnsubscribe = null;
+        }
+        setFriendsData([]);
+      }
+    });
+
+    return () => {
+      // コンポーネントアンマウント時のクリーンアップ
+      if (friendListUnsubscribe) friendListUnsubscribe();
+      authUnsubscribe();
+    };
   }, [userId]);
 
   // 友人削除後にstateを更新するコールバック関数
