@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-import { Stack } from 'expo-router';
 import Feeling from '../../components/diary/Feeling';
 import Header from '../edit/components/Header';
 import { DiaryType } from '../../../../type/diary';
@@ -48,31 +47,28 @@ export default function DiaryEdit() {
   };
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerArea}>
-          <Header
-            userId={userId || ''}
-            diaryId={selectedDiaryInfo?.id || ''}
-            diaryText={diaryText}
-            selectedFeeling={selectedFeeling}
-            setDiaryText={setDiaryText}
-            setSelectedFeeling={setSelectedFeeling}
-            setSelectedImage={setSelectedImage}
-            selectedImage={selectedImage}
-            diaryDate={selectedDiaryInfo?.diaryDate || dayjs()}
-          />
-          <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={setSelectedFeeling} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
-        </View>
-        <ScrollView style={styles.contentArea}>
-          {/* 今日の出来事 */}
-          <DiaryText diaryText={diaryText} setDiaryText={setDiaryText} />
-          {/* 今日の出来事の画像 */}
-          <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} userId={userId} />
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerArea}>
+        <Header
+          userId={userId || ''}
+          diaryId={selectedDiaryInfo?.id || ''}
+          diaryText={diaryText}
+          selectedFeeling={selectedFeeling}
+          setDiaryText={setDiaryText}
+          setSelectedFeeling={setSelectedFeeling}
+          setSelectedImage={setSelectedImage}
+          selectedImage={selectedImage}
+          diaryDate={selectedDiaryInfo?.diaryDate || dayjs()}
+        />
+        <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={setSelectedFeeling} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
+      </View>
+      <ScrollView style={styles.contentArea}>
+        {/* 今日の出来事 */}
+        <DiaryText diaryText={diaryText} setDiaryText={setDiaryText} />
+        {/* 今日の出来事の画像 */}
+        <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

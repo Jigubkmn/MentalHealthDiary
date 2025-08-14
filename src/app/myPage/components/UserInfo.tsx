@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { noUserImage } from '../../constants/userImage';
 import EditIcon from '../../components/Icon/EditIcon';
 import { UserInfoType } from '../../../../type/userInfo';
-import UserLogout from '../../actions/handleLogout';
 import UserEditContents from './UserEditContents';
-import Divider from '../../components/Divider';
 import updateUserImage from '../action/backend/updateUserImage';
 import updateAccountId from '../action/backend/updateAccountId';
 import updateUserName from '../action/backend/updateUserName';
@@ -43,11 +41,6 @@ export default function UserInfo({ userInfo, userId }: UserInfoProps) {
     setIsAccountIdEdit(false)
     setIsUserNameEdit(false)
   }, []);
-
-  // ログアウト
-  const handleLogout = () => {
-    UserLogout();
-  }
 
   // アカウントID更新
   const handleUpdateAccountId = async () => {
@@ -113,12 +106,6 @@ export default function UserInfo({ userInfo, userId }: UserInfoProps) {
           handleValidateUserContent={handleValidateUserName}
         />
       </View>
-      {/* 区切り線 */}
-      <Divider />
-      {/* ログアウトボタン */}
-      <TouchableOpacity style={styles.logoutButton} onPress={() => {handleLogout()}}>
-        <Text style={styles.logoutButtonText}>ログアウト</Text>
-      </TouchableOpacity>
     </View>
   )
 }
@@ -160,18 +147,5 @@ const styles = StyleSheet.create({
     borderColor: '#FFA500',
     backgroundColor: '#ffffff',
     padding: 3,
-  },
-  logoutButton: {
-    height: 24,
-    width: 90,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 0, 0, 0.6)',
-    alignSelf: 'center',
-  },
-  logoutButtonText: {
-    fontSize: 14,
-    color: '#ffffff',
   },
 })

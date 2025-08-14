@@ -16,10 +16,10 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.Jigubkmn.MentalHealthDiary",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSPhotoLibraryUsageDescription": "画像を選択するために、写真ライブラリへのアクセスが必要です。"
+        "NSPhotoLibraryUsageDescription": "プロフィールアイコンの設定や、日記への写真の添付にご利用いただけます。例えば、お気に入りの写真をアイコンにしたり、その日の思い出の写真を日記と一緒に保存したりできます。"
       }
     },
     "android": {
