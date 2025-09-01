@@ -4,6 +4,7 @@ import { db } from '../../../../../config';
 import { doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 import feelings from '../../../../constants/feelings';
+import deleteImageFromFirebase from '../../../show/actions/backend/deleteImageFromFirebase';
 
 export default async function updateDiary(
   diaryText: string,
@@ -15,6 +16,7 @@ export default async function updateDiary(
   setSelectedFeeling: (feeling: string | null) => void,
   setSelectedImage: (image: string | null) => void,
   userId?: string,
+  originalImageUrl?: string | null
 ) {
   const router = useRouter();
   if (userId === null) return;
@@ -28,6 +30,17 @@ export default async function updateDiary(
   }
 
   try {
+    // 画像が変更された場合、古い画像をStorageから削除
+    if (originalImageUrl && originalImageUrl !== selectedImage) {
+      console.log('古い画像を削除中:', originalImageUrl);
+      const deleteSuccess = await deleteImageFromFirebase(originalImageUrl);
+      if (deleteSuccess) {
+        console.log('古い画像の削除が完了しました');
+      } else {
+        console.warn('古い画像の削除に失敗しましたが、更新処理を継続します');
+      }
+    }
+
     // 体調のスコアを取得
     const feelingScore = feelings.find((feeling) => feeling.name === selectedFeeling)?.score;
     const diaryRef = doc(db, `diaries/${diaryId}`);

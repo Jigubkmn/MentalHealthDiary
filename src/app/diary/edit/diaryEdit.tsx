@@ -15,6 +15,7 @@ export default function DiaryEdit() {
   const [diaryText, setDiaryText] = useState('');
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [originalImageUrl, setOriginalImageUrl] = useState<string | null>(null);
   const userId = auth.currentUser?.uid;
   const { diaryId } = useLocalSearchParams<{ diaryId?: string }>();
   const { isTouchFeelingButton } = useLocalSearchParams<{ isTouchFeelingButton?: string }>();
@@ -38,6 +39,8 @@ export default function DiaryEdit() {
   useEffect(() => {
     if (selectedDiaryInfo) {
       setSelectedImage(selectedDiaryInfo?.diaryImage);
+      // 元の画像URLを保存（比較用）
+      setOriginalImageUrl(selectedDiaryInfo?.diaryImage);
     }
   }, [selectedDiaryInfo?.diaryImage]);
 
@@ -59,6 +62,7 @@ export default function DiaryEdit() {
           setSelectedImage={setSelectedImage}
           selectedImage={selectedImage}
           diaryDate={selectedDiaryInfo?.diaryDate || dayjs()}
+          originalImageUrl={originalImageUrl}
         />
         <Feeling selectedFeeling={selectedFeeling || null} setSelectedFeeling={setSelectedFeeling} isTouchFeelingButton={isTouchFeelingButton === 'true'} />
       </View>
@@ -66,7 +70,7 @@ export default function DiaryEdit() {
         {/* 今日の出来事 */}
         <DiaryText diaryText={diaryText} setDiaryText={setDiaryText} />
         {/* 今日の出来事の画像 */}
-        <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
+        <DiaryImage handleImageDelete={handleImageDelete} setSelectedImage={setSelectedImage} selectedImage={selectedImage} userId={userId} />
       </ScrollView>
     </SafeAreaView>
   );
