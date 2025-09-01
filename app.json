@@ -2,7 +2,7 @@
   "expo": {
     "name": "メンタルヘルス日記",
     "slug": "MentalHealthDiary",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": "mentalhealthdiary",
     "orientation": "portrait",
     "icon": "./assets/Icon-1024.png",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.Jigubkmn.MentalHealthDiary",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "プロフィールアイコンの設定や、日記への写真の添付にご利用いただけます。例えば、お気に入りの写真をアイコンにしたり、その日の思い出の写真を日記と一緒に保存したりできます。"
