@@ -71,7 +71,8 @@ function extractStorageReference(downloadUrl: string) {
     const decodedPath = decodeURIComponent(pathOnly);
 
     // Firebase Storageの参照を作成
-    return ref(storage, decodedPath);
+    const storageRef = ref(storage, decodedPath);
+    return storageRef;
   } catch (error) {
     console.error('URL解析エラー:', error);
     return null;
