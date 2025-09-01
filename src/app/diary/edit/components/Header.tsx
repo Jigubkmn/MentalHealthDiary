@@ -16,9 +16,10 @@ type Props = {
   setSelectedImage: (image: string | null) => void;
   selectedImage: string | null;
   diaryDate: dayjs.Dayjs;
+  originalImageUrl?: string | null;
 }
 
-export default function Header({ userId, diaryId, diaryText, selectedFeeling, setDiaryText, setSelectedFeeling, setSelectedImage, selectedImage, diaryDate }: Props) {
+export default function Header({ userId, diaryId, diaryText, selectedFeeling, setDiaryText, setSelectedFeeling, setSelectedImage, selectedImage, diaryDate, originalImageUrl }: Props) {
   const [date, setDate] = useState(diaryDate);  // diaryDate："2025-07-06T09:21:43.658Z"
   const [selectedDate, setSelectedDate] = useState('');
 
@@ -49,6 +50,7 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
       setSelectedFeeling,
       setSelectedImage,
       userId,
+      originalImageUrl
     );
   }
 

@@ -2,9 +2,9 @@ import { Alert } from 'react-native';
 import { db } from '../../../../../config';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { router } from 'expo-router';
+import deleteImageFromFirebase from './deleteImageFromFirebase';
 
-
-export default async function deleteDiary(userId?: string, diaryId?: string) {
+export default async function deleteDiary(userId?: string, diaryId?: string, diaryImageUrl?: string | null) {
   if (!userId || !diaryId) return;
     Alert.alert(
       '日記を削除',
@@ -23,6 +23,18 @@ export default async function deleteDiary(userId?: string, diaryId?: string) {
               const feelingScoreRef = doc(db, `users/${userId}/feelingScores/${diaryId}`);
               await deleteDoc(diaryRef);
               await deleteDoc(feelingScoreRef);
+
+              // Firebase Storageから画像を削除（画像URLが存在する場合のみ）
+              if (diaryImageUrl) {
+                console.log('Firebase Storageから画像を削除中:', diaryImageUrl);
+                const imageDeleteSuccess = await deleteImageFromFirebase(diaryImageUrl);
+                if (imageDeleteSuccess) {
+                  console.log('画像の削除が完了しました');
+                } else {
+                  console.warn('画像の削除に失敗しましたが、日記データの削除は完了しました');
+                }
+              }
+
               console.log('日記を削除しました');
               router.back();
             } catch (error) {
