@@ -14,7 +14,7 @@ type Props = {
 }
 
 export default function DiaryImage({ handleImageDelete, selectedImage, setSelectedImage, userId}: Props) {
-  
+
   const ImageSelect = async () => {
     const newUserImage = await handleImageSelect(userId, 'diaryImages');
     if (!newUserImage) return;
