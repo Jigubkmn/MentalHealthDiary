@@ -58,7 +58,7 @@ export default function Header({ userId, diaryId, diaryInfo, selectedUserId }: P
               <TouchableOpacity onPress={handleEdit} style={styles.editIcon}>
                 <EditIcon size={24} color="#FFA500" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() =>deleteDiary(userId, diaryId)}>
+              <TouchableOpacity onPress={() =>deleteDiary(userId, diaryId, diaryInfo?.diaryImage)}>
                 <DeleteIcon size={24} color="#FFA500" />
               </TouchableOpacity>
             </>
