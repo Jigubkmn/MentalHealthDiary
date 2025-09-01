@@ -157,7 +157,7 @@ export default function myPage() {
           <Text style={styles.buttonText}>ログアウト</Text>
         </TouchableOpacity>
         {/* アカウント削除 */}
-        <TouchableOpacity style={styles.deleteAccountButton} onPress={() => {ConfirmationUserDeleteModal()}}>
+        <TouchableOpacity style={styles.deleteAccountButton} onPress={() => {ConfirmationUserDeleteModal(userInfo)}}>
           <Text style={styles.buttonText}>アカウント削除</Text>
         </TouchableOpacity>
       </ScrollView>
