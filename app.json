@@ -3,7 +3,7 @@
     "name": "メンタルヘルス日記",
     "slug": "MentalHealthDiary",
     "version": "1.0.0",
-    "scheme": "MentalHealthDiary",
+    "scheme": "mentalhealthdiary",
     "orientation": "portrait",
     "icon": "./assets/Icon-1024.png",
     "userInterfaceStyle": "light",
@@ -40,6 +40,12 @@
       "eas": {
         "projectId": "60fc5230-361c-4258-8a97-952a7faa1636"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/60fc5230-361c-4258-8a97-952a7faa1636"
     }
   }
 }
