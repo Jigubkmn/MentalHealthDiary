@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export default function formatWeekData(diaryDate: dayjs.Dayjs) : string {
+export default function formatDateMonthDay(diaryDate: dayjs.Dayjs) : string {
   const timestamp = diaryDate as unknown as { seconds: number; nanoseconds: number };
   const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
   const dayjsDate = dayjs(date);
