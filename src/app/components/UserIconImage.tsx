@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import { noUserImage } from '../constants/userImage'
 
 type Props = {
-  userImage: string
+  userImage?: string | null
   size?: number
 }
 
