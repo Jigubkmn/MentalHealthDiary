@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
-import { noUserImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
 import formatDateMonthDay from '../../../actions/formatDateMonthDay';
 import DiaryContentTop from './DiaryContentTop';
+import UserIconImage from '../../../components/UserIconImage';
 
 type Props = {
   diaryList: DiaryType
@@ -36,12 +36,7 @@ export default function DiaryList({ diaryList } :Props) {
     <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
       {/* 日記作成者のアイコン画像 */}
       <View style={styles.diaryUserIconContainer}>
-        <Image
-          source={diaryList.userImage || noUserImage}
-          style={styles.diaryUserIcon}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-        />
+        <UserIconImage userImage={diaryList.userImage} />
       </View >
       {/* 縦並びの日記内容 */}
       <View style={styles.diaryContentContainer}>
@@ -81,11 +76,6 @@ const styles = StyleSheet.create({
   diaryUserIconContainer: {
     marginRight: 16,
     justifyContent: 'center',
-  },
-  diaryUserIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
   },
   diaryContentContainer: {
     flexDirection: 'column',
