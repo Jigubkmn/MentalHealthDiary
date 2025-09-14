@@ -18,10 +18,7 @@ export default function DiaryContentTop({userName, feelingImage, formattedTime}:
         contentFit="contain"
         cachePolicy="memory-disk"
       />
-      {/* 日記日付 */}
-      <View>
-        <Text style={styles.diaryUserNameAndDay}>{formattedTime}</Text>
-      </View>
+      <Text style={[styles.diaryUserNameAndDay, {marginLeft: 'auto'}]}>{formattedTime}</Text>
     </View>
   )
 }
@@ -30,6 +27,7 @@ const styles = StyleSheet.create({
   diaryContentTopContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     width: '100%',
   },
   diaryUserNameAndDay: {

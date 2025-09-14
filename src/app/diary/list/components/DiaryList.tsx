@@ -34,19 +34,18 @@ export default function DiaryList({ diaryList } :Props) {
 
   return (
     <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
-      {/* 日記作成者のアイコン画像 */}
       <View style={styles.diaryUserIconContainer}>
         <UserIconImage userImage={diaryList.userImage} />
       </View >
       {/* 縦並びの日記内容 */}
       <View style={styles.diaryContentContainer}>
         <DiaryContentTop userName={diaryList.userName} feelingImage={feelingImage} formattedTime={formattedTime} />
-          {/* 日記テキスト内容 */}
-          <View style={styles.diaryContent}>
-            <Text style={styles.diaryContentText}>
-              {diaryList.diaryText}
-            </Text>
-          </View>
+        {/* 日記テキスト内容 */}
+        <View style={styles.diaryContent}>
+          <Text style={styles.diaryContentText}>
+            {diaryList.diaryText}
+          </Text>
+        </View>
         {/* 日記投稿画像 */}
         {diaryList.diaryImage &&
           <View style={styles.diaryImageContainer}>
@@ -71,6 +70,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     width: '100%',
   },
   diaryUserIconContainer: {
