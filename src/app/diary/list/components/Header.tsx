@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native';
-import { Image } from 'expo-image'
-import { noUserImage } from '../../../constants/userImage';
+import UserIconImage from '../../../components/UserIconImage';
 
 type Props = {
   userImage?: string | null
@@ -12,12 +11,7 @@ export default function Header({ userImage }: Props) {
     <View style={styles.header}>
       {/* ヘッダー左側 */}
       <View style={styles.headerLeft}>
-        <Image
-          source={userImage || noUserImage}
-          style={styles.userIcon}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-        />
+        <UserIconImage userImage={userImage} size={36} />
         </View>
       {/* 日付タイトル */}
       <View style={styles.headerCenter}>
@@ -44,11 +38,6 @@ const styles = StyleSheet.create({
   },
   headerLeft: {
     width: 60
-  },
-  userIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
   },
   headerCenter: {
     flex: 1,

@@ -1,10 +1,9 @@
 import React, { useState} from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image'
 import { UserInfoType } from '../../../../type/userInfo';
 import UserSelectionModal from '../../diary/list/components/UserSelectionModal';
-import { noUserImage } from '../../constants/userImage';
 import { FriendInfoType } from '../../../../type/friend';
+import UserIconImage from '../../components/UserIconImage';
 
 type Props = {
   title: string
@@ -32,12 +31,7 @@ export default function Header({ title, userInfo, selectedUserInfo, friendsData,
         {/* ヘッダー左側 */}
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={handleUserIconPress}>
-            <Image
-              source={selectedUserInfo?.userImage || noUserImage}
-              style={styles.userIcon}
-              contentFit="cover"
-              cachePolicy="memory-disk"
-            />
+            <UserIconImage userImage={selectedUserInfo?.userImage} size={36} />
           </TouchableOpacity>
         </View>
         {/* 日付タイトル */}
@@ -76,11 +70,6 @@ const styles = StyleSheet.create({
   },
   headerLeft: {
     width: 60
-  },
-  userIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
   },
   headerCenter: {
     flex: 1,
