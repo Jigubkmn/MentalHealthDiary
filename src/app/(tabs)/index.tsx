@@ -126,6 +126,8 @@ const styles = StyleSheet.create({
   },
   yearMonthContainer: {
     backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
   },
   yearMonthText: {
     fontSize: 20,
