@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native'
-import { Image } from 'expo-image'
-import { noUserImage } from '../../constants/userImage';
 import { FriendInfoType } from '../../../../type/friend'
 import Divider from '../../components/Divider';
 import DeleteIcon from '../../components/Icon/DeleteIcon';
@@ -12,6 +10,7 @@ import updateBlockStatus from '../action/backend/updateBlockStatus';
 import fetchFriendDocumentId from '../action/backend/fetchFriendDocumentId';
 import ApprovalConfirmationModal from './ApprovalConfirmationModal';
 import ConfirmationFriendDeleteModal from './ConfirmationFriendDeleteModal';
+import UserIconImage from '../../components/UserIconImage';
 
 type FriendInfoProps = {
   friendData: FriendInfoType
@@ -76,12 +75,7 @@ export default function FriendInfo({ friendData, userId, onFriendDeleted }: Frie
   return (
     <View style={styles.friendInfo}>
       <View style={styles.friendMainInfo}>
-        <Image
-          source={friendData.userImage || noUserImage}
-          style={styles.friendImage}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-        />
+        <UserIconImage userImage={friendData.userImage} size={50} />
         <Text style={styles.friendName}>{friendData.userName}</Text>
         <View style={[styles.status, { backgroundColor: statusStyle.backgroundColor }]}>
           <Text style={[styles.statusText, { color: statusStyle.textColor }]}>
@@ -141,16 +135,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 50,
   },
-  friendImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 16,
-  },
   friendName: {
     fontSize: 14,
     lineHeight: 24,
     fontWeight: 'bold',
+    marginLeft: 16,
   },
   settingContainer: {
     flexDirection: 'row',

@@ -4,7 +4,8 @@ import dayjs from 'dayjs';
 import BackButton from '../../../components/button/BackButton';
 import HeaderDiaryDateTitle from '../../../components/diary/HeaderDiaryDateTitle';
 import updateDiary from '../action/backend/updateDiary';
-import formatWeekData from '../../../actions/formatWeekData';
+import formatDateMonthDay from '../../../actions/formatDateMonthDay';
+
 
 type Props = {
   userId: string;
@@ -30,7 +31,7 @@ export default function Header({ userId, diaryId, diaryText, selectedFeeling, se
 
   useEffect(() => {
     // 日付を文字列に変換する関数：◯月◯日(◯)
-    const formattedDate = formatWeekData(date);
+    const formattedDate = formatDateMonthDay(date);
     setSelectedDate(formattedDate);
   }, [date]);
 

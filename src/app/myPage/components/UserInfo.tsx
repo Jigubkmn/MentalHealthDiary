@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Image } from 'expo-image'
-import { noUserImage } from '../../constants/userImage';
 import EditIcon from '../../components/Icon/EditIcon';
 import { UserInfoType } from '../../../../type/userInfo';
 import UserEditContents from './UserEditContents';
@@ -9,6 +7,7 @@ import updateUserImage from '../action/backend/updateUserImage';
 import updateAccountId from '../action/backend/updateAccountId';
 import updateUserName from '../action/backend/updateUserName';
 import { validateAccountId, validateUserName } from '../../../../utils/validation';
+import UserIconImage from '../../components/UserIconImage';
 
 type UserInfoProps = {
   userInfo: UserInfoType | null
@@ -20,7 +19,7 @@ export default function UserInfo({ userInfo, userId }: UserInfoProps) {
   const [accountId, setAccountId] = useState('');
   const [isUserNameEdit, setIsUserNameEdit] = useState(false);
   const [userName, setUserName] = useState('');
-  const [userImage, setUserImage] = useState<string | null>(userInfo?.userImage || noUserImage);
+  const [userImage, setUserImage] = useState<string | null>(userInfo?.userImage || '');
   const [errors, setErrors] = useState({ accountId: '', userName: '' })
 
   useEffect(() => {
@@ -69,12 +68,7 @@ export default function UserInfo({ userInfo, userId }: UserInfoProps) {
       <View style={styles.userInfoWrapper}>
         {/* ユーザー画像 */}
         <View style={styles.userImageContainer}>
-          <Image
-            source={userImage}
-            style={styles.userImage}
-            contentFit="cover"
-            cachePolicy="memory-disk"
-          />
+          <UserIconImage userImage={userImage} size={100} />
           <TouchableOpacity
             style={styles.editIconOverlay}
             onPress={() => updateUserImage(userId || '', setUserImage)}>
@@ -132,11 +126,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginBottom: 16,
     alignSelf: 'center',
-  },
-  userImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
   },
   editIconOverlay: {
     position: 'absolute',

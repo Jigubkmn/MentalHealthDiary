@@ -3,9 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { DiaryType } from '../../../../../type/diary';
-import { noImage, noUserImage } from '../../../constants/userImage';
 import { feelings } from '../../../constants/feelings';
-import formatData from '../../../actions/formatData';
+import formatDateMonthDay from '../../../actions/formatDateMonthDay';
+import DiaryContentTop from './DiaryContentTop';
+import UserIconImage from '../../../components/UserIconImage';
 
 type Props = {
   diaryList: DiaryType
@@ -16,8 +17,8 @@ export default function DiaryList({ diaryList } :Props) {
 
   // 体調の画像を取得
   const feelingImage = feelings.find((feeling) => feeling.name === diaryList.feeling)?.image;
-  // ◯月◯日
-  const formattedTime = formatData({diaryList});
+  // ◯月◯日(◯)
+  const formattedTime = formatDateMonthDay(diaryList.diaryDate);
 
   // 日記詳細画面に遷移
   const handleDiaryPress = () => {
@@ -33,41 +34,29 @@ export default function DiaryList({ diaryList } :Props) {
 
   return (
     <TouchableOpacity style={styles.diaryList} onPress={handleDiaryPress} activeOpacity={0.7}>
-      <View style={styles.diaryDateContainer}>
-        <Text style={styles.diaryDay}>{formattedTime}</Text>
-      </View>
+      <View style={styles.diaryUserIconContainer}>
+        <UserIconImage userImage={diaryList.userImage} />
+      </View >
+      {/* 縦並びの日記内容 */}
       <View style={styles.diaryContentContainer}>
-        {/* 日記作成者のアイコン画像 */}
-        <View style={styles.diaryUserIconContainer}>
-          <Image
-            source={diaryList.userImage || noUserImage}
-            style={styles.diaryUserIcon}
-            contentFit="cover"
-            cachePolicy="memory-disk"
-          />
-        </View>
+        <DiaryContentTop userName={diaryList.userName} feelingImage={feelingImage} formattedTime={formattedTime} />
+        {/* 日記テキスト内容 */}
         <View style={styles.diaryContent}>
-          <View style={styles.diaryTimeContainer}>
-            <Text style={styles.diaryUserName}>{diaryList.userName}</Text>
-            <Image
-              source={feelingImage}
-              style={styles.feelingImage}
-              contentFit="contain"
-              cachePolicy="memory-disk"
-            />
-          </View>
-          {/* 日記内容 */}
-          <Text style={styles.diaryContentText} numberOfLines={2} ellipsizeMode="tail">
+          <Text style={styles.diaryContentText}>
             {diaryList.diaryText}
           </Text>
         </View>
         {/* 日記投稿画像 */}
-        <View style={styles.diaryImageContainer}>
-          <Image
-            source={diaryList.diaryImage ? { uri: diaryList.diaryImage } : noImage}
-            style={styles.diaryImage}
-          />
-        </View>
+        {diaryList.diaryImage &&
+          <View style={styles.diaryImageContainer}>
+            <Image
+              source={{ uri: diaryList.diaryImage }}
+              style={styles.diaryImage}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+          </View>
+        }
       </View>
     </TouchableOpacity>
   )
@@ -76,70 +65,40 @@ export default function DiaryList({ diaryList } :Props) {
 const styles = StyleSheet.create({
   diaryList: {
     backgroundColor: '#FFFFFF',
-  },
-  diaryDateContainer: {
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 24,
-  },
-  diaryDay: {
-    fontSize: 14,
-    lineHeight: 24,
-    fontWeight: 'bold',
-  },
-  diaryContentContainer: {
-    padding: 16,
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '100%',
   },
   diaryUserIconContainer: {
     marginRight: 16,
     justifyContent: 'center',
   },
-  diaryUserIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  diaryContentContainer: {
+    flexDirection: 'column',
+    flex: 1,
   },
   diaryContent: {
     flex: 1,
-    marginRight: 16,
-  },
-  diaryTimeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  diaryUserName: {
-    fontSize: 12,
-    lineHeight: 20,
-    marginRight: 8,
-    fontWeight: 'bold',
-  },
-  diaryTime: {
-    fontSize: 12,
-    lineHeight: 20,
-    marginRight: 8,
-    marginLeft: 'auto',
-  },
-  feelingImage: {
-    width: 30,
-    height: 30,
+    width: '100%',
   },
   diaryContentText: {
     fontSize: 14,
-    lineHeight: 24,
-    flexWrap: 'wrap',
-    flexShrink: 1,
+    lineHeight: 20,
+    width: '100%',
+    flexWrap: 'wrap'
   },
   diaryImageContainer: {
-    marginLeft: 'auto',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
   },
   diaryImage: {
-    width: 80,
-    height: 80,
+    width: '100%',
+    height: 300,
+    borderRadius: 8,
   },
 })

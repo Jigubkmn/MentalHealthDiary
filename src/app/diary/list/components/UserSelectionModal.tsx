@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
-import { Image } from 'expo-image';
 import { UserInfoType } from '../../../../../type/userInfo';
 import { FriendInfoType } from '../../../../../type/friend';
-import { noUserImage } from '../../../constants/userImage';
+import UserIconImage from '../../../components/UserIconImage';
 
 type Props = {
   isVisible: boolean;
@@ -53,12 +52,7 @@ export default function UserSelectionModal({
                 ]}
                 onPress={() => handleUserSelect(userInfo.userId)}
               >
-                <Image
-                  source={userInfo.userImage || noUserImage}
-                  style={styles.userIcon}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
+                <UserIconImage userImage={selectedUserInfo?.userImage} size={36} />
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>{userInfo.userName}</Text>
                   <Text style={styles.userLabel}>あなた</Text>
@@ -76,12 +70,7 @@ export default function UserSelectionModal({
                 ]}
                 onPress={() => handleUserSelect(friend.friendUsersId)}
               >
-                <Image
-                  source={friend.userImage || noUserImage}
-                  style={styles.userIcon}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
+                <UserIconImage userImage={friend.userImage} size={40} />
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>{friend.userName}</Text>
                   <Text style={styles.userLabel}>友人</Text>
@@ -154,14 +143,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4A90E2',
   },
-  userIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
   userInfo: {
     flex: 1,
+    marginLeft: 12,
   },
   userName: {
     fontSize: 16,
@@ -173,4 +157,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666666',
   },
-}); 
+});
